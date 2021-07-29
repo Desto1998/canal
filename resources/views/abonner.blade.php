@@ -4,10 +4,10 @@
         <div class="card-header py-3">
           <h4 class="m-2 font-weight-bold text-primary">Nouveau abonnement&nbsp;<a  href="{{ route('add.client')}}" data-toggle="modal"  data-target="#clientModal" type="button" class="btn btn-primary bg-gradient-primary" style="border-radius: 0px;"><i class="fas fa-fw fa-plus"></i></a></h4>
         </div>
-        
+
         <div class="card-body">
           <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">        
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
               <thead>
                   <tr>
                     <th>#</th>
@@ -47,14 +47,14 @@
                     </td>
                 </tr>
             @endforeach
-          
+
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-     
+
         </div>
     </x-slot>
 </x-app-layout>
