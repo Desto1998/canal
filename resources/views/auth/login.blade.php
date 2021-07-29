@@ -1,10 +1,15 @@
 <x-guest-layout>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            <x-jet-authentication-card-logo />
+{{--            <x-jet-authentication-card-logo />--}}
+            <div class="row col-md text-center  logo-block" style="margin-bottom: -20px">
+                <div class="logo">
+                    <img width="400px" height="50px" src="{{asset('images/logo/png_without_background1.png')}}" class="logo-img" alt="Logo introuvable">
+                </div>
+            </div>
         </x-slot>
 
-        <x-jet-validation-errors class="mb-4" />
+        <x-jet-validation-errors class="mb-8" />
 
         @if (session('status'))
             <div class="mb-4 font-medium text-sm text-green-600">
@@ -45,7 +50,7 @@
                 <x-jet-button class="ml-4">
                     {{ __('Log in') }}
                 </x-jet-button>
-            
+            </div>
         </form>
     </x-jet-authentication-card>
 </x-guest-layout>

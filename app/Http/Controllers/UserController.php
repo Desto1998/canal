@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class UserController extends Controller
 {
@@ -83,5 +85,10 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function doLogout()
+    {
+        Auth::logout(); // log the user out of our application
+        return Redirect::to('login'); // redirect the user to the login screen
     }
 }
