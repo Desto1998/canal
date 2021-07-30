@@ -19,13 +19,10 @@ use App\Http\Controllers\PDFController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-//Auth::routes();
 
-
-Route::redirect('/', 'dashboard');
-//Route::get('/', function () {
-//    return view('auth.login');
-//});
+Route::get('/', function () {
+    return view('auth.login');
+});
 Route::get('logout', [UserController::class,'doLogout']);
 Route::get('compte/blocke', function () {
     return view('layouts.compte-block');
@@ -47,39 +44,40 @@ Route::prefix('dashboard')->group(function()
         Route::get('abonner', [ClientController::class, 'view'])->name('view.abonner');
         Route::get('show', [ClientController::class, 'show'])->name('clients.show');
 
-        //Reabonnement
-        Route::get('reabonner', [ClientController::class, 'review'])->name('review.reabonner');
-        Route::get('new_reabonner/{id_client}', [ClientController::class, 'reabonne'])->name('reabonne.client');
-        Route::post('updateR/{id_client}', [ClientController::class, 'updateR'])->name('updateR.client');
+    //Reabonnement
+    Route::get('reabonner',[ClientController::class,'review'])->name('review.reabonner');
+    Route::get('new_reabonner/{id_client}',[ClientController::class,'reabonne'])->name('reabonne.client');
+    Route::post('updateR/{id_client}',[ClientController::class,'updateR'])->name('updateR.client');
 
-        //Modifier
-        Route::get('modifier', [ClientController::class, 'viewModif'])->name('modifier');
-        Route::get('modif_client/{id_client}', [ClientController::class, 'edit_client'])->name('edit.client');
-        Route::post('updateM/{id_client}', [ClientController::class, 'updateM'])->name('updateM.client');
+    //Modifier
+    Route::get('modifier',[ClientController::class,'viewModif'])->name('modifier');
+    Route::get('modif_client/{id_client}',[ClientController::class,'edit_client'])->name('edit.client');
+    Route::post('updateM/{id_client}',[ClientController::class,'updateM'])->name('updateM.client');
 
-        Route::get('modif_formule/{id_formule}', [FormuleController::class, 'edit_formule'])->name('edit.formule');
-        Route::post('update/{id_formule}', [FormuleController::class, 'update'])->name('update.formule');
+    Route::get('modif_formule/{id_formule}',[FormuleController::class,'edit_formule'])->name('edit.formule');
+    Route::post('update/{id_formule}',[FormuleController::class,'update'])->name('update.formule');
 
-        Route::get('modif_materiel/{type_id}', [MaterielController::class, 'edit'])->name('edit.materiel');
-        Route::post('update/{id_type}', [MaterielController::class, 'update'])->name('update.materiel');
+    Route::get('modif_materiel/{type_id}',[MaterielController::class,'edit'])->name('edit.materiel');
+    Route::post('update/{id_type}',[MaterielController::class,'update'])->name('update.materiel');
 
-        //Historiques
-        Route::get('/historiques', function () {
-            return view('historiques');
-        })->name('historiques');
+    //Historiques
+    Route::get('/historiques', function () {
+        return view('historiques');
+    })->name('historiques');
 
-        //Liste des clients
-        Route::get('clients', [ClientController::class, 'allview'])->name('clients');
+    //Liste des clients
+    Route::get('clients',[ClientController::class,'allview'])->name('clients');
 
-        //Stock
-        Route::get('stock', [MaterielController::class, 'index'])->name('stock');
-        Route::post('storeMat', [MaterielController::class, 'storeMat'])->name('store.materiel');
+    //Stock
+    Route::get('stock',[MaterielController::class,'index'])->name('stock');
+    Route::post('storeMat',[MaterielController::class,'storeMat'])->name('store.materiel');
+    Route::post('storeDec',[MaterielController::class,'storeDec'])->name('store.decodeur');
 
-        Route::get('/messagerie', function () {
-            return view('messagerie');
-        })->name('messagerie');
+    Route::get('/messagerie', function () {
+        return view('messagerie');
+    })->name('messagerie');
 
-        Route::get('send-sms-notification', [MessageController::class, 'sendSmsNotificaition']);
+    Route::get('send-sms-notification', [MessageController::class, 'sendSmsNotificaition']);
 
             Route::get('compte', [UserController::class, 'index'])->name('compte');
             Route::post('compte/activate', [UserController::class, 'activate'])->name('activate_compte');

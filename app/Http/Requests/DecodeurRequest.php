@@ -24,7 +24,6 @@ class DecodeurRequest extends FormRequest
     public function rules()
     {
         return [
-            'quantite'=>'bail|required|integer',
             'prix'=>'bail|required|integer',
             'num_decodeur'=>'bail|required|integer|size:14',
             'date_livaison'=>'bail|required',
