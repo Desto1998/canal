@@ -79,7 +79,7 @@
           break;
 
         case 'warning':
-          toastr.warningsuccess("{{ Session::get('message') }}");
+          toastr.warning("{{ Session::get('message') }}");
           break;
 
         case 'success':
@@ -113,7 +113,7 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>
         </div>
@@ -139,43 +139,43 @@
       <!-- Tables Buttons -->
       <li class="nav-item">
         <a class="nav-link {{ ($route=='view.abonner')?'active':'' }}" href="{{ route('view.abonner') }}">
-          <i class="fas fa-fw fa-user"></i>
+          <i class="fas fa-fw fa-user-friends"></i>
           <span>Abonner</span></a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link {{ ($route=='reabonner')?'active':'' }}" href="{{ route('review.reabonner') }}">
-          <i class="fas fa-fw fa-user"></i>
+          <i class="fas fa-fw fa-redo"></i>
           <span>Reabonner</span></a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link {{ ($route=='modifier')?'active':'' }}" href="{{ route('modifier') }}">
-          <i class="fas fa-fw fa-user"></i>
+          <i class="fas fa-fw fa-edit"></i>
           <span>Modifier</span></a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link {{ ($route=='historiques')?'active':'' }}" href="{{ route('historiques') }}">
-          <i class="fas fa-fw fa-user"></i>
+          <i class="fas fa-fw fa-history"></i>
           <span>Historiques</span></a>
       </li>
 
      <li class="nav-item">
         <a class="nav-link {{ ($route=='clients')?'active':'' }}" href="{{ route('clients') }}">
-          <i class="fas fa-fw fa-user"></i>
+          <i class="fas fa-fw fa-user-check"></i>
           <span>Clients</span></a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link {{ ($route=='stock')?'active':'' }}" href="{{ route('stock') }}">
-          <i class="fas fa-fw fa-user"></i>
+          <i class="fas fa-fw fa-databaseF"></i>
           <span>Stocks</span></a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link {{ ($route=='messagerie')?'active':'' }}" href="{{ route('messagerie') }}">
-          <i class="fas fa-fw fa-user"></i>
+          <i class="fas fa-fw fa-mail-bulk"></i>
           <span>Messagerie</span></a>
       </li>
       <!-- Divider -->

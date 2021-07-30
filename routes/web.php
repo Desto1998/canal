@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\MessageController;
@@ -21,11 +22,11 @@ use App\Http\Controllers\PDFController;
 Route::get('/', function () {
     return view('auth.login');
 });
+Route::get('logout', [UserController::class,'doLogout']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
-
 
 Route::prefix('dashboard')->group(function()
 {
