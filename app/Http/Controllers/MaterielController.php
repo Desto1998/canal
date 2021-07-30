@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Decodeur;
 use App\Models\Materiel;
-use App\Models\Type;
+use App\Http\Requests\DecodeurRequest;
 use Illuminate\Http\Request;
 
 class MaterielController extends Controller
@@ -39,16 +39,38 @@ class MaterielController extends Controller
      */
     public function storeMat(Request $request)
     {
-        $request->validate([
-            'type_materiel'=>'required',
-        ]);
         $mat = new Materiel();
         $mat->quantite = $request->quantite;
-        $mat->quantite_stock = $request->quantite;
+        $mat->prix_materiel = $request->prix_materiel;
+        $mat->quantite_stock = $mat->quantite_stock+$request->quantite;
         $mat->date_livaison = $request->date_livraison;
 
 
         $mat->save();
+
+        $notification = array(
+            'message' => 'Données insérées avec succès',
+            'alert-type' =>'success'
+        );
+        return Back()->with($notification);
+    }
+
+    public function storeDec(Request $request)
+    {
+        $request->validate([
+            'prix'=>'bail|required|integer',
+            'num_decodeur'=>'bail|required|integer|size:14',
+            'date_livaison'=>'bail|required',
+        ]);
+        $dec = new Decodeur();
+        $dec->num_decodeur = $request->num_decodeur;
+        $dec->prix_decodeur = $request->prix_decodeur;
+        $dec->quantite =1;
+        $dec->quantite_stock = 1;
+        $dec->date_livaison = $request->date_livraison;
+
+
+        $dec->save();
 
         $notification = array(
             'message' => 'Données insérées avec succès',

@@ -144,7 +144,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ajouter un materiel</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Ajouter un accessoire</h5>
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
@@ -153,21 +153,41 @@
           <form role="form" method="post" action="{{route('store.materiel')}}">
             @csrf
             <div class="form-group">
-              Type: <select  name="type_materiel" onChange="afficherAutre()" required>
-                            <option>--Choississez--</option>
-                            <option value="Accessoires"> Accessoires </option>
-                            <option value="Decodeur"> Decodeur </option>
-                           </select>
-            </div>
-            <div class="form-group">
-                <span id=autre style="display: none"> Autre :</span>
-                <input type="text" id="mots" name="mots" style="display: none">
-            </div>
-            <div class="form-group">
               Quantité<br><input class="form-control" placeholder="Quantite" name="quantite" required>
             </div>
             <div class="form-group">
-              Prix<br><input class="form-control" placeholder="Prix" name="prix" required>
+              Prix<br><input class="form-control" placeholder="Prix" name="prix_materiel" required>
+            </div>
+            <div class="form-group">
+              Date livraison<br><input class="form-control" type="date" name="date_livraison" required>
+            </div>
+            <hr>
+            <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer</button>
+            <button type="reset" class="btn btn-danger"><i class="fa fa-times fa-fw"></i>Retour</button>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Decodeur Modal-->
+  <div class="modal fade" id="materielModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ajouter un décodeur</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form role="form" method="post" action="{{route('store.decodeur')}}">
+            @csrf
+            <div class="form-group">
+              Numero décodeur<br><input class="form-control" placeholder="numero decodeur" name="num_decodeur" required>
+            </div>
+            <div class="form-group">
+              Prix<br><input class="form-control" placeholder="Prix" name="prix_decodeur" required>
             </div>
             <div class="form-group">
               Date livraison<br><input class="form-control" type="date" name="date_livraison" required>

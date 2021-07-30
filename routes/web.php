@@ -65,6 +65,7 @@ Route::prefix('dashboard')->group(function()
     //Stock
     Route::get('stock',[MaterielController::class,'index'])->name('stock');
     Route::post('storeMat',[MaterielController::class,'storeMat'])->name('store.materiel');
+    Route::post('storeDec',[MaterielController::class,'storeDec'])->name('store.decodeur');
 
     Route::get('/messagerie', function () {
         return view('messagerie');

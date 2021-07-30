@@ -3,8 +3,9 @@ $(document).ready(function() {
   $("table[id^='dataTable']").DataTable(
     {
       language: {
-          url: ".\French.json"
-      }
+          url: "./French.json"
+      },
+      "pageLength": 5
   }
   );
 });
