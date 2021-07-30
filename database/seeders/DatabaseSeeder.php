@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -46,5 +47,30 @@ class DatabaseSeeder extends Seeder
             ],
             ]);
             $nbrFormule = 7;
+        DB::table('users')->insert([
+            'name' => 'admin',
+            'is_active' => 1,
+            'is_admin' => 1,
+            'email' => 'admin@gmail.com',
+            'role' => 'admin',
+            'password' => Hash::make('123456'),
+        ]);
+        DB::table('users')->insert([
+            'name' => 'user1',
+            'is_active' => 1,
+            'is_admin' => 0,
+            'role' => 'user',
+            'email' => 'user1@gmail.com',
+            'password' => Hash::make('123456'),
+        ]);
+        DB::table('users')->insert([
+            'name' => 'user2',
+            'is_active' => 0,
+            'is_admin' => 0,
+            'role' => 'user',
+            'email' => 'user2@gmaiil.com',
+            'password' => Hash::make('123456'),
+        ]);
+
     }
 }

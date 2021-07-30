@@ -97,7 +97,7 @@
 </head>
 
 <body id="page-top">
-
+@if(Auth::user()->is_active!=0)
   <div class="min-h-screen bg-gray-100">
     {{--@livewire('navigation-menu')--}}
 
@@ -110,6 +110,7 @@
       @endphp
 
     <!-- Sidebar -->
+
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
@@ -169,7 +170,7 @@
 
       <li class="nav-item">
         <a class="nav-link {{ ($route=='stock')?'active':'' }}" href="{{ route('stock') }}">
-          <i class="fas fa-fw fa-databaseF"></i>
+          <i class="fas fa-fw fa-database"></i>
           <span>Stocks</span></a>
       </li>
 
@@ -178,6 +179,14 @@
           <i class="fas fa-fw fa-mail-bulk"></i>
           <span>Messagerie</span></a>
       </li>
+        @if(Auth::user()->is_admin==1)
+            <li class="nav-item">
+                <a class="nav-link {{ ($route=='compte')?'active':'' }}" href="{{ route('compte') }}">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Comptes</span></a>
+            </li>
+        @endif
+
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
 
@@ -230,7 +239,7 @@
                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                 Profil
               </button>
-              <a class="dropdown-item" href="settings.php?action=edit & id='session'">
+              <a class="dropdown-item" href="{{route('user.editForm',Auth::user()->id)}}">
                 <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                 Paramètres
               </a>
@@ -252,6 +261,12 @@
     </main>
 </div>
 
+@else
+    @php
+        header("Location: {{route('compte/blocke')}}");
+    @endphp
+    @include('layouts.compte-block')
+@endif
 @stack('modals')
 
 @livewireScripts

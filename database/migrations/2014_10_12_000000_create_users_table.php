@@ -22,6 +22,8 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->string('adresse')->default("");
             $table->integer('telephone')->default(0);
+            $table->boolean('is_active')->default(0);
+            $table->boolean('is_admin')->default(0);
             $table->enum('role',array('user', 'admin'))->default('user');
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
