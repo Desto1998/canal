@@ -87,6 +87,7 @@ Route::prefix('dashboard')->group(function()
                 return view('users.add');
             })->name('compte.add');
             Route::get('compte/getUser/{id}', [UserController::class, 'edit_users'])->name('user.editForm');
+            Route::post('compte/update', [UserController::class, 'update'])->name('user.update');
             Route::post('compte/delete', [UserController::class, 'delete'])->name('user.delete');
 
     });

@@ -8,7 +8,7 @@
             @include('layouts/flash-message')
             <div class="card-body">
                 <div class="table-responsive">
-                    <form role="form" method="post" action="{{ route('user.add') }}" >
+                    <form role="form" method="post" action="{{ isset($user)? route('user.update') : route('user.add') }}" >
                         @csrf
                         <input type="hidden" name="id" value="{{isset($user) ? $user->id : ''}}">
                         <div class="form-group">
@@ -24,13 +24,19 @@
                         <div class="form-group">
                             Adresse<br><input class="form-control" type="text" placeholder="Adresse" name="adresse" value="{{isset($user) ? $user->adresse : ''}}">
                         </div>
+                        @if(isset($user) and Auth::user()->id==$user->id)
                         <div class="form-group">
-                            Mot de passe<span class="text-danger">*</span><br>
-                            <x-jet-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password"  value="{{isset($user) ? $user->password : ''}}"/>
+                            Ancien mot de passe<span class="text-danger">*</span><br>
+                            <input id="password" class="form-control" type="password" name="oldpassword"  autocomplete="current-password">
+                        </div>
+                        @endif
+                        <div class="form-group">
                         </div>
                         <div class="form-group">
+                            Mot de passe<span class="text-danger">*</span><br>
+                            <input id="password" class="form-control" type="password" name="password" required autocomplete="current-password" />
                             Confirmer le mot de passe<span class="text-danger">*</span><br>
-                            <x-jet-input id="confirm_password" class="block mt-1 w-full" type="password" name="confirm_password" required autocomplete="current-password" value="{{isset($user) ? $user->password : ''}}"/>
+                            <input id="confirm_password" class="form-control" type="password" name="confirm_password"  required autocomplete="current-password"/>
                         </div>
                         <div class="form-group">
                             <label for="role">Role<span class="text-danger">*</span></label>
