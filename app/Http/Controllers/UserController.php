@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
+//use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Vonage\Response;
+use Exception;
 
 class UserController extends Controller
 {
@@ -18,11 +19,43 @@ class UserController extends Controller
      */
     public function index()
     {
+        if(Auth::user()->role==='admin'){
+            $users = User::all();
 
-        $users = User::all();
-        return view('users.list', compact('users'));
+            $basic  = new \Vonage\Client\Credentials\Basic("955fc9c6", "mAWAdKoZ6Emoe6QU");
+            $client = new \Vonage\Client($basic);
+            $response = $client->sms()->send(
+                new \Vonage\SMS\Message\SMS("237679353205", 'GETEL', 'A Text by desto')
+            );
+
+            $message = $response->current();
+
+            if ($message->getStatus() == 0) {
+                echo "The message was sent successfully\n";
+            } else {
+                echo "The message failed with status: " . $message->getStatus() . "\n";
+            }
+
+            return view('users.list', compact('users'));
+
+        }else{
+            return view('layouts.droit');
+        }
+
     }
-
+//    public function sendSmsNotificaition()
+//    {
+//        $basic  = new \Nexmo\Client\Credentials\Basic('Nexmo key', 'Nexmo secret');
+//        $client = new \Nexmo\Client($basic);
+//
+//        $message = $client->message()->send([
+//            'to' => '9197171****',
+//            'from' => 'John Doe',
+//            'text' => 'A simple hello message sent from Vonage SMS API'
+//        ]);
+//
+//        dd('SMS message has been delivered.');
+//    }
 
     /**
      * Store a newly created resource in storage.
@@ -47,8 +80,9 @@ class UserController extends Controller
         if ($request->role == 'admin') {
             $is_admin = 1;
         }
-        $verifyEmai = User::find($request->email);
-        if (empty($verifyEmai)){
+        $verifyEmail = User::where('email',$request->email)->get();
+//        DD($verifyEmail);exit();
+        if (empty($verifyEmail)){
             $user = User::Create(
                 [
                     'name' => $request->name,
@@ -61,8 +95,8 @@ class UserController extends Controller
                     'is_active' => $is_active
                 ]);
         }else{
-            session()->flash('message', 'Cette adresse email est déja ut');
-            return redirect()->back()->with('danger', 'Cette adresse email est déja utilsé!');
+            session()->flash('message', 'Cette adresse email est déja utilsé');
+            return redirect()->back()->with('warning', 'Cette adresse email est déja utilsé!');
 
         }
 
@@ -103,13 +137,11 @@ class UserController extends Controller
             'role' => 'required',
             'telephone' => 'required',
             'email' => 'required|email',
-            'oldpassword' => 'required|min:6',
             'password' => 'min:6|required_with:confirm_password|same:confirm_password',
             'confirm_password' => 'min:6'
         ]);
         $is_admin = 0;
         $password = Hash::make($request->password);
-//            DD(Hash::check($oldpassword));
 
         if ($request->role == 'admin') {
             $is_admin = 1;
@@ -117,14 +149,10 @@ class UserController extends Controller
         if (!empty($request->id)) {
 
             $dataId = $request->id;
-//            $olddata = User::where('id','=', $dataId)->get();
-
-            $oldpassword = Hash::make($request->oldpassword);
-//            $userpassword = $olddata[0]->password;
-
-//            DD($request->oldpassword,$oldpassword,$userpassword, Hash::check($userpassword,$oldpassword));
             $current_user_password = Auth::user()->password;
-            if (empty($request->oldpassword) || Hash::check($current_user_password,$oldpassword) == true)  {
+//            DD(Hash::check($request->oldpassword,$current_user_password));
+//            exit();
+            if (empty($request->oldpassword) || Hash::check($request->oldpassword,$current_user_password) == true)  {
 
                 $user = User::updateOrCreate(
                     [
