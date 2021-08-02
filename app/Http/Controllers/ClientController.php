@@ -10,6 +10,8 @@ use App\Models\Message;
 use App\Models\User;
 use App\Models\Materiel;
 use App\Models\Decodeur;
+use Vonage\Client\Exception\Exception;
+//use Exception;
 
 class ClientController extends Controller
 {
@@ -92,6 +94,9 @@ class ClientController extends Controller
             }
             else{
                 echo"Client existant";
+                session()->flash('message', ' Le client existe déja!');
+
+                return redirect()->back()->with('warning', 'Le client existe déja!');
             }
         }
 
@@ -106,14 +111,48 @@ class ClientController extends Controller
 
         $data->date_abonnement = $request->date_abonnement;
         $data->date_reabonnement = $request->date_abonnement;
+//        "237679353205",
 
-        $data->save();
+        $client = $data->save();
+        $message_con = "Erreur lors de l'envoi du message au client.";
+        $message_con ="";
+        if (!empty($client)){
+            try {
+                $basic  = new \Vonage\Client\Credentials\Basic("955fc9c6", "mAWAdKoZ6Emoe6QU");
+                $client = new \Vonage\Client($basic);
+                $response = $client->sms()->send(
+                    new \Vonage\SMS\Message\SMS(
+                        $request->telephone_client,
+                        'GETEL',
+                        'Merci de vous etre abonné chez nous!')
+                );
+                $message = $response->current();
 
+                if ($message->getStatus() == 0) {
+                    $message_con ="Un message a été envoyé au client";
+                }
+            } catch (Exception $e) {
+            $sendError = "Error: ". $e->getMessage();
+        }
+
+        }
         $notification = array(
             'message' => 'Données insérées avec succès',
             'alert-type' =>'success'
         );
-        return Back()->with('info', 'Le client a bien été enregistré dans la base de données.');
+        if (!empty($client) && !empty($message_con)) {
+            session()->flash('message', 'Le client a bien été enregistré dans la base de données.');
+            return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. et'+$message_con);
+        }
+
+        if (!empty($client)  and empty($message_con)) {
+            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé'  );
+            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'+"\n Statut:"+$sendError);
+        } else {
+            session()->flash('message', 'Erreur! Le client n\' pas été enrgistré!');
+
+            return redirect()->back()->with('danger', 'Erreur! Le client n\' pas été enrgistré!');
+        }
     }
 
 

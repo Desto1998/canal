@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-//use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
@@ -21,21 +21,6 @@ class UserController extends Controller
     {
         if(Auth::user()->role==='admin'){
             $users = User::all();
-
-            $basic  = new \Vonage\Client\Credentials\Basic("955fc9c6", "mAWAdKoZ6Emoe6QU");
-            $client = new \Vonage\Client($basic);
-            $response = $client->sms()->send(
-                new \Vonage\SMS\Message\SMS("237679353205", 'GETEL', 'A Text by desto')
-            );
-
-            $message = $response->current();
-
-            if ($message->getStatus() == 0) {
-                echo "The message was sent successfully\n";
-            } else {
-                echo "The message failed with status: " . $message->getStatus() . "\n";
-            }
-
             return view('users.list', compact('users'));
 
         }else{

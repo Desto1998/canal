@@ -4,6 +4,7 @@
         <div class="card-header py-3">
           <h4 class="m-2 font-weight-bold text-primary">Liste des clients</h4>
         </div>
+          @include('layouts/flash-message')
 
         <div class="card-body">
           <div class="table-responsive">
