@@ -78,7 +78,7 @@ class ClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ClientRequest $request)
+    public function store(Request $request)
     {
         $clients = Client::all();
         $formul = Formule::where('nom_formule',$request->formule)->get();
@@ -88,12 +88,17 @@ class ClientController extends Controller
         $data->prenom_client = $request->prenom_client;
         $data->num_abonne = $request->num_abonne;
         $data->adresse_client = $request->adresse_client;
+        if (!empty($deco)){
+            session()->flash('message', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre.');
+
+            return redirect()->back()->with('warning', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre!');
+        }
         foreach($clients as $cli){
             if($cli->telephone_client != $request->telephone_client or $cli->telephone_client=null){
                 $data->telephone_client = $request->telephone_client;
             }
             else{
-                echo"Client existant";
+//                echo"Client existant";
                 session()->flash('message', ' Le client existe déja!');
 
                 return redirect()->back()->with('warning', 'Le client existe déja!');
