@@ -15,15 +15,11 @@ class CreateDecodeursTable extends Migration
     {
         Schema::create('decodeurs', function (Blueprint $table) {
             $table->id('id_decodeur');
-            $table->integer('num_decodeur');
+            $table->bigInteger('num_decodeur');
             $table->integer('quantite');
             $table->integer('prix_decodeur');
-            $table->integer('quantite_stock');
             $table->date('date_livaison');
             $table->timestamps();
-
-            $table->unsignedBigInteger('id_materiel');
-            $table->foreign('id_materiel')->references('id_materiel')->on('materiels')->onDelete('restrict')->onUpdate('restrict');
         });
     }
 

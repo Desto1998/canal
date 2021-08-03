@@ -33,6 +33,14 @@
                           <option value="EVASION +"> Essentiel + </option>
                           <option value="EVASION +"> Tout canal </option>
                          </select>
+                        Durée:  <select  name="duree" required>
+                            <option value=1 selected> 1 mois </option>
+                            <option value=2> 2 mois </option>
+                            <option value=3> 3 mois </option>
+                            <option value=6> 6 mois </option>
+                            <option value=9> 9 mois </option>
+                            <option value=12> 12 mois </option>
+                         </select>
                       </div>
                       <div class="form-group">
                         Date reabonnement<br><input class="form-control" placeholder="{{ $datas->data_reabonnement }}" value="Date de reabonnement" name="date_reabonnement" type="date" required>

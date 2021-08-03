@@ -21,13 +21,13 @@
                       N° téléphone client<br><input class="form-control" placeholder="{{ $datas->telephone_client }}" name="telephone_client" required>
                     </div>
                     <div class="form-group">
-                      N° decodeur<br><input class="form-control" placeholder="{{ $datas->num_decodeur }}" name="num_decodeur" required>
+                      N° decodeur<br><input class="form-control" placeholder="{{ $datas->num_decodeur }}" name="num_decodeur" disabled>
                     </div>
                     <div class="form-group">
                       Adresse client<br><input class="form-control" placeholder="{{ $datas->adresse_client }}" name="adresse_client" required>
                     </div>
                     <div class="form-group">
-                      Formule: <select  name="formule" required>
+                      Formule: <select  name="formule" disabled>
                         <option value="ACCESS" selected> ACCESS </option>
                         <option value="ACCESS +"> ACCESS + </option>
                         <option value="EVASION"> EVASION </option>
@@ -38,7 +38,7 @@
                        </select>
                     </div>
                     <div class="form-group">
-                      Date reabonnement<br><input class="form-control" name="date_reabonnement" type="date" required>
+                      Date reabonnement<br><input class="form-control" name="date_reabonnement" type="date" disabled>
                     </div>
                     <hr>
 

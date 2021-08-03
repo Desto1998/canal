@@ -59,3 +59,24 @@
         </div>
     </x-slot>
 </x-app-layout>
+<script>
+    function controlNumero1(){
+      var long = $('#num_decodeur').val();
+
+      if(long.length != 14){
+         $('.ereur-numero').removeClass('hidden');
+      }else{
+        $('.ereur-numero').addClass('hidden');
+      }
+
+      var long = $('#num_abonne').val();
+
+      if(long.length != 8){
+         $('.ereur-numero').removeClass('hidden');
+      }else{
+        $('.ereur-numero').addClass('hidden');
+      }
+
+    }
+
+</script>
