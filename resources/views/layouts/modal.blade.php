@@ -36,7 +36,11 @@
               Prenom client<br><input class="form-control" type="text" placeholder="Prenom" name="prenom_client" required>
             </div>
             <div class="form-group">
-              Numero d'abonné<br><input class="form-control" type="text" placeholder="numero abonne" name="num_abonne" required>
+              Numero d'abonné<br><input type="number" class="form-control" type="text" onblur="controlNumero1(this)" placeholder="numero abonne" name="num_abonne" id="num_abonne" required>
+              <span class="text-danger hidden ereur-numero " style=""> Mauvaise saisie Longeur minimale 8</span>
+              @error('num_decodeur')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
             <div class="form-group">
               N° téléphone client<br><input class="form-control" type="tel" placeholder="Numéro de téléphone" name="telephone_client" required>
@@ -45,7 +49,11 @@
               Adresse client<br><input class="form-control" type="text" placeholder="Adresse" name="adresse_client" required>
             </div>
             <div class="form-group">
-              Numero décodeur<br><input class="form-control" type="number" placeholder="Numero decodeur" name="num_decodeur" required>
+              Numero décodeur<br><input type="number" class="form-control" type="number" onblur="controlNumero1(this)" placeholder="Numero decodeur" name="num_decodeur" id="num_decodeur" required>
+              <span class="text-danger hidden ereur-numero " style=""> Mauvaise saisie Longeur minimale 14</span>
+              @error('num_decodeur')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
             <div class="form-group">
               Formule: <select  name="formule" required>
@@ -56,7 +64,15 @@
                             <option value="EVASION"> Essentiel </option>
                             <option value="EVASION +"> Essentiel + </option>
                             <option value="EVASION +"> Tout canal </option>
-                           </select>
+                        </select>
+              Durée:  <select  name="duree" required>
+                            <option value=1 selected> 1 mois </option>
+                            <option value=2> 2 mois </option>
+                            <option value=3> 3 mois </option>
+                            <option value=6> 6 mois </option>
+                            <option value=9> 9 mois </option>
+                            <option value=12> 12 mois </option>
+                        </select>
             </div>
             <div class="form-group">
               Date abonnement<br><input class="form-control" name="date_abonnement" type="date" required>
@@ -153,13 +169,28 @@
           <form role="form" method="post" action="{{route('store.materiel')}}">
             @csrf
             <div class="form-group">
-              Quantité<br><input class="form-control" placeholder="Quantite" name="quantite" required>
+              Nom accessoire<br><input class="form-control" placeholder="nom accessoire" class="form-control  @error('nom_materiel') is-invalid @enderror" name="nom_materiel" id="nom_materiel" required>
+              @error('nom_materiel')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
             <div class="form-group">
-              Prix<br><input class="form-control" placeholder="Prix" name="prix_materiel" required>
+              Quantité<br><input class="form-control" placeholder="Quantite" class="form-control  @error('quantite') is-invalid @enderror" name="quantite" id="quantite" required>
+              @error('quantite')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
             <div class="form-group">
-              Date livraison<br><input class="form-control" type="date" name="date_livraison" required>
+              Prix<br><input class="form-control" placeholder="Prix" class="form-control  @error('prix_materiel') is-invalid @enderror" name="prix_materiel" id="prix_materiel" required>
+              @error('prix_materiel')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+            </div>
+            <div class="form-group">
+              Date livraison<br><input class="form-control" type="date" class="form-control  @error('date_livraison') is-invalid @enderror" name="date_livraison" id="date_livraison" required>
+              @error('date_livraison')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
             <hr>
             <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer</button>
@@ -184,13 +215,23 @@
           <form role="form" method="post" action="{{route('store.decodeur')}}">
             @csrf
             <div class="form-group">
-              Numero décodeur<br><input class="form-control" placeholder="numero decodeur" name="num_decodeur" required>
+              Numero décodeur<br><input type="number" class="form-control" placeholder="numero decodeur" onblur="controlNumero(this)" class="form-control  @error('num_decodeur') is-invalid @enderror" name="num_decodeur" id="num_decodeur"  required>
+              <span class="text-danger hidden ereur-numero " style=""> Mauvaise saisie Longeur minimale 14</span>
+              @error('num_decodeur')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
             <div class="form-group">
-              Prix<br><input class="form-control" placeholder="Prix" name="prix_decodeur" required>
+              Prix<br><input class="form-control" placeholder="Prix" class="form-control  @error('prix_decodeur') is-invalid @enderror" name="prix_decodeur" id="prix_decodeur"  required>
+              @error('prix_decodeur')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
             <div class="form-group">
-              Date livraison<br><input class="form-control" type="date" name="date_livraison" required>
+              Date livraison<br><input class="form-control" type="date" class="form-control  @error('date_livraison') is-invalid @enderror" name="date_livraison" id="date_livraison"  required>
+              @error('date_livraison')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
             <hr>
             <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer</button>
@@ -204,3 +245,4 @@
 
 
 </div>
+

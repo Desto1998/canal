@@ -16,9 +16,9 @@ class CreateMaterielsTable extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('materiels', function (Blueprint $table) {
             $table->id('id_materiel');
+            $table->string('nom_materiel');
             $table->integer('quantite');
             $table->integer('prix_materiel');
-            $table->integer('quantite_stock');
             $table->date('date_livaison');
 
             $table->timestamps();

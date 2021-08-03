@@ -2,72 +2,107 @@
   <x-slot name="slot">
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-          <style>
-            .marge {
-            margin-left: 5em;
-            }
-          </style>
-        <h4 class="m-2 font-weight-bold text-primary">Stock&nbsp;
-            <span class="marge">
-                <a  href="{{ route('add.client')}}" data-toggle="modal"  data-target="#materielModal1" type="button" class="btn btn-primary bg-gradient-primary" style="border-radius: 50px;">
-                    <i class="fas fa-fw fa-plus"></i>Ajouter un décodeur
-                </a>
-            </span>
-            <span class="marge">
-            <a  href="{{ route('add.client')}}" data-toggle="modal"  data-target="#materielModal" type="button" class="btn btn-primary bg-gradient-primary" style="border-radius: 50px;">
-                <i class="fas fa-fw fa-plus"></i>Ajouter un accessoire
-            </a>
-            </span>
-        </h4>
-      </div>
+          @if (session()->has('message'))
+                <div class="bd-teal-100 border-t-4 border-teal-500 rounded-b px-4 py-3 shadow-md my-3 text-teal-900" role="alert">
+                    <div class="flex">
+                        <div>
+                            <p class="text-sm">{{session('message')}}</p>
+                        </div>
+                    </div>
+                </div>
 
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table table-bordered" width="100%" cellspacing="0">
-            <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Quantité en stock</th>
-                  <th>Quantité livré</th>
-                  <th>Date de livraison</th>
-                  <th>Prix</th>
-                </tr>
-            </thead>
-            <tbody>
-            <td><strong>Accessoires</strong></td>
-                      @foreach($allMateriels as $key => $mat)
-                      <td><strong>{{ $mat->prix_materiel }}</strong></td>
-                      <td><strong>{{ $mat->quantite }}</strong></td>
-                      <td><strong>{{ $mat->quantite_stock }}</strong></td>
-                      <td><strong>{{ $mat->date_livaison }}</strong></td>
-                      <td align="right"><div class="btn_group">
-                        <a type="button" class="btn btn-success bg-gradient-success btn-block" style="border-radius: 0px;" href="{{route('edit.materiel',$mat->id_materiel)}}">
-                          <i class="fas fa-fw fa-edit"></i> Modifier
-                        </a>
-                      </td>
-                  </tr>
-                 @endforeach
-                  <tr>
-                      <td><strong>Decodeur</strong></td>
-                      @foreach($allDecodeurs as $key => $dec)
-                        <td><strong>{{ $dec->prix_decodeur }}</strong></td>
-                        <td><strong>{{ $dec->quantite }}</strong></td>
-                        <td><strong>{{ $dec->quantite_stock }}</strong></td>
-                        <td><strong>{{ $dec->date_livaison }}</strong></td>
-                      <td align="right"><div class="btn_group">
-                        <a type="button" class="btn btn-success bg-gradient-success btn-block" style="border-radius: 0px;" href="{{route('edit.materiel',$dec->id_decodeur)}}">
-                          <i class="fas fa-fw fa-edit"></i> Modifier
-                        </a>
-                      </td>
-                  </tr>
-                  @endforeach
-            </tbody>
-          </table>
-        </div>
+          @endif
       </div>
-    </div>
+        <div class="col-md-9">
+            <div class="card-header py-3">
+                <h4 class="m-2 font-weight-bold text-primary">Ajouter un décodeur&nbsp;<a  href="{{ route('add.client')}}" data-toggle="modal"  data-target="#materielModal1" type="button" class="btn btn-primary bg-gradient-primary" style="border-radius: 0px;"><i class="fas fa-fw fa-plus"></i></a></h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Numero décodeur</th>
+                            <th>Prix</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($allDecodeurs as $key => $dec)
+                        <tr>
+                            <td><strong>{{ $dec->num_decodeur }}</strong></td>
+                            <td><strong>{{ $dec->prix_decodeur }}</strong></td>
+                            <td align="right">
+                            <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="">
+                              <i class="fas fa-fw fa-edit"></i> Modifier
+                            </a>
+                            <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="">
+                              <i class="fas fa-fw fa-edit"></i> supprimer
+                            </a>
+                            </td>
+                        </tr>
+                    @endforeach
+
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card-header py-3">
+                <h4 class="m-2 font-weight-bold text-primary">Ajouter un accessoire&nbsp;<a  href="{{ route('add.client')}}" data-toggle="modal"  data-target="#materielModal" type="button" class="btn btn-primary bg-gradient-primary" style="border-radius: 0px;"><i class="fas fa-fw fa-plus"></i></a></h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Nom assessoire</th>
+                            <th>Prix</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($allMateriels as $key => $mat)
+                        <tr>
+                            <td><strong>{{ $mat->nom_materiel }}</strong></td>
+                            <td><strong>{{ $mat->prix_materiel }}</strong></td>
+                            <td align="right">
+                            <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="">
+                              <i class="fas fa-fw fa-edit"></i> Modifier
+                            </a>
+                            <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="">
+                              <i class="fas fa-fw fa-edit"></i> Supprimer
+                            </a>
+                            </td>
+                        </tr>
+                    @endforeach
+
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+
+
 
 
       </div>
   </x-slot>
 </x-app-layout>
+<script>
+    function controlNumero(){
+        // alert("test");
+      var long = $('#num_decodeur').val();
+
+      if(long.length != 14){
+         $('.ereur-numero').removeClass('hidden');
+      }else{
+        $('.ereur-numero').addClass('hidden');
+      }
+
+    }
+
+</script>

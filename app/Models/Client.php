@@ -18,6 +18,7 @@ class Client extends Model
         'adresse_client',
         'telephone_client',
         'date_abonnement',
+        'duree',
         'date_reabonnement',
         'id_formule',
         'id_materiel',

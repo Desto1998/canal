@@ -11,18 +11,17 @@ class Materiel extends Model
     use HasFactory;
 
     protected $fillable = [
+        'nom_materiel',
         'prix_materiel',
         'quantite',
-        'quantite_stock',
         'date_livaison',
-        'type_id',
     ];
     public function client()
     {
         return $this->belongsTo(Client::class);
     }
-    public function decodeur()
+    public function decodeurs()
     {
-        return $this->belongsTo(Decodeur::class);
+        return $this->belongsToMany(Decodeur::class);
     }
 }

@@ -76,7 +76,7 @@ class ClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ClientRequest $request)
+    public function store(Request $request)
     {
         $clients = Client::all();
         $formul = Formule::where('nom_formule',$request->formule)->get();
@@ -97,17 +97,19 @@ class ClientController extends Controller
 
         foreach($deco as $dec){
                 $data->id_decodeur = $dec->id_decodeur;
-                $data->id_materiel = $dec->id_materiel;
         }
 
         foreach($formul as $formul1){
             $data->id_formule = $formul1->id_formule;
         }
-
+        $data->duree = $request->duree;
+        $data->id_materiel = 1;
         $data->date_abonnement = $request->date_abonnement;
-        $data->date_reabonnement = $request->date_abonnement;
+        $data->date_reabonnement = date_add($request->date_abonnement,date_interval_create_from_date_string("$request->duree months"));
 
         $data->save();
+
+        redirect('/PDFController/valeur/data');
 
         $notification = array(
             'message' => 'Données insérées avec succès',
@@ -164,15 +166,11 @@ class ClientController extends Controller
         ]);
         $data = Client::find($id_client);
         $formul = Formule::where('nom_formule',$request->formule)->get();
-        // $data -> nom_client = $request->nom_client;
-        // $data -> prenom_client = $request->prenom_client;
-        // $data -> adresse_client = $request->adresse_client;
-        //$data -> telephone_client = $request->telephone_client;
         foreach($formul as $formul1){
             $data -> id_formule = $formul1->id_formule;
         }
-        // $data -> date_abonnement = $request->date_abonnement;
-        $data -> date_reabonnement = $request->date_reabonnement;
+        $data->duree = $request->duree;
+        $data->date_reabonnement = date_add($request->date_reabonnement,date_interval_create_from_date_string("$request->duree months"));
 
         $data->save();
         //$client->update($request->all());
@@ -187,14 +185,14 @@ class ClientController extends Controller
         $data -> prenom_client = $request->prenom_client;
         $data -> adresse_client = $request->adresse_client;
         $data -> telephone_client = $request->telephone_client;
-        foreach($deco as $dec){
-            $data->id_decodeur = $dec->id_decodeur;
-            $data->id_materiel = $dec->id_materiel;
-    }
-        foreach($formul as $formul1){
-            $data -> id_formule = $formul1->id_formule;
-        }
-        $data -> date_reabonnement = $request->date_reabonnement;
+    //     foreach($deco as $dec){
+    //         $data->id_decodeur = $dec->id_decodeur;
+    //         $data->id_materiel = $dec->id_materiel;
+    // }
+    //     foreach($formul as $formul1){
+    //         $data -> id_formule = $formul1->id_formule;
+    //     }
+    //     $data -> date_reabonnement = $request->date_reabonnement;
 
         $data->save();
         //$client->update($request->all());

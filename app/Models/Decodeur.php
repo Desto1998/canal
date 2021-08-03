@@ -9,13 +9,12 @@ class Decodeur extends Model
 {
     use HasFactory;
 
+
     protected $fillable = [
         'num_decodeur',
         'quantite',
         'prix_decodeur',
-        'quantite_stock',
         'date_livaison',
-        'id_materiel',
     ];
 
     public function client()
@@ -24,6 +23,6 @@ class Decodeur extends Model
     }
     public function materiels()
     {
-        return $this->hasMany(Materiel::class);
+        return $this->belongsToMany(Materiel::class);
     }
 }
