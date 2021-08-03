@@ -109,7 +109,7 @@ class ClientController extends Controller
 
         $data->save();
 
-        redirect('/PDFController/valeur/data');
+        //redirect('/PDFController/valeur/data');
 
         $notification = array(
             'message' => 'Données insérées avec succès',
