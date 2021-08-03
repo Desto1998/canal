@@ -49,9 +49,9 @@
               Adresse client<br><input class="form-control" type="text" placeholder="Adresse" name="adresse_client" required>
             </div>
             <div class="form-group">
-              Numero décodeur<br><input type="number" class="form-control" type="number" onblur="controlNumero1(this)" placeholder="Numero decodeur" name="num_decodeur" id="num_decodeur" required>
+              Numero décodeur<br><input type="number" size="14" class="form-control" type="number" onblur="controlNumero1(this)" placeholder="Numero decodeur" name="num_decodeur" id="num_decodeur1" required>
               <span class="text-danger hidden ereur-numero " style=""> Mauvaise saisie Longeur minimale 14</span>
-              @error('num_decodeur')
+              @error('num_decodeur1')
                 <div class="invalid-feedback">{{ $message }}</div>
               @enderror
             </div>
@@ -215,7 +215,7 @@
           <form role="form" method="post" action="{{route('store.decodeur')}}">
             @csrf
             <div class="form-group">
-              Numero décodeur<br><input type="number" class="form-control" placeholder="numero decodeur" onblur="controlNumero(this)" class="form-control  @error('num_decodeur') is-invalid @enderror" name="num_decodeur" id="num_decodeur"  required>
+              Numero décodeur<br><input type="number" size="14" class="form-control" placeholder="numero decodeur" onblur="controlNumero(this)" class="form-control  @error('num_decodeur') is-invalid @enderror" name="num_decodeur" id="num_decodeur"  required>
               <span class="text-danger hidden ereur-numero " style=""> Mauvaise saisie Longeur minimale 14</span>
               @error('num_decodeur')
                 <div class="invalid-feedback">{{ $message }}</div>

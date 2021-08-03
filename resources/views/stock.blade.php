@@ -98,9 +98,9 @@
       var long = $('#num_decodeur').val();
 
       if(long.length != 14){
-         $('.ereur-numero').removeClass('hidden');
+         $('.ereur-numero').addClass('hidden');
       }else{
-        $('.ereur-numero').addClass('hidden');
+        $('.ereur-numero').removeClass('hidden');
       }
 
     }

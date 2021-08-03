@@ -88,22 +88,27 @@ class ClientController extends Controller
         $data->prenom_client = $request->prenom_client;
         $data->num_abonne = $request->num_abonne;
         $data->adresse_client = $request->adresse_client;
-        if (!empty($deco)){
+        if (empty($deco)){
             session()->flash('message', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre.');
 
             return redirect()->back()->with('warning', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre!');
         }
-        foreach($clients as $cli){
-            if($cli->telephone_client != $request->telephone_client or $cli->telephone_client=null){
-                $data->telephone_client = $request->telephone_client;
-            }
-            else{
-//                echo"Client existant";
-                session()->flash('message', ' Le client existe déja!');
+        $data->telephone_client = $request->telephone_client;
+    //     if(empty($clients)){
+    //         $data->telephone_client = $request->telephone_client;
+    //     }else{
+    //         foreach($clients as $cli){
+    //             if($cli->telephone_client != $request->telephone_client){
+    //                 $data->telephone_client = $request->telephone_client;
+    //             }
+    //             else{
+    // //                echo"Client existant";
+    //                 session()->flash('message', ' Le client existe déja!');
 
-                return redirect()->back()->with('warning', 'Le client existe déja!');
-            }
-        }
+    //                 return redirect()->back()->with('warning', 'Le client existe déja!');
+    //             }
+    //         }
+    //     }
 
         foreach($deco as $dec){
                 $data->id_decodeur = $dec->id_decodeur;
@@ -115,12 +120,9 @@ class ClientController extends Controller
         $data->duree = $request->duree;
         $data->id_materiel = 1;
         $data->date_abonnement = $request->date_abonnement;
-<<<<<<< HEAD
-        $data->date_reabonnement = date_add($request->date_abonnement,date_interval_create_from_date_string("$request->duree months"));
-=======
-        $data->date_reabonnement = $request->date_abonnement;
+        $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
 //        "237679353205",
->>>>>>> f4019f15a41040d2a6d4d1715678a7dcf4d12451
+
 
         $client = $data->save();
         $message_con = "Erreur lors de l'envoi du message au client.";
@@ -144,19 +146,12 @@ class ClientController extends Controller
             $sendError = "Error: ". $e->getMessage();
         }
 
-<<<<<<< HEAD
-        //redirect('/PDFController/valeur/data');
-
-=======
         }
->>>>>>> f4019f15a41040d2a6d4d1715678a7dcf4d12451
-        $notification = array(
-            'message' => 'Données insérées avec succès',
-            'alert-type' =>'success'
-        );
-        if (!empty($client) && !empty($message_con)) {
+
+        if (!empty($client)) {
             session()->flash('message', 'Le client a bien été enregistré dans la base de données.');
-            return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. et'+$message_con);
+            $pdf = (new PDFController)->createPDF($data);
+            return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données.');
         }
 
         if (!empty($client)  and empty($message_con)) {

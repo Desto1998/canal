@@ -40,7 +40,7 @@ class PDFController extends Controller
         $this->fpdf->Ln(5);
 
         $this->fpdf->SetFont("Arial",'B',12);
-        $this->fpdf->Cell(32,5,'Nom et prenom:',0,0);
+        $this->fpdf->Cell(32,5,'{$data->nom_client}',0,0);
         $this->fpdf->SetFont("Times",'',12);
         $this->fpdf->Cell(70,5,'$data->nom_client $data->nom_client',0,0);
         $this->fpdf->Cell(189,5,'',0,1);
