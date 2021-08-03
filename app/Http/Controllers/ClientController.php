@@ -129,7 +129,7 @@ class ClientController extends Controller
             if ($envoi == 0) {
                 $message_con ="Un message a été envoyé au client";
             }else{
-                $message_con ="Un message a été envoyé au client "+$envoi;
+                $message_con = $envoi;
             }
 //            try {
 //                $basic  = new \Vonage\Client\Credentials\Basic("955fc9c6", "mAWAdKoZ6Emoe6QU");
@@ -161,7 +161,7 @@ class ClientController extends Controller
 
         if (!empty($client)  and empty($message_con)) {
             session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé'  );
-            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'+"\n Statut:"+$sendError);
+            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'+"\n Statut: "+ $message_con);
         } else {
             session()->flash('message', 'Erreur! Le client n\' pas été enrgistré!');
 
