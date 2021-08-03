@@ -11,6 +11,8 @@ use App\Models\User;
 use App\Models\Materiel;
 use App\Models\Decodeur;
 use Vonage\Client\Exception\Exception;
+use App\Http\Controllers\MessageController;
+
 //use Exception;
 
 class ClientController extends Controller
@@ -119,26 +121,33 @@ class ClientController extends Controller
 //        "237679353205",
 
         $client = $data->save();
-        $message_con = "Erreur lors de l'envoi du message au client.";
         $message_con ="";
-        if (!empty($client)){
-            try {
-                $basic  = new \Vonage\Client\Credentials\Basic("955fc9c6", "mAWAdKoZ6Emoe6QU");
-                $client = new \Vonage\Client($basic);
-                $response = $client->sms()->send(
-                    new \Vonage\SMS\Message\SMS(
-                        $request->telephone_client,
-                        'GETEL',
-                        'Merci de vous etre abonné chez nous!')
-                );
-                $message = $response->current();
 
-                if ($message->getStatus() == 0) {
-                    $message_con ="Un message a été envoyé au client";
-                }
-            } catch (Exception $e) {
-            $sendError = "Error: ". $e->getMessage();
-        }
+        if (!empty($client)){
+            $message = 'Merci de vous etre abonné chez nous!';
+            $envoi = (new MessageController)->sendMessage($message,$request->telephone_client );
+            if ($envoi == 0) {
+                $message_con ="Un message a été envoyé au client";
+            }else{
+                $message_con ="Un message a été envoyé au client "+$envoi;
+            }
+//            try {
+//                $basic  = new \Vonage\Client\Credentials\Basic("955fc9c6", "mAWAdKoZ6Emoe6QU");
+//                $client = new \Vonage\Client($basic);
+//                $response = $client->sms()->send(
+//                    new \Vonage\SMS\Message\SMS(
+//                        $request->telephone_client,
+//                        'GETEL',
+//                        'Merci de vous etre abonné chez nous!')
+//                );
+//                $message = $response->current();
+//
+//                if ($message->getStatus() == 0) {
+//                    $message_con ="Un message a été envoyé au client";
+//                }
+//            } catch (Exception $e) {
+//            $sendError = "Error: ". $e->getMessage();
+//        }
 
         }
         $notification = array(
