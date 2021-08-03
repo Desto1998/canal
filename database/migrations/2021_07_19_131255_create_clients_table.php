@@ -22,7 +22,7 @@ class CreateClientsTable extends Migration
             $table->string("adresse_client");
             $table->integer("telephone_client");
             $table->date("date_abonnement");
-            $table->date("duree");
+            $table->integer("duree");
             $table->date("date_reabonnement");
 
             $table->unsignedBigInteger('id_formule');
