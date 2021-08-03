@@ -90,7 +90,7 @@ class ClientController extends Controller
         $data->prenom_client = $request->prenom_client;
         $data->num_abonne = $request->num_abonne;
         $data->adresse_client = $request->adresse_client;
-        if (!empty($deco)){
+        if (empty($deco)){
             session()->flash('message', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre.');
 
             return redirect()->back()->with('warning', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre!');
@@ -117,15 +117,12 @@ class ClientController extends Controller
         $data->duree = $request->duree;
         $data->id_materiel = 1;
         $data->date_abonnement = $request->date_abonnement;
-<<<<<<< HEAD
         $data->date_reabonnement = date_add($request->date_abonnement,date_interval_create_from_date_string("$request->duree months"));
-=======
         $data->date_reabonnement = $request->date_abonnement;
-//        "237679353205",
->>>>>>> f4019f15a41040d2a6d4d1715678a7dcf4d12451
 
         $client = $data->save();
         $message_con ="";
+        $message_erreur ="";
 
         if (!empty($client)){
             $message = 'Merci de vous etre abonné chez nous!';
@@ -133,7 +130,7 @@ class ClientController extends Controller
             if ($envoi == 0) {
                 $message_con ="Un message a été envoyé au client";
             }else{
-                $message_con = $envoi;
+                $message_erreur =$envoi;
             }
 //            try {
 //                $basic  = new \Vonage\Client\Credentials\Basic("955fc9c6", "mAWAdKoZ6Emoe6QU");
@@ -153,12 +150,9 @@ class ClientController extends Controller
 //            $sendError = "Error: ". $e->getMessage();
 //        }
 
-<<<<<<< HEAD
         //redirect('/PDFController/valeur/data');
 
-=======
         }
->>>>>>> f4019f15a41040d2a6d4d1715678a7dcf4d12451
         $notification = array(
             'message' => 'Données insérées avec succès',
             'alert-type' =>'success'
@@ -168,9 +162,9 @@ class ClientController extends Controller
             return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. et'+$message_con);
         }
 
-        if (!empty($client)  and empty($message_con)) {
+        if (!empty($client)  and !empty($message_erreur)) {
             session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé'  );
-            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'+"\n Statut: "+ $message_con);
+            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'+"\n Statut: "+ $message_erreur);
         } else {
             session()->flash('message', 'Erreur! Le client n\' pas été enrgistré!');
 

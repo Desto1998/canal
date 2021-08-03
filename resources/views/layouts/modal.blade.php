@@ -27,7 +27,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form role="form" method="post" action="{{ route('store.client') }}">
+          <form role="form" id="abonneForm" method="post" action="{{ route('store.client') }}">
             @csrf
             <div class="form-group">
               Nom client<br><input class="form-control" type="text"  placeholder="Nom" name="nom_client" required>
@@ -36,8 +36,8 @@
               Prenom client<br><input class="form-control" type="text" placeholder="Prenom" name="prenom_client" required>
             </div>
             <div class="form-group">
-              Numero d'abonné<br><input type="number" class="form-control" type="text" onblur="controlNumero1(this)" placeholder="numero abonne" name="num_abonne" id="num_abonne" required>
-              <span class="text-danger hidden ereur-numero " style=""> Mauvaise saisie Longeur minimale 8</span>
+              Numero d'abonné<br><input type="number" class="form-control" maxlength="8" minlength="8" type="text" onblur="controlNumero1(this)" placeholder="numero abonne" name="num_abonne" id="num_abonne" required>
+              <span class="text-danger hidden ereur-numeroa " style=""> Mauvaise saisie Longeur minimale 8</span>
               @error('num_decodeur')
                 <div class="invalid-feedback">{{ $message }}</div>
               @enderror
@@ -49,8 +49,8 @@
               Adresse client<br><input class="form-control" type="text" placeholder="Adresse" name="adresse_client" required>
             </div>
             <div class="form-group">
-              Numero décodeur<br><input type="number" class="form-control" type="number" onblur="controlNumero1(this)" placeholder="Numero decodeur" name="num_decodeur" id="num_decodeur" required>
-              <span class="text-danger hidden ereur-numero " style=""> Mauvaise saisie Longeur minimale 14</span>
+              Numero décodeur<br><input type="number" class="form-control" maxlength="14" minlength="14" type="number" onblur="controlNumero(this)" placeholder="Numero decodeur" name="num_decodeur" id="num_decodeur" required>
+              <span class="text-danger hidden ereur-numerod " style=""> Mauvaise saisie Longeur minimale 14</span>
               @error('num_decodeur')
                 <div class="invalid-feedback">{{ $message }}</div>
               @enderror
@@ -212,11 +212,11 @@
           </button>
         </div>
         <div class="modal-body">
-          <form role="form" method="post" action="{{route('store.decodeur')}}">
+          <form role="form" id="decodeurForm" method="post" action="{{route('store.decodeur')}}">
             @csrf
             <div class="form-group">
-              Numero décodeur<br><input type="number" class="form-control" placeholder="numero decodeur" onblur="controlNumero(this)" class="form-control  @error('num_decodeur') is-invalid @enderror" name="num_decodeur" id="num_decodeur"  required>
-              <span class="text-danger hidden ereur-numero " style=""> Mauvaise saisie Longeur minimale 14</span>
+              Numero décodeur<br><input type="number" class="form-control"  maxlength="14" minlength="14" placeholder="numero decodeur" onblur="controlNumero(this)" class="form-control  @error('num_decodeur') is-invalid @enderror" name="num_decodeur" id="num_decodeur1"  required>
+              <span class="text-danger hidden ereur-numerodd " style=""> Mauvaise saisie Longeur minimale 14</span>
               @error('num_decodeur')
                 <div class="invalid-feedback">{{ $message }}</div>
               @enderror

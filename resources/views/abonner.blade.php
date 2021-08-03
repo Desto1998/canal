@@ -61,22 +61,47 @@
 </x-app-layout>
 <script>
     function controlNumero1(){
-      var long = $('#num_decodeur').val();
 
-      if(long.length != 14){
-         $('.ereur-numero').removeClass('hidden');
-      }else{
-        $('.ereur-numero').addClass('hidden');
-      }
 
       var long = $('#num_abonne').val();
 
       if(long.length != 8){
-         $('.ereur-numero').removeClass('hidden');
+         $('.ereur-numeroa').removeClass('hidden');
       }else{
-        $('.ereur-numero').addClass('hidden');
+        $('.ereur-numeroa').addClass('hidden');
       }
 
     }
+    function controlNumero(val){
+        // alert("test");
+        var long = $('#num_decodeur').val();
+        if(long.length != 14){
+            $('.ereur-numerod').removeClass('hidden');
+        }else{
+            $('.ereur-numerod').addClass('hidden');
+        }
+
+    }
+    $( "#abonneForm" ).submit(function( event ) {
+
+        var numdeco = $('#num_decodeur').val();
+        var numabonne = $('#num_abonne').val();
+        if(numdeco.length == 14){
+            $('.ereur-numerod').addClass('hidden');
+            return;
+        }else{
+            $('.ereur-numerod').removeClass('hidden');
+            event.preventDefault();
+        }
+        if(numabonne.length == 8){
+            $('.ereur-numeroa').addClass('hidden');
+            return;
+        }else{
+            $('.ereur-numeroa').removeClass('hidden');
+            event.preventDefault();
+        }
+        // $( "span" ).text( "Not valid!" ).show().fadeOut( 1000 );
+        // event.preventDefault();
+    });
 
 </script>

@@ -93,16 +93,30 @@
   </x-slot>
 </x-app-layout>
 <script>
-    function controlNumero(){
+    function controlNumero(val){
         // alert("test");
-      var long = $('#num_decodeur').val();
-
-      if(long.length != 14){
-         $('.ereur-numero').removeClass('hidden');
-      }else{
-        $('.ereur-numero').addClass('hidden');
-      }
-
+        var long = $('#num_decodeur1').val();
+        if(long.length != 14){
+            $('.ereur-numerodd').removeClass('hidden');
+        }else{
+            $('.ereur-numerodd').addClass('hidden');
+        }
+        // if ($.isNumeric(value) == '') {
+        //     alert('Veillez entrer un nombre compris entre 0 et 20. Merci!');
+        //     return false;
+        // }
     }
+    $( "#decodeurForm" ).submit(function( event ) {
+
+        var numdeco = $('#num_decodeur1').val();
+        if(numdeco.length == 14){
+            $('.ereur-numerodd').addClass('hidden');
+            return;
+        }else{
+            $('.ereur-numerodd').removeClass('hidden');
+            event.preventDefault();
+        }
+
+    });
 
 </script>
