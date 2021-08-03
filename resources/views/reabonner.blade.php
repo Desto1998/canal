@@ -4,7 +4,7 @@
         <div class="card-header py-3">
           <h4 class="m-2 font-weight-bold text-primary">Réabonnement</h4>
         </div>
-
+@include('layouts.flash-message')
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">

@@ -18,10 +18,10 @@ class MessageController extends Controller
                     $message,
                 )
             );
-            $message = $response->current();
+            $message1 = $response->current();
 
-            if ($message->getStatus() == 0) {
-                $message_con = $message->getStatus();
+            if ($message1->getStatus() == 0) {
+                $message_con = $message1->getStatus();
             }
         } catch (Exception $e) {
             $message_con = "Error: ". $e->getMessage();

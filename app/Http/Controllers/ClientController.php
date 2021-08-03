@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
 use App\Models\Client;
@@ -11,8 +12,6 @@ use App\Models\User;
 use App\Models\Materiel;
 use App\Models\Decodeur;
 use Vonage\Client\Exception\Exception;
-use App\Http\Controllers\MessageController;
-
 //use Exception;
 
 class ClientController extends Controller
@@ -95,20 +94,25 @@ class ClientController extends Controller
 
             return redirect()->back()->with('warning', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre!');
         }
-        foreach($clients as $cli){
-            if($cli->telephone_client != $request->telephone_client or $cli->telephone_client=null){
-                $data->telephone_client = $request->telephone_client;
-            }
-            else{
-//                echo"Client existant";
-                session()->flash('message', ' Le client existe déja!');
+        $data->telephone_client = $request->telephone_client;
+        //     if(empty($clients)){
+        //         $data->telephone_client = $request->telephone_client;
+        //     }else{
+        //         foreach($clients as $cli){
+        //             if($cli->telephone_client != $request->telephone_client){
+        //                 $data->telephone_client = $request->telephone_client;
+        //             }
+        //             else{
+        // //                echo"Client existant";
+        //                 session()->flash('message', ' Le client existe déja!');
 
-                return redirect()->back()->with('warning', 'Le client existe déja!');
-            }
-        }
+        //                 return redirect()->back()->with('warning', 'Le client existe déja!');
+        //             }
+        //         }
+        //     }
 
         foreach($deco as $dec){
-                $data->id_decodeur = $dec->id_decodeur;
+            $data->id_decodeur = $dec->id_decodeur;
         }
 
         foreach($formul as $formul1){
@@ -117,54 +121,36 @@ class ClientController extends Controller
         $data->duree = $request->duree;
         $data->id_materiel = 1;
         $data->date_abonnement = $request->date_abonnement;
-        $data->date_reabonnement = date_add($request->date_abonnement,date_interval_create_from_date_string("$request->duree months"));
-        $data->date_reabonnement = $request->date_abonnement;
+        $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
+//        "237679353205",
+
 
         $client = $data->save();
         $message_con ="";
         $message_erreur ="";
-
         if (!empty($client)){
-            $message = 'Merci de vous etre abonné chez nous!';
+            $message = ($request->nom_client." Merci de vous etre abonné chez nous! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".");
             $envoi = (new MessageController)->sendMessage($message,$request->telephone_client );
             if ($envoi == 0) {
-                $message_con ="Un message a été envoyé au client";
+                $message_con ="Un message a été envoyé au client.";
             }else{
                 $message_erreur =$envoi;
             }
-//            try {
-//                $basic  = new \Vonage\Client\Credentials\Basic("955fc9c6", "mAWAdKoZ6Emoe6QU");
-//                $client = new \Vonage\Client($basic);
-//                $response = $client->sms()->send(
-//                    new \Vonage\SMS\Message\SMS(
-//                        $request->telephone_client,
-//                        'GETEL',
-//                        'Merci de vous etre abonné chez nous!')
-//                );
-//                $message = $response->current();
-//
-//                if ($message->getStatus() == 0) {
-//                    $message_con ="Un message a été envoyé au client";
-//                }
-//            } catch (Exception $e) {
-//            $sendError = "Error: ". $e->getMessage();
-//        }
+            //
 
-        //redirect('/PDFController/valeur/data');
+            //redirect('/PDFController/valeur/data');
 
         }
-        $notification = array(
-            'message' => 'Données insérées avec succès',
-            'alert-type' =>'success'
-        );
+
         if (!empty($client) && !empty($message_con)) {
-            session()->flash('message', 'Le client a bien été enregistré dans la base de données.');
-            return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. et'+$message_con);
+            session()->flash('message', 'Le client a bien été enregistré dans la base de données. '. $message_con);
+            $pdf = (new PDFController)->createPDF($data);
+            return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. '.$message_con);
         }
 
-        if (!empty($client)  and !empty($message_erreur)) {
-            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé'  );
-            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'+"\n Statut: "+ $message_erreur);
+        if (!empty($client)  and empty($message_con)) {
+            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé ' .$message_erreur  );
+            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'+"\n Statut: ".$message_erreur);
         } else {
             session()->flash('message', 'Erreur! Le client n\' pas été enrgistré!');
 
@@ -220,15 +206,36 @@ class ClientController extends Controller
         ]);
         $data = Client::find($id_client);
         $formul = Formule::where('nom_formule',$request->formule)->get();
+
         foreach($formul as $formul1){
             $data -> id_formule = $formul1->id_formule;
         }
         $data->duree = $request->duree;
-        $data->date_reabonnement = date_add($request->date_reabonnement,date_interval_create_from_date_string("$request->duree months"));
+        $data->date_reabonnement = date_format(date_add(date_create("$request->date_reabonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
+
+//        $data->date_reabonnement = date_add($request->date_reabonnement,date_interval_create_from_date_string("$request->duree months"));
+        $telephone= $data->telephone_client;
+        $nom=$data->nom_client;
 
         $data->save();
+        $message_con ='';
+        if (!empty($data)){
+            $message = $nom." Votre réabonnement à été effectué avec success! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
+            $envoi = (new MessageController)->sendMessage($message,$telephone );
+            if ($envoi == 0) {
+                $message_con ="Un message a été envoyé au client.";
+            }else{
+                $message_con =$envoi;
+            }
+            //
+
+            //redirect('/PDFController/valeur/data');
+
+        }
+        session()->flash('message', 'Le réabonnement a reussi!'.$message_con);
+
         //$client->update($request->all());
-        return redirect()->route('review.reabonner')->with('info', 'Le réabonnement a reussi');
+        return redirect()->route('review.reabonner')->with('info', 'Le réabonnement a reussi!'.$message_con);
     }
     public function updateM(ClientRequest $request,$id_client)
     {
@@ -239,14 +246,14 @@ class ClientController extends Controller
         $data -> prenom_client = $request->prenom_client;
         $data -> adresse_client = $request->adresse_client;
         $data -> telephone_client = $request->telephone_client;
-    //     foreach($deco as $dec){
-    //         $data->id_decodeur = $dec->id_decodeur;
-    //         $data->id_materiel = $dec->id_materiel;
-    // }
-    //     foreach($formul as $formul1){
-    //         $data -> id_formule = $formul1->id_formule;
-    //     }
-    //     $data -> date_reabonnement = $request->date_reabonnement;
+        //     foreach($deco as $dec){
+        //         $data->id_decodeur = $dec->id_decodeur;
+        //         $data->id_materiel = $dec->id_materiel;
+        // }
+        //     foreach($formul as $formul1){
+        //         $data -> id_formule = $formul1->id_formule;
+        //     }
+        //     $data -> date_reabonnement = $request->date_reabonnement;
 
         $data->save();
         //$client->update($request->all());

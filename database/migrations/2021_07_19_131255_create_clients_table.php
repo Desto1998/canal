@@ -18,7 +18,7 @@ class CreateClientsTable extends Migration
             $table->id('id_client');
             $table->string("nom_client");
             $table->string("prenom_client");
-            $table->integer("num_abonne");
+            $table->bigInteger("num_abonne");
             $table->string("adresse_client");
             $table->integer("telephone_client");
             $table->date("date_abonnement");
