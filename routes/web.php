@@ -8,7 +8,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\MaterielController;
 use App\Http\Controllers\FormuleController;
 use App\Http\Controllers\PDFController;
-
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
