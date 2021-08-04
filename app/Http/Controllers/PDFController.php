@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Decodeur;
+use App\Models\Formule;
 use Illuminate\Http\Request;
 use Codedge\Fpdf\Fpdf\Fpdf;
 
@@ -40,36 +42,41 @@ class PDFController extends Controller
         $this->fpdf->Ln(5);
 
         $this->fpdf->SetFont("Arial",'B',12);
-        $this->fpdf->Cell(32,5,'{$data->nom_client}',0,0);
+        $this->fpdf->Cell(34,5,'Nom et prenom:',0,0);
         $this->fpdf->SetFont("Times",'',12);
-        $this->fpdf->Cell(70,5,'$data->nom_client $data->nom_client',0,0);
+        $this->fpdf->Cell(70,5,$data->nom_client." ".$data->prenom_client,0,0);
         $this->fpdf->Cell(189,5,'',0,1);
 
         $this->fpdf->SetFont("Arial",'B',12);
-        $this->fpdf->Cell(22,5,'Telephone:',0,0);
+        $this->fpdf->Cell(24,5,'Telephone:',0,0);
         $this->fpdf->SetFont("Times",'',12);
-        $this->fpdf->Cell(34,5,'[Num_telephone]',0,1);//Fin de ligne
+        $this->fpdf->Cell(34,5,$data->telephone_client,0,1);//Fin de ligne
         $this->fpdf->Cell(189,5,'',0,1);
 
         $this->fpdf->SetFont("Arial",'B',12);
         $this->fpdf->Cell(25,5,'N Abonne:',0,0);
         $this->fpdf->SetFont("Times",'',12);
-        $this->fpdf->Cell(105,5,'[98745632]',0,0);
+        $this->fpdf->Cell(105,5,$data->num_abonne,0,0);
         $this->fpdf->SetFont("Arial",'B',12);
         $this->fpdf->Cell(47,5,"Module d'activation:",0,0);
         $this->fpdf->SetFont("Times",'',12);
         $this->fpdf->Cell(47,5,'CGA',0,1);
 
 
-        $this->fpdf->SetFont("Arial",'B',12);
-        $this->fpdf->Cell(25,5,'N Decodeur:',0,0);
-        $this->fpdf->SetFont("Times",'',12);
-        $this->fpdf->Cell(46,5,'[98745632012345]',0,1);
+        $deco = Decodeur::where('id_decodeur',$data->id_decodeur)->get();
+        foreach ($deco as $dec) {
+            $this->fpdf->SetFont("Arial", 'B', 12);
+            $this->fpdf->Cell(25, 5, 'N Decodeur:', 0, 0);
+            $this->fpdf->SetFont("Times", '', 12);
+            $this->fpdf->Cell(160, 5, $dec->num_decodeur, 0, 1);
+        }
 
+        $formul = Formule::where('id_formule',$data->id_formule)->get();
+        foreach($formul as $fm){
         $this->fpdf->SetFont("Arial",'B',12);
         $this->fpdf->Cell(25,5,'Formule:',0,0);
         $this->fpdf->SetFont("Times",'',12);
-        $this->fpdf->Cell(34,5,'[formule]',0,1);//Fin de ligne
+        $this->fpdf->Cell(34,5,$fm->nom_formule,0,1);//Fin de ligne
         $this->fpdf->Cell(189,5,'',0,1);
 
         $this->fpdf->SetFont('Arial','B',12);
@@ -80,22 +87,23 @@ class PDFController extends Controller
 
         $this->fpdf->SetFont('Arial','',12);
 
-        $this->fpdf->Cell(130,5,'[Action]',1,0);
-        $this->fpdf->Cell(25,5,'1',1,0);
-        $this->fpdf->Cell(34,5,'10000',1,1);//Fin de ligne
+        $this->fpdf->Cell(130,5,'Abonnement',1,0);
+        $this->fpdf->Cell(25,5,$data->duree,1,0);
+        $this->fpdf->Cell(34,5,"{$data->duree} * {$fm->prix_formule}",1,1);//Fin de ligne
 
-        $this->fpdf->Cell(130,5,'[Action]',1,0);
-        $this->fpdf->Cell(25,5,'6',1,0);
-        $this->fpdf->Cell(34,5,'150000',1,1);//Fin de ligne
+        $this->fpdf->Cell(130,5,'Reabonnement',1,0);
+        $this->fpdf->Cell(25,5,$data->duree,1,0);
+        $this->fpdf->Cell(34,5,"{$data->duree} * {$fm->prix_formule}",1,1);//Fin de ligne
 
-        $this->fpdf->Cell(130,5,'[Action]',1,0);
-        $this->fpdf->Cell(25,5,'3',1,0);
-        $this->fpdf->Cell(34,5,'75500',1,1);//Fin de ligne
+        $this->fpdf->Cell(130,5,'Autres',1,0);
+        $this->fpdf->Cell(25,5,"",1,0);
+        $this->fpdf->Cell(34,5,"",1,1);//Fin de ligne
+
         //Total
-        $this->fpdf->Cell(130,5,'',1,0);
-        $this->fpdf->Cell(25,5,'Total',1,0);
-        $this->fpdf->Cell(34,5,'175500',1,1,'R');//Fin de ligne
-
+        $this->fpdf->Cell(130,5,'',0,0);
+        $this->fpdf->Cell(25,5,'Total',0,0);
+        $this->fpdf->Cell(34,5,$data->duree*$fm->prix_formule,1,1,'R');//Fin de ligne
+        }
         $this->fpdf->Cell(189,5,'',0,1);
 
         $this->fpdf->Cell(189,5,'Arrete le present recu a la somme de :',0,1);
@@ -110,7 +118,7 @@ class PDFController extends Controller
         $this->fpdf->Cell(189,5,'',0,1);
         $this->fpdf->Cell(189,5,'',0,1);
         $this->fpdf->Cell(140,5,'GETEL SARL',0,0);
-        $this->fpdf->Cell(47,5,"[Nom du client]",0,1);
+        $this->fpdf->Cell(47,5,$data->nom_client." ".$data->prenom_client,0,1);
         $this->fpdf->Cell(189,5,'',0,1);
         $this->fpdf->SetFont("Times",'',9);
         $this->fpdf->Cell(95,5,'Important : Notre service apres vente reste a votre disposition.',0,1);

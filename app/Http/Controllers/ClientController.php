@@ -24,7 +24,6 @@ class ClientController extends Controller
     {
         $allClients = Client::all();
         $allFormules = Formule::all();
-        $allClients = Client::paginate(5);
         return view('abonner',compact('allClients','allFormules'));
     }
 
@@ -32,7 +31,6 @@ class ClientController extends Controller
     {
         $allClients = Client::all();
         $allFormules = Formule::all();
-        $allClients = Client::paginate(5);
         return view('reabonner',compact('allClients','allFormules'));
     }
 
@@ -40,13 +38,11 @@ class ClientController extends Controller
     {
         $allClients = Client::all();
         $allFormules = Formule::all();
-        $allClients = Client::paginate(5);
         return view('clients',compact('allClients','allFormules'));
     }
 
     public function viewModif()
     {
-        $allClients = Client::paginate(5);
         return view('modifier',[
             'allClients' => Client::all(),
             'allFormules' => Formule::all(),
@@ -86,7 +82,6 @@ class ClientController extends Controller
         $data = new client;
         $data->nom_client = $request->nom_client;
         $data->prenom_client = $request->prenom_client;
-        $data->num_abonne = $request->num_abonne;
         $data->adresse_client = $request->adresse_client;
         if (empty($deco)){
             session()->flash('message', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre.');
@@ -94,24 +89,29 @@ class ClientController extends Controller
             return redirect()->back()->with('warning', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre!');
         }
         $data->telephone_client = $request->telephone_client;
-    //     if(empty($clients)){
-    //         $data->telephone_client = $request->telephone_client;
-    //     }else{
-    //         foreach($clients as $cli){
-    //             if($cli->telephone_client != $request->telephone_client){
-    //                 $data->telephone_client = $request->telephone_client;
-    //             }
-    //             else{
-    // //                echo"Client existant";
-    //                 session()->flash('message', ' Le client existe déja!');
+        foreach($clients as $cli){
+            if($cli->telephone_client == $request->telephone_client or $cli->num_abonne == $request->num_abonne){
+                session()->flash('message', ' Le client existe déja!');
 
-    //                 return redirect()->back()->with('warning', 'Le client existe déja!');
-    //             }
-    //         }
-    //     }
+                return redirect()->back()->with('warning', 'Le client existe déja!');
+            }
+            else{
+               $data->telephone_client = $request->telephone_client;
+               $data->num_abonne = $request->num_abonne;
+            }
+        }
+        foreach($clients as $cli){
+            foreach($deco as $dec){
+                if($dec->id_decodeur == $cli->id_decodeur){
+                session()->flash('message', ' Ce décodeur est déja utilisé par client!');
 
-        foreach($deco as $dec){
-                $data->id_decodeur = $dec->id_decodeur;
+                return redirect()->back()->with('warning', 'Ce décodeur est déja utilisé par client!');
+            }
+            else{
+               $data->id_decodeur = $dec->id_decodeur;
+            }
+        }
+
         }
 
         foreach($formul as $formul1){
@@ -216,21 +216,32 @@ class ClientController extends Controller
             $data -> id_formule = $formul1->id_formule;
         }
         $data->duree = $request->duree;
-        $data->date_reabonnement = date_add($request->date_reabonnement,date_interval_create_from_date_string("$request->duree months"));
+        $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
 
         $data->save();
-        //$client->update($request->all());
-        return redirect()->route('review.reabonner')->with('info', 'Le réabonnement a reussi');
+        session()->flash('message', 'Le réabonnement a reussi.');
+        $pdf = (new PDFController)->createPDF($data);
+        return  redirect()->route('review.reabonner')->with('info', 'Le réabonnement a reussi.');
     }
     public function updateM(ClientRequest $request,$id_client)
     {
         $data = Client::find($id_client);
+        $clts = Client::all();
         $deco = Decodeur::where('num_decodeur',$request->num_decodeur)->get();
         $formul = Formule::where('nom_formule',$request->formule)->get();
         $data -> nom_client = $request->nom_client;
         $data -> prenom_client = $request->prenom_client;
         $data -> adresse_client = $request->adresse_client;
-        $data -> telephone_client = $request->telephone_client;
+        foreach($clts as $cli){
+            if($cli->telephone_client == $request->telephone_client){
+                session()->flash('message', ' Le client existe déja!');
+
+                return redirect()->back()->with('warning', 'Le client existe déja!');
+            }
+            else{
+               $data->telephone_client = $request->telephone_client;
+            }
+        }
     //     foreach($deco as $dec){
     //         $data->id_decodeur = $dec->id_decodeur;
     //         $data->id_materiel = $dec->id_materiel;
@@ -241,8 +252,8 @@ class ClientController extends Controller
     //     $data -> date_reabonnement = $request->date_reabonnement;
 
         $data->save();
-        //$client->update($request->all());
-        return redirect()->route('modifier')->with('info', 'La modification a reussi');
+        session()->flash('message', 'La modification a reussi.');
+        return  redirect()->route('modifier')->with('info', 'La modification a reussi.');
     }
 
     /**

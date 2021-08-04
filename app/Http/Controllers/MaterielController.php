@@ -49,7 +49,7 @@ class MaterielController extends Controller
 
         $mat->save();
         session()->flash('message','Materiel ajouté avec succès.');
-        return Back();
+        return  redirect()->back()->with('info', 'Le materiel ajouté avec succès.');
     }
 
     public function storeDec(Request $request)
@@ -62,14 +62,25 @@ class MaterielController extends Controller
         $mat_dec = new Decodeur_Accessoire();
 
         $dec = new Decodeur();
-        $dec->num_decodeur = $request->num_decodeur;
+        $decs = Decodeur::all();
+
+        foreach($decs as $d){
+            if($d->num_decodeur == $request->num_decodeur){
+                session()->flash('message', ' Le décodeur existe déja!');
+
+                return redirect()->back()->with('warning', 'Le décodeur existe déja!');
+            }
+            else{
+                $dec->num_decodeur = $request->num_decodeur;
+            }
+        }
         $dec->prix_decodeur = $request->prix_decodeur;
         $dec->quantite =1;
         $dec->date_livaison = $request->date_livraison;
 
         $dec->save();
         session()->flash('message','Decodeur ajouté avec succès.');
-        return Back();
+        return  redirect()->back()->with('info', 'Le décodeur ajouté avec succès.');
     }
 
     /**

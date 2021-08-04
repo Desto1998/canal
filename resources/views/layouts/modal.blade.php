@@ -61,9 +61,9 @@
                             <option value="ACCESS +"> ACCESS + </option>
                             <option value="EVASION"> EVASION </option>
                             <option value="EVASION +"> EVASION + </option>
-                            <option value="EVASION"> Essentiel </option>
-                            <option value="EVASION +"> Essentiel + </option>
-                            <option value="EVASION +"> Tout canal </option>
+                            <option value="ESSENTIEL"> ESSENTIEL </option>
+                            <option value="ESSENTIEL +"> ESSENTIEL + </option>
+                            <option value="TOUT CANAL"> TOUT CANAL </option>
                         </select>
               Durée:  <select  name="duree" required>
                             <option value=1 selected> 1 mois </option>
