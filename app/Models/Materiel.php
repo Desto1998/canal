@@ -15,6 +15,7 @@ class Materiel extends Model
         'prix_materiel',
         'quantite',
         'date_livaison',
+        "id_user",
     ];
     public function client()
     {

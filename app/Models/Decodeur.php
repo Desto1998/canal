@@ -15,11 +15,12 @@ class Decodeur extends Model
         'quantite',
         'prix_decodeur',
         'date_livaison',
+        "id_user",
     ];
 
-    public function client()
+    public function clients()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsToMany(Client::class);
     }
     public function materiels()
     {

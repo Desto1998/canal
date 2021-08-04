@@ -17,6 +17,7 @@ class CreateFormulesTable extends Migration
             $table->id('id_formule');
             $table->string('nom_formule');
             $table->integer('prix_formule');
+            $table->integer("id_user");
             $table->timestamps();
 
         });

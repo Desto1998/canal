@@ -12,11 +12,12 @@ class Formule extends Model
     protected $fillable = [
         'nom_formule',
         'prix_formule',
+        "id_user",
     ];
 
-    public function client()
+    public function clients()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsToMany(Client::class);
     }
 
 }

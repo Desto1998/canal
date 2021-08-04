@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Decodeur_Accessoire extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        "id_user",
+    ];
 }
