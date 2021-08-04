@@ -24,15 +24,10 @@ class CreateClientsTable extends Migration
             $table->date("date_abonnement");
             $table->integer("duree");
             $table->date("date_reabonnement");
-
-            $table->unsignedBigInteger('id_formule');
-            $table->foreign('id_formule')->references('id_formule')->on('formules')->onDelete('restrict')->onUpdate('restrict');
+            $table->integer("id_user");
 
             $table->unsignedBigInteger('id_materiel');
             $table->foreign('id_materiel')->references('id_materiel')->on('materiels')->onDelete('restrict')->onUpdate('restrict');
-
-            $table->unsignedBigInteger('id_decodeur');
-            $table->foreign('id_decodeur')->references('id_decodeur')->on('decodeurs')->onDelete('restrict')->onUpdate('restrict');
 
             $table->timestamps();
 

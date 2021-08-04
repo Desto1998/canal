@@ -20,9 +20,8 @@ class Client extends Model
         'date_abonnement',
         'duree',
         'date_reabonnement',
-        'id_formule',
         'id_materiel',
-        'id_decodeur',
+        "id_user",
     ];
 
     public function materiels()
@@ -33,12 +32,12 @@ class Client extends Model
     {
         return $this->belongsToMany(Message::class);
     }
-    public function formule()
+    public function formules()
     {
-        return $this->hasOne(Formule::class);
+        return $this->belongsToMany(Formule::class);
     }
-    public function decodeur()
+    public function decodeurs()
     {
-        return $this->hasOne(Decodeur::class);
+        return $this->belongsToMany(Decodeur::class);
     }
 }

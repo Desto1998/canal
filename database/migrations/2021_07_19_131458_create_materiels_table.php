@@ -20,6 +20,7 @@ class CreateMaterielsTable extends Migration
             $table->integer('quantite');
             $table->integer('prix_materiel');
             $table->date('date_livaison');
+            $table->integer("id_user");
 
             $table->timestamps();
         });

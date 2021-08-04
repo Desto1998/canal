@@ -15,6 +15,7 @@ class CreateDecodeurAccessoiresTable extends Migration
     {
         Schema::create('decodeur__accessoires', function (Blueprint $table) {
             $table->id();
+            $table->integer("id_user");
             $table->timestamps();
 
             $table->unsignedBigInteger('id_decodeur');

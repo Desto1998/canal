@@ -19,6 +19,7 @@ class CreateDecodeursTable extends Migration
             $table->integer('quantite');
             $table->integer('prix_decodeur');
             $table->date('date_livaison');
+            $table->integer("id_user");
             $table->timestamps();
         });
     }

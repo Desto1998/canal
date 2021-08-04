@@ -29,6 +29,7 @@ class CreateClientMessagesTable extends Migration
                 ->on('clients')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+            $table->integer("id_user");
         });
     }
 
