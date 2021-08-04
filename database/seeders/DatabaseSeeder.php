@@ -72,12 +72,12 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('123456'),
         ]);
 
-        // DB::table('materiels')->insert([
-        //     'nom_materiel' => 'Télécommande',
-        //     'quantite' => 10,
-        //     'prix_materiel' => 2000,
-        //     'date_livraison' => now()->format('Y-m-d'),
-        // ]);
+        DB::table('materiels')->insert([
+            'nom_materiel' => 'Télécommande',
+            'quantite' => 10,
+            'prix_materiel' => 2000,
+            'date_livraison' => now(),
+        ]);
 
     }
 }
