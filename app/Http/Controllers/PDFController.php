@@ -21,11 +21,11 @@ class PDFController extends Controller
         //Header
         $this->fpdf->AddPage("L", ['189', '219']);
         $this->fpdf->SetFont("Arial",'B',12);
-        $this->fpdf->Image('canal\public\images\logo\jpg_logo.jpg',10,6,50);
+        $this->fpdf->Image("{{ asset('images/logo/jpg_logo.jpg) }}",10,6,50);
         $this->fpdf->Cell(60);
         $this->fpdf->Cell(50,15,'RECU DE CAISSE',0,0,'C');
         $this->fpdf->Cell(30);
-        $this->fpdf->Image('canal\public\images\logo\CANAL2.JPG',null,null,50);
+        $this->fpdf->Image("{{ asset('images/logo/CANAL2.jpg) }}",null,null,50);
 
         $this->fpdf->SetFont("Arial",'',8);
         $this->fpdf->Ln(5);

@@ -168,7 +168,7 @@ class ClientController extends Controller
                 if ($envoi == 0) {
                     $message_con ="Un message a été envoyé au client.";
                 }else{
-                    $message_erreur =$envoi;
+                    $sendError =$envoi;
                 }
 
         }
@@ -180,8 +180,8 @@ class ClientController extends Controller
         }
 
         if (!empty($client)  and empty($message_con)) {
-            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé'  );
-            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'+"\n Statut:"+$sendError);
+            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé '.$sendError  );
+            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'+"\n Statut:".$sendError);
         } else {
             session()->flash('message', 'Erreur! Le client n\' pas été enrgistré!');
 
@@ -228,8 +228,10 @@ class ClientController extends Controller
     public function up_client( $id_client)
     {
         $datas = Client::find($id_client);
+        $formule = Formule::where('id_formule',$datas->id_formule)->get();
+        $decodeur = Decodeur::where('id_decodeur',$datas->id_decodeur)->get();
         //dd($datas);
-        return view('upgrade',compact('datas'));
+        return view('upgrade',compact('datas','formule','decodeur'));
     }
 
     /**
@@ -297,8 +299,8 @@ class ClientController extends Controller
             $data -> id_formule = $formul1->id_formule;
         }
         $data->save();
-        session()->flash('message', 'La modification a reussi.');
-        return  redirect()->route('modifier')->with('info', 'La modification a reussi.');
+        session()->flash('message', "L'upgrade de la formule du client a reussi.");
+        return  redirect()->route('modifier')->with('info', "L'upgrade de la formule du client a reussi.");
     }
 
     /**

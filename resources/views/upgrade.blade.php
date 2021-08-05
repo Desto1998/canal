@@ -12,25 +12,25 @@
                       @csrf
 
                       <div class="form-group">
-                        Nom client<br><input class="form-control" placeholder="{{ $datas->nom_client }}" name="nom_client" required>
+                        Nom client<br><input class="form-control" placeholder="{{ $datas->nom_client }}" name="nom_client" disabled>
                       </div>
                       <div class="form-group">
-                        Prenom client<br><input class="form-control" placeholder="{{ $datas->prenom_client }}" name="prenom_client" required>
+                        Prenom client<br><input class="form-control" placeholder="{{ $datas->prenom_client }}" name="prenom_client" disabled>
                       </div>
                       <div class="form-group">
-                        N° téléphone client<br><input class="form-control" placeholder="{{ $datas->telephone_client }}" name="telephone_client" required>
+                        N° téléphone client<br><input class="form-control" placeholder="{{ $datas->telephone_client }}" name="telephone_client" disabled>
                       </div>
                       <div class="form-group">
-                        N° decodeur<br><input class="form-control" placeholder="{{ $datas->num_decodeur }}" name="num_decodeur" disabled>
+                        N° decodeur<br><input class="form-control" placeholder="{{ $decodeur->num_decodeur }}" name="num_decodeur" disabled>
                       </div>
                       <div class="form-group">
-                        Adresse client<br><input class="form-control" placeholder="{{ $datas->adresse_client }}" name="adresse_client" required>
+                        Adresse client<br><input class="form-control" placeholder="{{ $datas->adresse_client }}" name="adresse_client" disabled>
                       </div>
                       <div class="form-group">
-                        Formule précedent :<br><input class="form-control" placeholder="{{ $datas->id_formule }}" name="adresse_client" required>
+                        Formule précedent :<br><input class="form-control" placeholder="{{ $formule->nom_formule }}" name="adresse_client" disabled>
                       </div>
                       <div class="form-group">
-                        Formule nouvelle : <select  name="formule" disabled>
+                        Formule nouvelle : <select  name="formule" required>
                           <option value="ACCESS" selected> ACCESS </option>
                           <option value="ACCESS +"> ACCESS + </option>
                           <option value="EVASION"> EVASION </option>
