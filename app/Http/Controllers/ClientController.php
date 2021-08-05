@@ -163,27 +163,17 @@ class ClientController extends Controller
                 'duree'=>$data->duree,
                 'date_reabonnement'=>$date_reabonnement
             ]);
-            try {
-                $basic  = new \Vonage\Client\Credentials\Basic("955fc9c6", "mAWAdKoZ6Emoe6QU");
-                $client = new \Vonage\Client($basic);
-                $response = $client->sms()->send(
-                    new \Vonage\SMS\Message\SMS(
-                        $request->telephone_client,
-                        'GETEL',
-                        'Merci de vous etre abonné chez nous!')
-                );
-                $message = $response->current();
-
-                if ($message->getStatus() == 0) {
-                    $message_con ="Un message a été envoyé au client";
+                $message = ($request->nom_client." Merci de vous etre abonné chez nous! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".");
+                $envoi = (new MessageController)->sendMessage($message,$request->telephone_client );
+                if ($envoi == 0) {
+                    $message_con ="Un message a été envoyé au client.";
+                }else{
+                    $message_erreur =$envoi;
                 }
-            } catch (Exception $e) {
-            $sendError = "Error: ". $e->getMessage();
-        }
 
         }
 
-        if (!empty($client)) {
+        if (!empty($client) && $message_con!="") {
             session()->flash('message', 'Le client a bien été enregistré dans la base de données. '.$message_con);
             $pdf = (new PDFController)->createPDF($data);
             return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. '.$message_con);
@@ -222,7 +212,10 @@ class ClientController extends Controller
     {
         $datas = Client::find($id_client);
         //dd($datas);
-        return view('new_reabonner',compact('datas'));
+        $decos = Decodeur::join('client_decodeurs','client_decodeurs.id_decodeur','decodeurs.id_decodeur')
+            ->where('client_decodeurs.id_client',$id_client)
+            ->get();
+        return view('new_reabonner',compact('datas','decos'));
     }
 
     public function edit_client( $id_client)
@@ -258,19 +251,39 @@ class ClientController extends Controller
 
         $data->duree = $request->duree;
         $date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
+//        DD($request);exit();
+        $nom  =$request->nom_client;
         $userid= Auth::user()->id;
+        $telephone = $request->telephone_client;
         $reabonnement = Reabonnement::create(['id_decodeur'=>$request->id_decodeur,
             'id_client'=>$id_client,
             'id_formule'=>$id_formule,
             'id_user'=>$userid,
             'type_reabonement'=>$request->type,
             'duree'=>$request->duree,
-            'date_reabonnement'=>$date_reabonnement
+            'date_reabonnement'=>$date_reabonnement,
+            'id_decodeur'=>$request->id_decodeur
         ]);
+        $decodeur = ClientDecodeur::where('id_decodeur',$request->id_decodeur)
+                    ->where('id_client',$id_client)
+                    ->update([
+                            'date_reabonnement'=>$date_reabonnement,
 
+                        ]);
+        if ($reabonnement){
+            $message_con ='';
+                $message = $nom." Votre réabonnement à été effectué avec success! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
+                var_dump($message_con);
+                $envoi = (new MessageController)->sendMessage($message,$telephone );
+                if ($envoi == 0) {
+                    $message_con ="Un message a été envoyé au client.";
+                }else{
+                    $message_con ="Erreur d'envoie du message".$envoi;
+                }
+        }
 //        $data->save();
-        session()->flash('message', 'La modification a reussi.');
-        return  redirect()->route('modifier')->with('info', 'La modification a reussi.');
+        session()->flash('message', 'La modification a reussi. '.$message_con);
+        return  redirect()->route('modifier')->with('info', 'La modification a reussi.'.$message_con);
     }
 
     public function upgradeClient(Request $request,$id_client)
