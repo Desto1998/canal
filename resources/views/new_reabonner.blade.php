@@ -12,18 +12,25 @@
                       @csrf
 
                       <div class="form-group">
-                        Nom client<br><input class="form-control" placeholder="{{ $datas->nom_client }}" name="nom_client" disabled>
+                        Nom client<br><input class="form-control" placeholder="{{ $datas->nom_client }}"  disabled>
+                        <input class="form-control" type="hidden" value="{{ $datas->nom_client }}" name="nom_client" >
                       </div>
                       <div class="form-group">
                         Prenom client<br><input class="form-control" placeholder="{{ $datas->prenom_client }}" name="prenom_client" disabled>
                       </div>
                       <div class="form-group">
-                        N° téléphone client<br><input class="form-control" placeholder="{{ $datas->telephone_client }}" name="telephone_client" disabled>
+                        N° téléphone client<br><input class="form-control" placeholder="{{ $datas->telephone_client }}" disabled>
+                       <input class="form-control" type="hidden" value="{{ $datas->telephone_client }}" name="telephone_client" >
                       </div>
                       <div class="form-group">
                         Adresse client<br><input class="form-control" placeholder="{{ $datas->adresse_client }}" name="adresse_client" disabled>
                       </div>
                       <div class="form-group">
+                          Décodeurs: <select name="id_decodeur">
+                              @foreach($decos as $key => $val)
+                                  <option value="{{$val->id_decodeur}}">{{$val->num_decodeur}}</option>
+                                  @endforeach
+                          </select>
                         Formule: <select  name="formule" required>
                           <option value="ACCESS" selected> ACCESS </option>
                           <option value="ACCESS +"> ACCESS + </option>
@@ -43,6 +50,10 @@
                          </select>
                       </div>
                       <div class="form-group">
+                        <label><input type="radio" required name="type" value="1">&nbsp;Payé content</label>
+                        <label class="ml-4"><input required type="radio" value="0" name="type">&nbsp; A crédit</label>
+                      </div>
+                        <div class="form-group">
                         Date reabonnement<br><input class="form-control" placeholder="{{ $datas->data_reabonnement }}" value="Date de reabonnement" name="date_reabonnement" type="date" required>
                       </div>
                       <hr>
