@@ -50,7 +50,10 @@ Route::prefix('dashboard')->group(function()
     Route::post('updateR/{id_client}',[ClientController::class,'updateR'])->name('updateR.client');
 
     //Modifier
-    Route::get('modifier',[ClientController::class,'viewModif'])->name('modifier');
+    Route::get('upgrader',[ClientController::class,'viewModif'])->name('upgrader');
+    Route::get('upgrade_client/{id_client}',[ClientController::class,'up_client'])->name('up.client');
+    Route::post('upgradeClient/{id_client}',[ClientController::class,'upgradeClient'])->name('upgrade.client');
+
     Route::get('modif_client/{id_client}',[ClientController::class,'edit_client'])->name('edit.client');
     Route::post('updateM/{id_client}',[ClientController::class,'updateM'])->name('updateM.client');
 

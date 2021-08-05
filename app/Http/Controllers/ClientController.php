@@ -43,13 +43,13 @@ class ClientController extends Controller
 
     public function viewModif()
     {
-        return view('modifier',[
+        return view('upgrader',[
             'allClients' => Client::all(),
-            'allFormules' => Formule::all(),
-            'allMateriels' => Materiel::all(),
-            'allDecodeurs' => Decodeur::all(),
-            'allUsers' => User::all(),
-            'allMessages' => Message::all(),
+            // 'allFormules' => Formule::all(),
+            // 'allMateriels' => Materiel::all(),
+            // 'allDecodeurs' => Decodeur::all(),
+            // 'allUsers' => User::all(),
+            // 'allMessages' => Message::all(),
         ]);
     }
 
@@ -198,6 +198,13 @@ class ClientController extends Controller
         return view('modif_client',compact('datas'));
     }
 
+    public function up_client( $id_client)
+    {
+        $datas = Client::find($id_client);
+        //dd($datas);
+        return view('upgrade',compact('datas'));
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -219,6 +226,21 @@ class ClientController extends Controller
         $data->duree = $request->duree;
         $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
 
+        $data->save();
+        session()->flash('message', 'La modification a reussi.');
+        return  redirect()->route('modifier')->with('info', 'La modification a reussi.');
+    }
+
+    public function upgradeClient(Request $request,$id_client)
+    {
+        $request->validate([
+            'formule'=>'required',
+        ]);
+        $data = Client::find($id_client);
+        $formul = Formule::where('nom_formule',$request->formule)->get();
+        foreach($formul as $formul1){
+            $data -> id_formule = $formul1->id_formule;
+        }
         $data->save();
         session()->flash('message', 'La modification a reussi.');
         return  redirect()->route('modifier')->with('info', 'La modification a reussi.');

@@ -4,7 +4,7 @@
           <div class="card shadow mb-4 col-xs-12 col-md-8 border-bottom-primary">
               <div class="card-header py-3">
                   <h4 class="m-2 font-weight-bold text-primary">Modifier client</h4>
-              </div><a  type="button" class="btn btn-primary bg-gradient-primary btn-block" href="{{route('modifier')}}"> <i class="fas fa-flip-horizontal fa-fw fa-share"></i> Retour </a>
+              </div><a  type="button" class="btn btn-primary bg-gradient-primary btn-block" href="{{route('clients')}}"> <i class="fas fa-flip-horizontal fa-fw fa-share"></i> Retour </a>
               <div class="card-body">
 
 

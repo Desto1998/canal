@@ -151,9 +151,9 @@
       </li>
 
       <li class="nav-item">
-        <a class="nav-link {{ ($route=='modifier')?'active':'' }}" href="{{ route('modifier') }}">
+        <a class="nav-link {{ ($route=='upgrader')?'active':'' }}" href="{{ route('upgrader') }}">
           <i class="fas fa-fw fa-edit"></i>
-          <span>Upgrate</span></a>
+          <span>Upgrader un client</span></a>
       </li>
 
       <li class="nav-item">
