@@ -141,19 +141,19 @@
       <li class="nav-item">
         <a class="nav-link {{ ($route=='view.abonner')?'active':'' }}" href="{{ route('view.abonner') }}">
           <i class="fas fa-fw fa-user-friends"></i>
-          <span>Abonner</span></a>
+          <span>Abonnement</span></a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link {{ ($route=='reabonner')?'active':'' }}" href="{{ route('review.reabonner') }}">
           <i class="fas fa-fw fa-redo"></i>
-          <span>Reabonner</span></a>
+          <span>Reabonnement</span></a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link {{ ($route=='modifier')?'active':'' }}" href="{{ route('modifier') }}">
           <i class="fas fa-fw fa-edit"></i>
-          <span>Modifier</span></a>
+          <span>Upgrate</span></a>
       </li>
 
       <li class="nav-item">

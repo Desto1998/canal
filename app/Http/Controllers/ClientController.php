@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ClientRequest;
 use App\Models\Client;
 use App\Models\Formule;
 use App\Models\Message;
 use App\Models\User;
 use App\Models\Materiel;
 use App\Models\Decodeur;
+use Illuminate\Support\Facades\Auth;
 use Vonage\Client\Exception\Exception;
 //use Exception;
 
@@ -121,6 +121,7 @@ class ClientController extends Controller
         $data->id_materiel = 1;
         $data->date_abonnement = $request->date_abonnement;
         $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
+        $data->id_user = Auth::id();
 //        "237679353205",
 
 
@@ -217,39 +218,6 @@ class ClientController extends Controller
         }
         $data->duree = $request->duree;
         $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
-
-        $data->save();
-        session()->flash('message', 'Le réabonnement a reussi.');
-        $pdf = (new PDFController)->createPDF($data);
-        return  redirect()->route('review.reabonner')->with('info', 'Le réabonnement a reussi.');
-    }
-    public function updateM(ClientRequest $request,$id_client)
-    {
-        $data = Client::find($id_client);
-        $clts = Client::all();
-        $deco = Decodeur::where('num_decodeur',$request->num_decodeur)->get();
-        $formul = Formule::where('nom_formule',$request->formule)->get();
-        $data -> nom_client = $request->nom_client;
-        $data -> prenom_client = $request->prenom_client;
-        $data -> adresse_client = $request->adresse_client;
-        foreach($clts as $cli){
-            if($cli->telephone_client == $request->telephone_client){
-                session()->flash('message', ' Le client existe déja!');
-
-                return redirect()->back()->with('warning', 'Le client existe déja!');
-            }
-            else{
-               $data->telephone_client = $request->telephone_client;
-            }
-        }
-    //     foreach($deco as $dec){
-    //         $data->id_decodeur = $dec->id_decodeur;
-    //         $data->id_materiel = $dec->id_materiel;
-    // }
-    //     foreach($formul as $formul1){
-    //         $data -> id_formule = $formul1->id_formule;
-    //     }
-    //     $data -> date_reabonnement = $request->date_reabonnement;
 
         $data->save();
         session()->flash('message', 'La modification a reussi.');
