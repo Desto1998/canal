@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Decodeur;
 use App\Models\Materiel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\DecodeurRequest;
 use App\Models\Decodeur_Accessoire;
@@ -63,17 +64,21 @@ class MaterielController extends Controller
 
         $dec = new Decodeur();
         $decs = Decodeur::all();
-
+//        $dec->num_decodeur = $request->num_decodeur;
+//DD($request);exit();
         foreach($decs as $d){
             if($d->num_decodeur == $request->num_decodeur){
                 session()->flash('message', ' Le décodeur existe déja!');
 
                 return redirect()->back()->with('warning', 'Le décodeur existe déja!');
             }
-            else{
-                $dec->num_decodeur = $request->num_decodeur;
-            }
+//            else{
+//
+//
+//            }
         }
+        $dec->num_decodeur = $request->num_decodeur;
+        $dec->id_user= Auth::user()->id;
         $dec->prix_decodeur = $request->prix_decodeur;
         $dec->quantite =1;
         $dec->date_livaison = $request->date_livraison;

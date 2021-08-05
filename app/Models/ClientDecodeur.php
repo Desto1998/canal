@@ -9,7 +9,10 @@ class ClientDecodeur extends Model
 {
     use HasFactory;
     protected $fillable = [
-        "id_user",
+        "id_user",'id_decodeur','id_client',
+        'id_formule',
+        'type_reabonnement',
+        'date_reabonnement'
     ];
 
 }

@@ -16,37 +16,6 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
-        DB::table('formules')->insert([
-            [
-            'nom_formule' => 'EVASION',
-            'prix_formule' => '13000'
-            ],
-            [
-            'nom_formule' => 'ACCESS',
-            'prix_formule' => '5000'
-            ],
-            [
-            'nom_formule' => 'EVASION +',
-            'prix_formule' => '25000'
-            ],
-            [
-            'nom_formule' => 'ACCESS +',
-            'prix_formule' => '45000'
-            ],
-            [
-            'nom_formule' => 'ESSENTIEL',
-            'prix_formule' => '35000'
-            ],
-            [
-            'nom_formule' => 'ESSENTIEL +',
-            'prix_formule' => '50000'
-            ],
-            [
-            'nom_formule' => 'TOUT CANAL',
-            'prix_formule' => '65000'
-            ],
-            ]);
-            $nbrFormule = 7;
         DB::table('users')->insert([
             'name' => 'admin',
             'is_active' => 1,
@@ -76,8 +45,48 @@ class DatabaseSeeder extends Seeder
             'nom_materiel' => 'Télécommande',
             'quantite' => 10,
             'prix_materiel' => 2000,
-            'date_livraison' => now(),
+            'date_livaison' => now(),
+            'id_user'=> 1,
         ]);
+        DB::table('formules')->insert([
+            [
+            'nom_formule' => 'EVASION',
+            'prix_formule' => '13000',
+                'id_user'=> 1,
+            ],
+            [
+            'nom_formule' => 'ACCESS',
+            'prix_formule' => '5000',
+                'id_user'=> 1,
+            ],
+            [
+            'nom_formule' => 'EVASION +',
+            'prix_formule' => '25000',
+                'id_user'=> 1,
+            ],
+            [
+            'nom_formule' => 'ACCESS +',
+            'prix_formule' => '45000',
+                'id_user'=> 1,
+            ],
+            [
+            'nom_formule' => 'ESSENTIEL',
+            'prix_formule' => '35000',
+                'id_user'=> 1,
+            ],
+            [
+            'nom_formule' => 'ESSENTIEL +',
+            'prix_formule' => '50000',
+                'id_user'=> 1,
+            ],
+            [
+            'nom_formule' => 'TOUT CANAL',
+            'prix_formule' => '65000',
+                'id_user'=> 1,
+            ],
+            ]);
+            $nbrFormule = 7;
+
 
     }
 }

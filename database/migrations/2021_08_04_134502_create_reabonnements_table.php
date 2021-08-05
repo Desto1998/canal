@@ -21,6 +21,7 @@ class CreateReabonnementsTable extends Migration
             $table->integer('type_reabonement');
             $table->date('date_reabonnement');
             $table->integer("id_user");
+            $table->integer("duree");
             $table->timestamps();
         });
     }
