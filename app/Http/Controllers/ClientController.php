@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\Formule;
 use App\Models\Message;
+use App\Models\ClientDecodeur;
+use App\Models\Reabonnement;
 use App\Models\User;
 use App\Models\Materiel;
 use App\Models\Decodeur;
@@ -79,16 +81,20 @@ class ClientController extends Controller
         $clients = Client::all();
         $formul = Formule::where('nom_formule',$request->formule)->get();
         $deco = Decodeur::where('num_decodeur',$request->num_decodeur)->get();
+        $clientdeco = ClientDecodeur::where('id_decodeur',$request->num_decodeur)->get();
         $data = new client;
-        $data->nom_client = $request->nom_client;
-        $data->prenom_client = $request->prenom_client;
-        $data->adresse_client = $request->adresse_client;
+
+//        Auth::user()->role==='admin';
+        $userid= Auth::user()->id;
+
+
         if (empty($deco)){
             session()->flash('message', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre.');
 
             return redirect()->back()->with('warning', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre!');
         }
         $data->telephone_client = $request->telephone_client;
+
         foreach($clients as $cli){
             if($cli->telephone_client == $request->telephone_client or $cli->num_abonne == $request->num_abonne){
                 session()->flash('message', ' Le client existe déja!');
@@ -100,35 +106,63 @@ class ClientController extends Controller
                $data->num_abonne = $request->num_abonne;
             }
         }
-        foreach($clients as $cli){
-            foreach($deco as $dec){
-                if($dec->id_decodeur == $cli->id_decodeur){
+
+                if(!empty($clientdeco[0])){
                 session()->flash('message', ' Ce décodeur est déja utilisé par client!');
 
                 return redirect()->back()->with('warning', 'Ce décodeur est déja utilisé par client!');
             }
-            else{
-               $data->id_decodeur = $dec->id_decodeur;
-            }
-        }
 
-        }
-
+//        $data->id_decodeur = $deco[0]->id_decodeur;
         foreach($formul as $formul1){
-            $data->id_formule = $formul1->id_formule;
+            $id_formule = $formul1->id_formule;
         }
+        $data->nom_client = $request->nom_client;
+        $data->num_abonne = $request->num_abonne;
+        $data->prenom_client = $request->prenom_client;
+        $data->adresse_client = $request->adresse_client;
+
         $data->duree = $request->duree;
-        $data->id_materiel = 1;
+        $data->id_materiel = $deco[0]->id_decodeur;
         $data->date_abonnement = $request->date_abonnement;
         $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
-        $data->id_user = Auth::id();
+        $date_reabonnement=$data->date_reabonnement;
+        $data->id_user = $userid;
 //        "237679353205",
 
 
-        $client = $data->save();
-        $message_con = "Erreur lors de l'envoi du message au client.";
+        $client = Client::create([
+            'nom_client'=>$data->nom_client,
+            'num_abonne'=>$data->num_abonne,
+            'prenom_client' =>$data->prenom_client,
+            'adresse_client'=>$data->adresse_client,
+            'duree' => $data->duree,
+            'id_materiel' => $deco[0]->id_decodeur,
+            'date_abonnement'=> $data->date_abonnement,
+            'date_reabonnement'=>$data->date_reabonnement,
+            'id_user'=>$data->id_user,
+            'telephone_client'=>$data->telephone_client
+        ]);
         $message_con ="";
+//        DD($client->id_client);exit();
+
+
+
         if (!empty($client)){
+            $CD = ClientDecodeur::create(['id_decodeur'=>$deco[0]->id_decodeur,
+                'id_client'=>$client->id_client,
+                'id_user'=>$userid,
+                'date_reabonnement'=>$date_reabonnement,
+            ]);
+
+            $reabonnement = Reabonnement::create(['id_decodeur'=>$deco[0]->id_decodeur,
+                'id_client'=>$client->id_client,
+                'id_formule'=>$id_formule,
+                'id_user'=>$userid,
+                'type_reabonement'=>1,
+                'duree'=>$data->duree,
+                'date_reabonnement'=>$date_reabonnement
+            ]);
             try {
                 $basic  = new \Vonage\Client\Credentials\Basic("955fc9c6", "mAWAdKoZ6Emoe6QU");
                 $client = new \Vonage\Client($basic);
@@ -150,9 +184,9 @@ class ClientController extends Controller
         }
 
         if (!empty($client)) {
-            session()->flash('message', 'Le client a bien été enregistré dans la base de données.');
+            session()->flash('message', 'Le client a bien été enregistré dans la base de données. '.$message_con);
             $pdf = (new PDFController)->createPDF($data);
-            return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données.');
+            return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. '.$message_con);
         }
 
         if (!empty($client)  and empty($message_con)) {
@@ -213,13 +247,21 @@ class ClientController extends Controller
         ]);
         $data = Client::find($id_client);
         $formul = Formule::where('nom_formule',$request->formule)->get();
-        foreach($formul as $formul1){
-            $data -> id_formule = $formul1->id_formule;
-        }
-        $data->duree = $request->duree;
-        $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
+            $id_formule = $formul[0]->id_formule;
 
-        $data->save();
+        $data->duree = $request->duree;
+        $date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
+        $userid= Auth::user()->id;
+        $reabonnement = Reabonnement::create(['id_decodeur'=>$request->id_decodeur,
+            'id_client'=>$id_client,
+            'id_formule'=>$id_formule,
+            'id_user'=>$userid,
+            'type_reabonement'=>$request->type,
+            'duree'=>$request->duree,
+            'date_reabonnement'=>$date_reabonnement
+        ]);
+
+//        $data->save();
         session()->flash('message', 'La modification a reussi.');
         return  redirect()->route('modifier')->with('info', 'La modification a reussi.');
     }

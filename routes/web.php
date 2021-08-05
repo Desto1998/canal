@@ -28,16 +28,19 @@ Route::get('compte/blocke', function () {
     return view('layouts.compte-block');
 })->name('compte/blocke');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+Route::middleware(['auth:sanctum', 'verified'])->get('/', function () {
     return view('dashboard');
 })->name('dashboard');
 
 Route::prefix('dashboard')->group(function()
 {
     //PDF
+//    Route::view('/', 'dashboard');
     Route::group(['middleware' => 'auth'], function () {
         Route::get('pdf', [PDFController::class, 'createPDF']);
-
+//        Route::get('/', function () {
+//            return view('dashboard');
+//        });
         //Abonnement
         Route::get('abonner_add', [ClientController::class, 'add'])->name('add.client');
         Route::post('store', [ClientController::class, 'store'])->name('store.client');

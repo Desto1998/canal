@@ -42,22 +42,30 @@ class DailyMessage extends Command
     //            DB::table('recent_users')->delete();
     public function handle()
     {
-        $envoi = (new MessageController)->sendMessage('DESTO TEST','237679353205' );
+        $envoi = -1;
+//        $envoi = (new MessageController)->sendMessage('DESTO TEST','237679353205' );
         $data = DB::table('clients')->get();
+//        DD($data);
 
         if (!empty($data)){
             foreach ($data as $key => $value){
+                $now = time(); // or your date as well
+                $now = strtotime(date('Y-m-d'));
+                $your_date = strtotime($value->date_reabonnement);
+//                $your_date = strtotime("2021-08-07");
+                $datediff =   $your_date-$now;
 
-                $envoi = (new MessageController)->sendMessage('Venez vous reabonner1',$value->telephone_client );
-                DD($value->telephone_client);
+                $maxjour = round($datediff / (60 * 60 * 24));
+                if ($maxjour==3){
+                    $envoi = (new MessageController)->sendMessage('Venez vous reabonner maintenant',$value->telephone_client );
+                }
             }
             if ($envoi==0){
-                DD("DESTO evoyé");
+                $this->info( "Message envoyé");
             }else{
-                DD("Pas envoyé");
+                $this->error( "Message Pas envoyé");
             }
         }
-        DD("DESTO");
-        $this->info('Message sent.');
+
     }
 }
