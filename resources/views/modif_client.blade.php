@@ -32,9 +32,9 @@
                         <option value="ACCESS +"> ACCESS + </option>
                         <option value="EVASION"> EVASION </option>
                         <option value="EVASION +"> EVASION + </option>
-                        <option value="EVASION"> Essentiel </option>
-                        <option value="EVASION +"> Essentiel + </option>
-                        <option value="EVASION +"> Tout canal </option>
+                        <option value="PRESTIGE"> PRESTIGE </option>
+                        <option value="ESSENTIEL +"> ESSENTIEL + </option>
+                        <option value="TOUT CANAL"> TOUT CANAL </option>
                        </select>
                     </div>
                     <div class="form-group">

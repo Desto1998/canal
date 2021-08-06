@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
         DB::table('formules')->insert([
             [
             'nom_formule' => 'EVASION',
-            'prix_formule' => '13000',
+            'prix_formule' => '10000',
                 'id_user'=> 1,
             ],
             [
@@ -61,27 +61,27 @@ class DatabaseSeeder extends Seeder
             ],
             [
             'nom_formule' => 'EVASION +',
-            'prix_formule' => '25000',
+            'prix_formule' => '22500',
                 'id_user'=> 1,
             ],
             [
             'nom_formule' => 'ACCESS +',
-            'prix_formule' => '45000',
+            'prix_formule' => '17000',
                 'id_user'=> 1,
             ],
             [
-            'nom_formule' => 'ESSENTIEL',
-            'prix_formule' => '35000',
+            'nom_formule' => 'PRESTIGE',
+            'prix_formule' => '34000',
                 'id_user'=> 1,
             ],
             [
             'nom_formule' => 'ESSENTIEL +',
-            'prix_formule' => '50000',
+            'prix_formule' => '34000',
                 'id_user'=> 1,
             ],
             [
             'nom_formule' => 'TOUT CANAL',
-            'prix_formule' => '65000',
+            'prix_formule' => '45000',
                 'id_user'=> 1,
             ],
             ]);
