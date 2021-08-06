@@ -17,6 +17,7 @@ class CreateCaissesTable extends Migration
             $table->id('id_caisse');
             $table->integer('montant');
             $table->integer('id_user');
+            $table->date('date_ajout');
             $table->timestamps();
         });
     }

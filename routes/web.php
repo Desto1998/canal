@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CaisseController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -95,6 +96,12 @@ Route::prefix('dashboard')->group(function()
             Route::get('compte/getUser/{id}', [UserController::class, 'edit_users'])->name('user.editForm');
             Route::post('compte/update', [UserController::class, 'update'])->name('user.update');
             Route::post('compte/delete', [UserController::class, 'delete'])->name('user.delete');
+
+            Route::get('caisse', [CaisseController::class, 'index'])->name('caisse');
+            Route::post('caisse/ajouter', [CaisseController::class, 'store'])->name('caisse.ajouter');
+            Route::get('caisse/get/{id}', [CaisseController::class, 'get'])->name('caisse.get');
+            Route::post('caisse/update', [CaisseController::class, 'update'])->name('caisse.update');
+            Route::get('caisse/delete/{id}', [CaisseController::class, 'delete'])->name('caisse.delete');
 
     });
 

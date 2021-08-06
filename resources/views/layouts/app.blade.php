@@ -181,6 +181,13 @@
       </li>
         @if(Auth::user()->is_admin==1)
             <li class="nav-item">
+                <a class="nav-link {{ ($route=='caisse')?'active':'' }}" href="{{ route('caisse') }}">
+                    <i class="far fa-money-bill-alt"></i>
+                    <span>Caisse</span></a>
+            </li>
+        @endif
+        @if(Auth::user()->is_admin==1)
+            <li class="nav-item">
                 <a class="nav-link {{ ($route=='compte')?'active':'' }}" href="{{ route('compte') }}">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Comptes</span></a>

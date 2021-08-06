@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Caisse;
+use App\Models\Formule;
 use Illuminate\Http\Request;
 use Vonage\Client\Exception\Exception;
-
 class MessageController extends Controller
 {
     public function sendMessage($message, $numero){
@@ -28,4 +29,21 @@ class MessageController extends Controller
         }
         return $message_con;
     }
+    public function totalCaisse(){
+        $totat = Caisse::sum("montant");
+        return $totat;
+    }
+    public function dejaConsomme(){
+        $reste= Formule::join('reabonnements','formules.id_formule','reabonnements.id_formule')
+//            ->where('formules.id_formule','reabonnements.id_formule')
+            ->sum('formules.prix_formule');
+        return $reste;
+
+    }
+    public function resteCaisse(){
+        $diference = $this->totalCaisse() - $this->dejaConsomme();
+        return $diference;
+
+    }
+
 }

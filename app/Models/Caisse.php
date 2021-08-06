@@ -11,6 +11,6 @@ class Caisse extends Model
 
     protected $fillable = [
         'montant',
-        "id_user",
+        "id_user","date_ajout"
     ];
 }
