@@ -8,7 +8,7 @@
 
         <div class="card-body">
           <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <table class="table table-bordered" id="dataTable_1" width="100%" cellspacing="0">
               <thead>
                   <tr>
                     <th>#</th>
@@ -40,6 +40,11 @@
                           <li>
                             <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="{{route('edit.client',$client->id_client)}}">
                               <i class="fas fa-fw fa-edit"></i> Modifier
+                            </a>
+                          </li>
+                          <li>
+                            <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="{{route('add.client',$client->id_client)}}" data-toggle="modal"  data-target="#materielClientModal1">
+                              <i class="fas fa-fw fa-edit"></i> Ajouter un décodeur
                             </a>
                           </li>
                       </ul>
