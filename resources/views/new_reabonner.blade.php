@@ -6,6 +6,7 @@
                     <h4 class="m-2 font-weight-bold text-primary">Réabonner client</h4>
                 </div><a  type="button" class="btn btn-primary bg-gradient-primary btn-block" href="{{route('review.reabonner')}}"> <i class="fas fa-flip-horizontal fa-fw fa-share"></i> Retour </a>
                 <div class="card-body">
+                    @include('layouts/flash-message')
 
 
                     <form role="form" method="post" action="{{route('updateR.client',$datas->id_client)}}">

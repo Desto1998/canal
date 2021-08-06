@@ -30,7 +30,6 @@ class CaisseController extends Controller
         $totalcaisse = (new MessageController)->totalCaisse();
         $restecaisse = (new MessageController)->resteCaisse();
         $dejeconsomme = (new MessageController)->dejaConsomme();
-        $totalcaisse = (new MessageController)->totalCaisse();
 
         $Caisse = Caisse::join('users','users.id','caisses.id_user')
 //            ->where('client_decodeurs.id_client',$id_client)
