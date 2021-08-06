@@ -88,7 +88,7 @@ class ClientController extends Controller
         $userid= Auth::user()->id;
 
 
-        if (empty($deco)){
+        if (empty($deco[0])){
             session()->flash('message', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre.');
 
             return redirect()->back()->with('warning', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre!');
