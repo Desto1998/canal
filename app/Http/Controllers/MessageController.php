@@ -36,7 +36,9 @@ class MessageController extends Controller
     public function dejaConsomme(){
         $reste= Formule::join('reabonnements','formules.id_formule','reabonnements.id_formule')
 //            ->where('formules.id_formule','reabonnements.id_formule')
-            ->sum('formules.prix_formule');
+//            ->sum('formules.prix_formule'* 'formules.duree');
+            ->sum(\DB::raw('formules.prix_formule * reabonnements.duree'));
+//        \DB::raw('logins_sun + logins_mon')
         return $reste;
 
     }
