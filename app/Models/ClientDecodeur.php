@@ -13,8 +13,8 @@ class ClientDecodeur extends Model
         'id_decodeur',
         'id_client',
         'id_formule',
-        'type_reabonnement',
-        'date_reabonnement'
+        'date_reabonnement',
+        'date_abonnement',
     ];
 
 }

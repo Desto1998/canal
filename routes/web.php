@@ -103,6 +103,12 @@ Route::prefix('dashboard')->group(function()
             Route::post('caisse/update', [CaisseController::class, 'update'])->name('caisse.update');
             Route::get('caisse/delete/{id}', [CaisseController::class, 'delete'])->name('caisse.delete');
 
+
+            Route::post('user/abonnement', [ClientController::class, 'mesAbonnements'])->name('user.abonnement');
+            Route::get('user/abonnement/jour', [ClientController::class, 'mesAbonnementsjour'])->name('user.abonnement.jour');
+            Route::post('user/reabonnement/jour', [ClientController::class, 'mesReabonnements'])->name('user.reabonnement');
+            Route::get('user/reabonnement/jour', [ClientController::class, 'mesReabonnementsAjour'])->name('user.reabonnement.jour');
+
     });
 
 });

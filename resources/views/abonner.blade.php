@@ -3,6 +3,8 @@
       <div class="card shadow mb-4">
         <div class="card-header py-3">
           <h4 class="m-2 font-weight-bold text-primary">Nouvel abonnement&nbsp;<a  href="{{ route('add.client')}}" data-toggle="modal"  data-target="#clientModal" type="button" class="btn btn-primary bg-gradient-primary" style="border-radius: 0px;"><i class="fas fa-fw fa-plus"></i></a></h4>
+            <label class="mr-5"><a class="btn btn-primary" href="{{route('user.abonnement.jour')}}"> Abonnements du jour</a></label>
+            <label class="ml-4"><a class="btn btn-success"  href="{{route('user.abonnement')}}"> Tous mes abonnements</a></label>
         </div>
           @include('layouts/flash-message')
 
