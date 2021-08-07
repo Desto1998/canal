@@ -2,8 +2,8 @@
     <x-slot name="slot">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <label class="mr-5"><a class="btn btn-primary" href="{{route('user.reabonnement.jour')}}"> Reabonnements du jour</a></label>
-                <label class="ml-4"><a class="btn btn-success"  href="{{route('user.reabonnement')}}"> Tous mes reabonnements</a></label>
+                <label class="mr-5"><a class="btn btn-primary" href="{{route('user.client.nouveau')}}"> Client nouveau</a></label>
+                <label class="ml-4"><a class="btn btn-danger"  href="{{route('user.client.perdu')}}"> Clients echruis</a></label>
             </div>
             @include('layouts/flash-message')
 
@@ -17,10 +17,12 @@
                             <th>Numéro de téléphone</th>
                             <th>Numéro client</th>
                             <th>Numéro Décodeur</th>
-                            <th>Formule</th>
+                            <th>Dernière formule</th>
                             <th>Durée</th>
+                            <th>Date d'expiration</th>
                             <th>Montant de la formule(FCFA)</th>
                             <th>Montant total</th>
+                            <th> Relancer</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -30,7 +32,7 @@
                         @endphp
                         @foreach($data as $key => $value)
 
-                            <tr>
+                            <tr class="text-danger">
                                 <td>{{$compt}}</td>
                                 <td><strong>{{ $value->nom_client }} {{$value->prenom_client }}</strong></td>
                                 <td><strong>{{ $value->telephone_client }}</strong></td>
@@ -38,8 +40,10 @@
                                 <td>{{ $value->num_decodeur }}</td>
                                 <td>{{ $value->nom_formule }}</td>
                                 <td>{{ $value->duree }} mois</td>
+                                <td>{{ $value->date_reabonnement }} </td>
                                 <td>{{ $value->prix_formule }}</td>
-                                <td>{{ ($value->prix_formule * $value->duree) }}</td>
+                                <td>{{ ($value->prix_formule * $value->duree) + $value->prix_decodeur }}</td>
+                                <td><a href="{{route('user.client.relancer',$value->telephone_client)}}" class="btn btn-success btn-info" title="Cliquer pour envoyer un message"><i class="fas fa-envelope "></i></a></td>
                             </tr>
                             @php
                                 $chiffre += ($value->prix_formule * $value->duree) ;
@@ -52,7 +56,7 @@
 
                 </div>
                 <div class="mt-6">
-                    <h2>Total Général : <span class="text-info">{{$chiffre}} FCFA</span></h2>
+                    <h2>Total général : <span class="text-danger">{{$chiffre}} FCFA</span></h2>
                 </div>
             </div>
         </div>

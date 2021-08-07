@@ -174,11 +174,11 @@
           <span>Stocks</span></a>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link {{ ($route=='messagerie')?'active':'' }}" href="{{ route('messagerie') }}">
-          <i class="fas fa-fw fa-mail-bulk"></i>
-          <span>Messagerie</span></a>
-      </li>
+{{--      <li class="nav-item">--}}
+{{--        <a class="nav-link {{ ($route=='messagerie')?'active':'' }}" href="{{ route('messagerie') }}">--}}
+{{--          <i class="fas fa-fw fa-mail-bulk"></i>--}}
+{{--          <span>Messagerie</span></a>--}}
+{{--      </li>--}}
         @if(Auth::user()->is_admin==1)
             <li class="nav-item">
                 <a class="nav-link {{ ($route=='caisse')?'active':'' }}" href="{{ route('caisse') }}">

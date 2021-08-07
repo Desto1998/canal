@@ -17,7 +17,6 @@
                             <th>Numéro de téléphone</th>
                             <th>Numéro client</th>
                             <th>Numéro Décodeur</th>
-                            <th>prix Décodeur</th>
                             <th>Formule</th>
                             <th>Durée</th>
                             <th>Montant de la formule(FCFA)</th>
@@ -40,7 +39,7 @@
                                 <td>{{ $value->nom_formule }}</td>
                                 <td>{{ $value->duree }} mois</td>
                                 <td>{{ $value->prix_formule }}</td>
-                                <td>{{ ($value->prix_formule * $value->duree) + $value->prix_decodeur }}</td>
+                                <td>{{ ($value->prix_formule * $value->duree)  }}</td>
                             </tr>
                             @php
                                 $chiffre += ($value->prix_formule * $value->duree) ;

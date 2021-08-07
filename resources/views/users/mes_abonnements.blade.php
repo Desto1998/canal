@@ -54,7 +54,7 @@
 
                 </div>
                 <div class="mt-6">
-                    <h2>Total du jour : <span class="text-info">{{$chiffre}} FCFA</span></h2>
+                    <h2>Total du Général : <span class="text-info">{{$chiffre}} FCFA</span></h2>
                 </div>
             </div>
         </div>
