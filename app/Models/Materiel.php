@@ -17,10 +17,10 @@ class Materiel extends Model
         'date_livaison',
         "id_user",
     ];
-    public function client()
-    {
-        return $this->belongsTo(Client::class);
-    }
+//    public function client()
+//    {
+//        return $this->belongsTo(Client::class);
+//    }
     public function decodeurs()
     {
         return $this->belongsToMany(Decodeur::class);

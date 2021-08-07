@@ -15,6 +15,7 @@ class CreateClientDecodeursTable extends Migration
     {
         Schema::create('client_decodeurs',function (Blueprint $table) {
             $table->id();
+            $table->date("date_abonnement");
             $table->date("date_reabonnement");
             $table->timestamps();
             $table->unsignedBigInteger('id_client');
@@ -30,6 +31,7 @@ class CreateClientDecodeursTable extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->integer("id_user");
+            $table->integer("id_formule");
         });
     }
 

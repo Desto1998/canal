@@ -26,8 +26,8 @@ class CreateClientsTable extends Migration
             $table->date("date_reabonnement");
             $table->integer("id_user");
 
-            $table->unsignedBigInteger('id_materiel');
-            $table->foreign('id_materiel')->references('id_materiel')->on('materiels')->onDelete('restrict')->onUpdate('restrict');
+            $table->unsignedBigInteger('id_materiel')
+            ->nullable();
 
             $table->timestamps();
 
