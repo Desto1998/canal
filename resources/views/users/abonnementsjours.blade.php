@@ -9,7 +9,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                         <tr>
                             <th>#</th>
@@ -39,7 +39,7 @@
                                 <td>{{ $value->num_decodeur }}</td>
                                 <td>{{ $value->prix_decodeur }}</td>
                                 <td>{{ $value->nom_formule }}</td>
-                                <td>{{ $value->duree }}</td>
+                                <td>{{ $value->duree }} mois</td>
                                 <td>{{ $value->prix_formule }}</td>
 
                                 <td>{{ ($value->prix_formule * $value->duree) + $value->prix_decodeur }}</td>
@@ -55,7 +55,7 @@
 
                 </div>
                 <div class="mt-6">
-                    <h2>Total du jour : <span class="text-info">{{$chiffre}} FCFA</span></h2>
+                    <h2>Total général : <span class="text-info">{{$chiffre}} FCFA</span></h2>
                 </div>
             </div>
         </div>

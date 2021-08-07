@@ -3,6 +3,8 @@
       <div class="card shadow mb-4">
         <div class="card-header py-3">
           <h4 class="m-2 font-weight-bold text-primary">Réabonnement</h4>
+            <label class="mr-5"><a class="btn btn-primary" href="{{route('user.reabonnement.jour')}}"> Reabonnements du jour</a></label>
+            <label class="ml-4"><a class="btn btn-success"  href="{{route('user.reabonnement')}}"> Tous mes reabonnements</a></label>
         </div>
 @include('layouts.flash-message')
         <div class="card-body">
