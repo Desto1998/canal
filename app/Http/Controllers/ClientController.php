@@ -136,7 +136,6 @@ class ClientController extends Controller
         $data->id_user = $userid;
 //        "237679353205",
 
-//        DD($deco);exit();
 
         $client = Client::create([
             'nom_client'=>$data->nom_client,
@@ -156,13 +155,12 @@ class ClientController extends Controller
 
 
         if (!empty($client)){
-
             $CD = ClientDecodeur::create(['id_decodeur'=>$deco[0]->id_decodeur,
                 'id_client'=>$client->id_client,
                 'id_user'=>$userid,
-                'id_formule'=>$id_formule,
-                'date_abonnement'=>date('Y-m-d'),
+                'date_abonnement'=> $data->date_abonnement,
                 'date_reabonnement'=>$date_reabonnement,
+                'id_formule'=>$id_formule,
             ]);
 
             $reabonnement = Reabonnement::create(['id_decodeur'=>$deco[0]->id_decodeur,
@@ -185,13 +183,18 @@ class ClientController extends Controller
 
         if (!empty($client) && $message_con!="") {
             session()->flash('message', 'Le client a bien été enregistré dans la base de données. '.$message_con);
+            //$pdf = (new PDFController)->createPDF($data);
+            //return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. '.$message_con);
+        }
+        if (!empty($client) && $message_con!="") {
+           // session()->flash('message', 'Le client a bien été enregistré dans la base de données. '.$message_con);
             $pdf = (new PDFController)->createPDF($data);
             return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. '.$message_con);
         }
 
         if (!empty($client)  and empty($message_con)) {
             session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé '.$sendError  );
-            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'+"\n Statut:".$sendError);
+            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'."\n Statut:".$sendError);
         } else {
             session()->flash('message', 'Erreur! Le client n\' pas été enrgistré!');
 
@@ -240,10 +243,14 @@ class ClientController extends Controller
         $datas = Client::find($id_client);
         $formule = Formule::where('id_formule',$datas->id_formule)->get();
         $decodeur = Decodeur::where('id_decodeur',$datas->id_decodeur)->get();
+        $decos = Decodeur::join('client_decodeurs','client_decodeurs.id_decodeur','decodeurs.id_decodeur')
+            ->where('client_decodeurs.id_client',$id_client)
+            ->get();
         return view('upgrade',[
             'datas' => Client::find($id_client),
             'formule' => Formule::where('id_formule',$datas->id_formule)->get(),
             'decodeur' => Decodeur::where('id_decodeur',$datas->id_decodeur)->get(),
+            'decos'=>$decos,
             // 'allDecodeurs' => Decodeur::all(),
             // 'allUsers' => User::all(),
             // 'allMessages' => Message::all(),
@@ -292,7 +299,7 @@ class ClientController extends Controller
                     ->where('id_client',$id_client)
                     ->update([
                             'date_reabonnement'=>$date_reabonnement,
-                            'id_formule'=>$id_formule
+
                         ]);
         if ($reabonnement){
             $message_con ='';
@@ -307,40 +314,40 @@ class ClientController extends Controller
         }
 //        $data->save();
         session()->flash('message', 'Le reabonnement a reussi. '.$message_con);
-        return  redirect()->route('clients')->with('info', 'Le reabonnement a reussi.'.$message_con);
+        return  redirect()->route('reabonner')->with('info', 'Le reabonnement a reussi.'.$message_con);
     }
 
     public function upgradeClient(Request $request,$id_client)
     {
         $request->validate([
             'formule'=>'required',
-            'id_decodeur'=>'required',
         ]);
         $data = Client::find($id_client);
+        $dt = Reabonnement::find($id_client);
+        $formule = Formule::where('id_formule',$dt->id_formule)->get();
         $formul = Formule::where('nom_formule',$request->formule)->get();
             $id_formule = $formul[0]->id_formule;
         $statutcaisse = (new MessageController)->resteCaisse();
-        if ($statutcaisse < $formul[0]->prix_formule){
-            session()->flash('message', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
+        $difference = $formul[0]->prix_formule - $formule->prix_formule;
+        if ( $difference > 0){
+            if ($statutcaisse < $difference){
+                session()->flash('message', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
 
-            return redirect()->back()->with('warning', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
+                return redirect()->back()->with('warning', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
+            }
         }
         $userid= Auth::user()->id;
         $reabonnement = Reabonnement::create(['id_decodeur'=>$request->id_decodeur,
             'id_client'=>$id_client,
             'id_formule'=>$id_formule,
             'id_user'=>$userid,
+            'type_reabonement'=>$request->type,
             'id_decodeur'=>$request->id_decodeur
         ]);
-        $decodeur = ClientDecodeur::where('id_decodeur',$request->id_decodeur)
-                    ->where('id_client',$id_client)
-                    ->update([
-                        'id_formule'=>$id_formule,
 
-                        ]);
         if ($reabonnement){
             $message_con ='';
-                $message = $data->nom_client." Nouveau décodeur ajouté avec success! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
+                $message = $data->nom_client." Mis à jour de la formule réussi ! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
                 var_dump($message_con);
                 $envoi = (new MessageController)->sendMessage($message,$data->telephone_client );
                 if ($envoi == 0) {
@@ -456,90 +463,7 @@ class ClientController extends Controller
         return back()->with('info','Le client a été effacé avec succès.');
     }
 
- public function mesAbonnements(){
-     $userid= Auth::user()->id;
-     $data = Decodeur::join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
-         ->join('formules','client_decodeurs.id_formule','formules.id_formule')
-         ->join('clients','clients.id_client','client_decodeurs.id_client')
-         ->where('client_decodeurs.id_user',$userid)
-         ->get();
-     return view("users.mes_abonnements",compact('data'));
- }
- public function mesAbonnementsjour(){
-     $userid= Auth::user()->id;
-     $data = Decodeur::join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
-         ->join('formules','client_decodeurs.id_formule','formules.id_formule')
-         ->join('clients','clients.id_client','client_decodeurs.id_client')
-         ->where('client_decodeurs.date_abonnement',date('Y-m-d'))
-         ->where('client_decodeurs.id_user',$userid)
-         ->get();
-//     dd($data);exit();
-     return view("users.abonnementsjours",compact('data'));
- }
- public function mesReabonnements(){
-     $userid = Auth::user()->id;
-     $date = date("Y-m-d");
-     $data = Reabonnement::join('clients', 'reabonnements.id_client', 'clients.id_client')
-         ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
-         ->join('decodeurs','decodeurs.id_decodeur','reabonnements.id_decodeur')
-         ->where('reabonnements.id_user', $userid)
-         ->get();
-     return view("users.mes_reabonnements", compact('data'));
- }
 
- public function mesReabonnementsAjour()
- {
-     $userid = Auth::user()->id;
-     $date = date("Y-m-d");
-     $data = Reabonnement::join('clients', 'reabonnements.id_client', 'clients.id_client')
-         ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
-         ->join('decodeurs','decodeurs.id_decodeur','reabonnements.id_decodeur')
-         ->where('reabonnements.created_at', 'LIKE', "%{$date}%")
-         ->where('clients.id_user', $userid)
-         ->get();
-     return view("users.mes_reabonnementsjour", compact('data'));
- }
 
- public function nouveauClient(){
-     $envoi = (new MessageController)->sendMessage("237679353205","" );
-
-     $userid= Auth::user()->id;
-     $data = Decodeur::join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
-//         ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
-         ->join('formules','client_decodeurs.id_formule','formules.id_formule')
-         ->join('clients','clients.id_client','client_decodeurs.id_client')
-         ->where('client_decodeurs.date_reabonnement','>=',date('Y-m-d'))
-//         ->where('client_decodeurs.id_user',$userid)
-         ->get();
-     return view("users.clientNouveau", compact('data'));
- }
-
- public function clientPerdu(){
-//     $envoi = (new MessageController)->sendMessage($message,$request->telephone_client );
-     $userid = Auth::user()->id;
-     $date = date("Y-m-d");
-     $data = Decodeur::join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
-         ->join('formules','client_decodeurs.id_formule','formules.id_formule')
-         ->join('clients','clients.id_client','client_decodeurs.id_client')
-         ->where('client_decodeurs.date_reabonnement','<=',date('Y-m-d'))
-//         ->where('client_decodeurs.id_user',$userid)
-         ->get();
-     return view("users.clientPerdu", compact('data'));
- }
-
- public function relancerClient($numero){
-        $message = "Votre abonnement canal+ a expiré. Nous vous prions de vous reabonner.";
-          $envoi = (new MessageController)->sendMessage($message,$numero );
-        if ($envoi==0){
-            session()->flash('message', 'Client relancé avec succès!');
-
-            return redirect()->back()->with('success', 'Client relancé avec succès!');
-        }else{
-            session()->flash('message', 'Echec de l\'envoi du message!');
-
-            return redirect()->back()->with('danger', 'Echec de l\'envoi du message!');
-        }
-
- }
 
 }

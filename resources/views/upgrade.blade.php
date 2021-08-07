@@ -34,27 +34,28 @@
                       </div>
                       @endforeach
                       <div class="form-group">
-                        Formule nouvelle : <select  name="formule" required>
-                            <option value="ACCESS" selected> ACCESS </option>
-                            <option value="ACCESS +"> ACCESS + </option>
-                            <option value="EVASION"> EVASION </option>
-                            <option value="EVASION +"> EVASION + </option>
-                            <option value="PRESTIGE"> PRESTIGE </option>
-                            <option value="ESSENTIEL +"> ESSENTIEL + </option>
-                            <option value="TOUT CANAL"> TOUT CANAL </option>
-                         </select>
-                      </div>
-                      <div class="form-group">
-                        Numero decodeur : <select  name="num_decodeur" required>
+                        Décodeurs: <select name="id_decodeur">
+                            @foreach($decos as $key => $val)
+                                <option value="{{$val->id_decodeur}}">{{$val->num_decodeur}}</option>
+                                @endforeach
+                        </select>
+                      Formule: <select  name="formule" required>
                           <option value="ACCESS" selected> ACCESS </option>
                           <option value="ACCESS +"> ACCESS + </option>
                           <option value="EVASION"> EVASION </option>
                           <option value="EVASION +"> EVASION + </option>
-                          <option value="EVASION"> Essentiel </option>
-                          <option value="EVASION +"> Essentiel + </option>
-                          <option value="EVASION +"> Tout canal </option>
-                         </select>
-                      </div>
+                          <option value="PRESTIGE"> PRESTIGE </option>
+                          <option value="ESSENTIEL +"> ESSENTIEL + </option>
+                          <option value="TOUT CANAL"> TOUT CANAL </option>
+                       </select>
+                    </div>
+                    <div class="form-group">
+                      <label><input type="radio" required name="type" value="1">&nbsp;Payé content</label>
+                      <label class="ml-4"><input required type="radio" value="0" name="type">&nbsp; A crédit</label>
+                    </div>
+                      <div class="form-group">
+                      Date reabonnement<br><input class="form-control" placeholder="{{ $datas->data_reabonnement }}" value="Date de reabonnement" name="date_reabonnement" type="date" required>
+                    </div>
                       <hr>
 
 
