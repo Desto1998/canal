@@ -43,7 +43,7 @@
                             </a>
                           </li>
                           <li>
-                            <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="{{route('add.client',$client->id_client)}}" data-toggle="modal"  data-target="#materielClientModal1">
+                            <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="{{route('clients',$client->id_client)}}" data-toggle="modal"  data-target="#materielClientModal1">
                               <i class="fas fa-fw fa-edit"></i> Ajouter un décodeur
                             </a>
                           </li>

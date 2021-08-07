@@ -356,6 +356,7 @@ class ClientController extends Controller
     {
         $data = Client::find($id_client);
         $formul = Formule::where('nom_formule',$request->formule)->get();
+        $formule_actuel = ClientDecodeur::find($id_client);
         $deco = Decodeur::where('num_decodeur',$request->num_decodeur)->get();
         $clientdeco = ClientDecodeur::where('id_decodeur',$request->num_decodeur)->get();
         $date_rea = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
@@ -382,8 +383,10 @@ class ClientController extends Controller
 //        }
 //        "237679353205",
 //        $id_formule = $formul[0]->id_formule;
+
         $statutcaisse = (new MessageController)->resteCaisse();
-        if ($statutcaisse < $formul[0]->prix_formule * $request->duree){
+       // if($formul[0]->prix_formule >)
+        if ($statutcaisse < $formul[0]->prix_formule){
             session()->flash('message', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
 
             return redirect()->back()->with('warning', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
