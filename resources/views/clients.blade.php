@@ -17,7 +17,7 @@
                     <th>Prénom</th>
                     <th>Nom</th>
                     <th>Numéro de téléphone</th>
-                    <th>Formule</th>
+                    <th>Numero abonné</th>
                     <th>Action</th>
                   </tr>
               </thead>
@@ -28,13 +28,7 @@
                     <td><strong>{{ $client->prenom_client }}</strong></td>
                     <td><strong>{{ $client->nom_client }}</strong></td>
                     <td><strong>{{ $client->telephone_client }}</strong></td>
-                    <td>
-                        @foreach($allFormules as $key =>$fm)
-                      @if($fm->id_formule==$client->id_formule)
-                        <strong>{{ $fm->nom_formule }}</strong>
-                      @endif
-                    @endforeach
-                    </td>
+                    <td><strong>{{ $client->num_abonne }}</strong></td>
 
                     <td align="right"><div class="btn_group">
                       <a class="button is-primary" href="{{ route('clients.show', $client->id_client) }}"><i class="fas fa-fw fa-list-alt"></i> Details</a>

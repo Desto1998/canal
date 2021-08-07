@@ -323,12 +323,12 @@ class ClientController extends Controller
             'formule'=>'required',
         ]);
         $data = Client::find($id_client);
-        $dt = Reabonnement::find($id_client);
-        $formule = Formule::where('id_formule',$dt->id_formule)->get();
+        $dt = Reabonnement::where('id_client',$id_client)->get();
+        $formule = Formule::where('id_formule',$dt[0]->id_formule)->get();
         $formul = Formule::where('nom_formule',$request->formule)->get();
             $id_formule = $formul[0]->id_formule;
         $statutcaisse = (new MessageController)->resteCaisse();
-        $difference = $formul[0]->prix_formule - $formule->prix_formule;
+        $difference = $formul[0]->prix_formule - $formule[0]->prix_formule;
         if ( $difference > 0){
             if ($statutcaisse < $difference){
                 session()->flash('message', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
@@ -342,7 +342,9 @@ class ClientController extends Controller
             'id_formule'=>$id_formule,
             'id_user'=>$userid,
             'type_reabonement'=>$request->type,
-            'id_decodeur'=>$request->id_decodeur
+            'id_decodeur'=>$request->id_decodeur,
+            'duree'=>$dt[0]->duree,
+            'date_reabonnement'=>$dt[0]->date_reabonnement,
         ]);
 
         if ($reabonnement){
