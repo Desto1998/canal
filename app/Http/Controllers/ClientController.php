@@ -506,6 +506,7 @@ class ClientController extends Controller
             ->where('reabonnements.created_at', 'LIKE', "%{$date}%")
             ->where('clients.id_user', $userid)
             ->get();
+//        return view("users.mes_reabonnementsjour", compact('data'));
         return view("users.mes_reabonnementsjour", compact('data'));
     }
 
