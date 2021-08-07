@@ -466,6 +466,47 @@ class ClientController extends Controller
     }
 
 
-
+    public function mesAbonnements(){
+        $userid= Auth::user()->id;
+        $data = Decodeur::join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
+            ->join('formules','client_decodeurs.id_formule','formules.id_formule')
+            ->join('clients','clients.id_client','client_decodeurs.id_client')
+            ->where('client_decodeurs.id_user',$userid)
+            ->get();
+        return view("users.mes_abonnements",compact('data'));
+    }
+    public function mesAbonnementsjour(){
+        $userid= Auth::user()->id;
+        $data = Decodeur::join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
+            ->join('formules','client_decodeurs.id_formule','formules.id_formule')
+            ->join('clients','clients.id_client','client_decodeurs.id_client')
+            ->where('client_decodeurs.date_abonnement',date('Y-m-d'))
+            ->where('client_decodeurs.id_user',$userid)
+            ->get();
+   //     dd($data);exit();
+        return view("users.abonnementsjours",compact('data'));
+    }
+    public function mesReabonnements(){
+        $userid = Auth::user()->id;
+        $date = date("Y-m-d");
+        $data = Reabonnement::join('clients', 'reabonnements.id_client', 'clients.id_client')
+            ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
+            ->join('decodeurs','decodeurs.id_decodeur','reabonnements.id_decodeur')
+            ->where('reabonnements.id_user', $userid)
+            ->get();
+        return view("users.mes_reabonnements", compact('data'));
+    }
+    public function mesReabonnementsAjour()
+    {
+        $userid = Auth::user()->id;
+        $date = date("Y-m-d");
+        $data = Reabonnement::join('clients', 'reabonnements.id_client', 'clients.id_client')
+            ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
+            ->join('decodeurs','decodeurs.id_decodeur','reabonnements.id_decodeur')
+            ->where('reabonnements.created_at', 'LIKE', "%{$date}%")
+            ->where('clients.id_user', $userid)
+            ->get();
+        return view("users.mes_reabonnementsjour", compact('data'));
+    }
 
 }
