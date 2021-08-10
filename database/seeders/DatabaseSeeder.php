@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('materiels')->insert([
             'nom_materiel' => 'Télécommande',
-            'quantite' => 10,
+            'quantite' => 1,
             'prix_materiel' => 2000,
             'date_livaison' => now(),
             'id_user'=> 1,
