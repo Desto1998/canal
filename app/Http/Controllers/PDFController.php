@@ -15,7 +15,7 @@ class PDFController extends Controller
     {
 
     }
-    public function createPDF($data)
+    public function createPDF($data,$action)
     {
         $this->fpdf = new Fpdf;
         //Header
@@ -65,20 +65,16 @@ class PDFController extends Controller
         $this->fpdf->Cell(47,5,'CGA',0,1);
 
 
-        $deco = Decodeur::where('id_decodeur',$data->id_decodeur)->get();
-        foreach ($deco as $dec) {
             $this->fpdf->SetFont("Arial", 'B', 12);
             $this->fpdf->Cell(25, 5, 'N Decodeur:', 0, 0);
             $this->fpdf->SetFont("Times", '', 12);
-            $this->fpdf->Cell(160, 5, $dec->num_decodeur, 0, 1);
-        }
+            $this->fpdf->Cell(160, 5, $data->num_decodeur, 0, 1);
 
-        $formul = Formule::where('id_formule',$data->id_formule)->get();
-        foreach($formul as $fm){
+
         $this->fpdf->SetFont("Arial",'B',12);
         $this->fpdf->Cell(25,5,'Formule:',0,0);
         $this->fpdf->SetFont("Times",'',12);
-        $this->fpdf->Cell(34,5,$fm->nom_formule,0,1);//Fin de ligne
+        $this->fpdf->Cell(34,5,$data->nom_formule,0,1);//Fin de ligne
         $this->fpdf->Cell(189,5,'',0,1);
 
         $this->fpdf->SetFont('Arial','B',12);
@@ -89,23 +85,27 @@ class PDFController extends Controller
 
         $this->fpdf->SetFont('Arial','',12);
 
-        $this->fpdf->Cell(130,5,'Abonnement',1,0);
-        $this->fpdf->Cell(25,5,$data->duree,1,0);
-        $this->fpdf->Cell(34,5,"{$data->duree} * {$fm->prix_formule}",1,1);//Fin de ligne
-
-        $this->fpdf->Cell(130,5,'Reabonnement',1,0);
-        $this->fpdf->Cell(25,5,$data->duree,1,0);
-        $this->fpdf->Cell(34,5,"{$data->duree} * {$fm->prix_formule}",1,1);//Fin de ligne
-
-        $this->fpdf->Cell(130,5,'Autres',1,0);
-        $this->fpdf->Cell(25,5,"",1,0);
-        $this->fpdf->Cell(34,5,"",1,1);//Fin de ligne
-
+        if($action ="ABONNEMENT") {
+            $this->fpdf->SetFont("Arial",'B',12);
+            $this->fpdf->Cell(130,5,'Abonnement',1,0);
+            $this->fpdf->Cell(25,5,$data->duree,1,0);
+            $this->fpdf->Cell(34,5,"{$data->duree} * {$data->prix_formule}",1,1);//Fin de ligne
+        }
+        if ($action ="REABONNEMENT") {
+            $this->fpdf->Cell(130, 5, 'Reabonnement', 1, 0);
+            $this->fpdf->Cell(25, 5, $data->duree, 1, 0);
+            $this->fpdf->Cell(34, 5, "{$data->duree} * {$data->prix_formule}", 1, 1);//Fin de ligne
+        }
+        if ($action ="UPGRADE") {
+            $this->fpdf->Cell(130, 5, 'Upgrade', 1, 0);
+            $this->fpdf->Cell(25, 5, "1", 1, 0);
+            $this->fpdf->Cell(34, 5, $data->difference, 1, 1);//Fin de ligne
+        }
         //Total
         $this->fpdf->Cell(130,5,'',0,0);
         $this->fpdf->Cell(25,5,'Total',0,0);
-        $this->fpdf->Cell(34,5,$data->duree*$fm->prix_formule,1,1,'R');//Fin de ligne
-        }
+        $this->fpdf->Cell(34,5,$data->duree*$data->prix_formule,1,1,'R');//Fin de ligne
+
         $this->fpdf->Cell(189,5,'',0,1);
 
         $this->fpdf->Cell(189,5,'Arrete le present recu a la somme de :',0,1);
