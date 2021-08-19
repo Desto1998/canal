@@ -26,7 +26,9 @@ class ClientController extends Controller
     {
         $allClients = Client::all();
         $allFormules = Formule::all();
-        return view('abonner',compact('allClients','allFormules'));
+        $decodeur = Decodeur::all();
+        $clientdecodeur = ClientDecodeur::all();
+        return view('abonner',compact('allClients','allFormules','decodeur','clientdecodeur'));
     }
 
     public function review()
@@ -304,7 +306,6 @@ class ClientController extends Controller
         if ($reabonnement){
             $message_con ='';
                 $message = $nom." Votre réabonnement à été effectué avec success! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
-                var_dump($message_con);
                 $envoi = (new MessageController)->sendMessage($message,$telephone );
                 if ($envoi == 0) {
                     $message_con ="Un message a été envoyé au client.";
@@ -314,7 +315,7 @@ class ClientController extends Controller
         }
 //        $data->save();
         session()->flash('message', 'Le reabonnement a reussi. '.$message_con);
-        return  redirect()->route('reabonner')->with('info', 'Le reabonnement a reussi.'.$message_con);
+        return  redirect()->route('review.reabonner')->with('info', 'Le reabonnement a reussi.'.$message_con);
     }
 
     public function upgradeClient(Request $request,$id_client)

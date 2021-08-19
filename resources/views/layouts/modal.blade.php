@@ -37,7 +37,7 @@
                     </div>
                     <div class="form-group">
                         Numero d'abonné<br><input type="number" class="form-control" maxlength="8" minlength="8" type="text" onblur="controlNumero1(this)" placeholder="numero abonne" name="num_abonne" id="num_abonne" required>
-                        <span class="text-danger hidden ereur-numeroa " style=""> Mauvaise saisie Longeur minimale 8</span>
+                        <span class="text-danger hidden ereur-numeroa " style=""> Mauvaise saisie Longeur requise 8</span>
                         @error('num_decodeur')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -49,11 +49,34 @@
                         Adresse client<br><input class="form-control" type="text" placeholder="Adresse" name="adresse_client" required>
                     </div>
                     <div class="form-group">
-                        Numero décodeur<br><input type="number" class="form-control" maxlength="14" minlength="14" type="number" onblur="controlNumero(this)" placeholder="Numero decodeur" name="num_decodeur" id="num_decodeur" required>
-                        <span class="text-danger hidden ereur-numerod " style=""> Mauvaise saisie Longeur minimale 14</span>
-                        @error('num_decodeur')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        Numero décodeur<br>
+                        @if(isset($decodeur))
+
+                            <select class="form-control" required="Sélectionnez un decodeur SVP." name="num_decodeur" id="num_decodeur">
+                                @foreach($decodeur as $key ->$deco)
+                                    @php
+                                        $comp = 0;
+                                    @endphp
+                                    @foreach($clientdecodeur as $k ->$clientdeco)
+                                        @if($deco->id_decodeur === $clientdecodeur->id_decodeur)
+                                            $comp++;
+                                        @endif
+                                    @endforeach
+                                    @if($comp=0)
+                                        <option value="{{$decodeur->num_decodeur}}">{{$decodeur->num_decodeur}}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+{{--                            <input type="number" class="form-control" maxlength="14" minlength="14" type="number" onblur="controlNumero(this)" placeholder="Numero decodeur" name="num_decodeur" id="num_decodeur" required>--}}
+{{--                            <span class="text-danger hidden ereur-numerod " style=""> Mauvaise saisie Longeur requise 14</span>--}}
+{{--                            @error('num_decodeur')--}}
+{{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
+{{--                            @enderror--}}
+
+                        @else
+                            <span class="text-danger">Aucun décodeur n'est disponible veiller enregistrer un décodeur.</span>
+                        @endif
+
                     </div>
                     <div class="form-group">
                         Formule: <select  name="formule" required>
@@ -215,8 +238,8 @@
                 <form role="form" id="decodeurForm" method="post" action="{{route('store.decodeur')}}">
                     @csrf
                     <div class="form-group">
-                        Numero décodeur<br><input type="number" class="form-control"  maxlength="14" minlength="14" placeholder="numero decodeur" onblur="controlNumero(this)" class="form-control  @error('num_decodeur') is-invalid @enderror" name="num_decodeur" id="num_decodeur1"  required>
-                        <span class="text-danger hidden ereur-numerodd " style=""> Mauvaise saisie Longeur minimale 14</span>
+                        Numero décodeur<br><input type="text" class="form-control"  maxlength="14" minlength="14" placeholder="numero decodeur" onblur="controlNumero(this)" class="form-control  @error('num_decodeur') is-invalid @enderror" name="num_decodeur" id="num_decodeur1"  required>
+                        <span class="text-danger hidden ereur-numerodd " style=""> Mauvaise saisie Longeur requise 14</span>
                         @error('num_decodeur')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use phpDocumentor\Reflection\Types\Array_;
 use Vonage\Response;
 use Exception;
+use function PHPUnit\Framework\exactly;
 
 class UserController extends Controller
 {
@@ -21,6 +23,11 @@ class UserController extends Controller
     {
         if(Auth::user()->role==='admin'){
             $users = User::all();
+//            $data = new Array_();
+//            $data->name= 'desto';
+//            $data->prenom= 'tambu';
+//            $data->age= 10;
+//            dd($data->prenom, $data->age, $data ->name);
             return view('users.list', compact('users'));
 
         }else{
@@ -65,9 +72,14 @@ class UserController extends Controller
         if ($request->role == 'admin') {
             $is_admin = 1;
         }
-        $verifyEmail = User::where('email',$request->email)->get();
-//        DD($verifyEmail);exit();
-        if (empty($verifyEmail)){
+//        $verifyEmail = User::where('email',$request->email)->get();
+//        $verifyEmail =  User::find($request->email) ;
+        $verifyEmail =User::where('email',$request->email)->get();
+//        DD(count($verifyEmail));exit();
+
+
+        if (count($verifyEmail) == 0){
+            dd($verifyEmail);exit();
             $user = User::Create(
                 [
                     'name' => $request->name,
