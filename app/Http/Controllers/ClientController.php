@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Materiel;
 use App\Models\Decodeur;
 use Illuminate\Support\Facades\Auth;
+use PhpParser\Node\Expr\Cast\Array_;
 use Vonage\Client\Exception\Exception;
 //use Exception;
 
@@ -83,6 +84,8 @@ class ClientController extends Controller
         $deco = Decodeur::where('num_decodeur',$request->num_decodeur)->get();
         $clientdeco = ClientDecodeur::where('id_decodeur',$request->num_decodeur)->get();
         $data = new client;
+        $action = "ABONNEMENT";
+
 
 //        Auth::user()->role==='admin';
         $userid= Auth::user()->id;
@@ -152,7 +155,16 @@ class ClientController extends Controller
         $message_con ="";
 //        DD($client->id_client);exit();
 
-
+        $data_pdf = new Array_();
+        $data_pdf->nom_client = $data->nom_client;
+        $data_pdf->prenom_client = $data->prenom_client;
+        $data_pdf->num_abonne = $data->num_abonne;
+        $data_pdf->telephone_client = $data->telephone_client;
+        $data_pdf->duree = $data->duree;
+        $data_pdf->num_decodeur = $request->num_decodeur;
+        $data_pdf->nom_formule = $request->formule;
+        $data_pdf->prix_formule = $formul[2]->prix_formule;
+        $data_pdf->date_reabonnement = $data->date_reabonnement;
 
         if (!empty($client)){
             $CD = ClientDecodeur::create(['id_decodeur'=>$deco[0]->id_decodeur,
@@ -183,17 +195,13 @@ class ClientController extends Controller
 
         if (!empty($client) && $message_con!="") {
             session()->flash('message', 'Le client a bien été enregistré dans la base de données. '.$message_con);
-            //$pdf = (new PDFController)->createPDF($data);
-            //return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. '.$message_con);
-        }
-        if (!empty($client) && $message_con!="") {
-           // session()->flash('message', 'Le client a bien été enregistré dans la base de données. '.$message_con);
-            $pdf = (new PDFController)->createPDF($data);
             return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. '.$message_con);
+            $pdf = (new PDFController)->createPDF($data_pdf,$action);
         }
 
         if (!empty($client)  and empty($message_con)) {
             session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé '.$sendError  );
+            $pdf = (new PDFController)->createPDF($data_pdf,$action);
             return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'."\n Statut:".$sendError);
         } else {
             session()->flash('message', 'Erreur! Le client n\' pas été enrgistré!');
@@ -275,6 +283,9 @@ class ClientController extends Controller
         $formul = Formule::where('nom_formule',$request->formule)->get();
             $id_formule = $formul[0]->id_formule;
         $statutcaisse = (new MessageController)->resteCaisse();
+
+        $action = "REABONNEMENT";
+
         if ($statutcaisse < $formul[0]->prix_formule * $request->duree){
             session()->flash('message', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
 
@@ -301,6 +312,17 @@ class ClientController extends Controller
                             'date_reabonnement'=>$date_reabonnement,
 
                         ]);
+
+        $data_pdf = new Array_();
+        $data_pdf->nom_client = $data->nom_client;
+        $data_pdf->prenom_client = $data->prenom_client;
+        $data_pdf->num_abonne = $data->num_abonne;
+        $data_pdf->telephone_client = $data->telephone_client;
+        $data_pdf->duree = $data->duree;
+        $data_pdf->num_decodeur = $request->num_decodeur;
+        $data_pdf->nom_formule = $request->formule;
+        $data_pdf->prix_formule = $formul[2]->prix_formule;
+        $data_pdf->date_reabonnement = $data->date_reabonnement;
         if ($reabonnement){
             $message_con ='';
                 $message = $nom." Votre réabonnement à été effectué avec success! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
@@ -313,6 +335,7 @@ class ClientController extends Controller
                 }
         }
 //        $data->save();
+        $pdf = (new PDFController)->createPDF($data_pdf,$action);
         session()->flash('message', 'Le reabonnement a reussi. '.$message_con);
         return  redirect()->route('reabonner')->with('info', 'Le reabonnement a reussi.'.$message_con);
     }
@@ -323,6 +346,9 @@ class ClientController extends Controller
             'formule'=>'required',
         ]);
         $data = Client::find($id_client);
+
+        $action = "UPGRADE";
+
         $dt = Reabonnement::where('id_client',$id_client)->get();
         $formule = Formule::where('id_formule',$dt[0]->id_formule)->get();
         $formul = Formule::where('nom_formule',$request->formule)->get();
@@ -346,7 +372,16 @@ class ClientController extends Controller
             'duree'=>$dt[0]->duree,
             'date_reabonnement'=>$dt[0]->date_reabonnement,
         ]);
-
+        $data_pdf = new Array_();
+        $data_pdf->nom_client = $data->nom_client;
+        $data_pdf->prenom_client = $data->prenom_client;
+        $data_pdf->num_abonne = $data->num_abonne;
+        $data_pdf->telephone_client = $data->telephone_client;
+        $data_pdf->duree = $data->duree;
+        $data_pdf->num_decodeur = $request->num_decodeur;
+        $data_pdf->nom_formule = $request->formule;
+        $data_pdf->prix_formule = $difference;
+        $data_pdf->date_reabonnement = $dt[0]->date_reabonnement;
         if ($reabonnement){
             $message_con ='';
                 $message = $data->nom_client." Mis à jour de la formule réussi ! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
@@ -359,6 +394,7 @@ class ClientController extends Controller
                 }
         }
 //        $data->save();
+        $pdf = (new PDFController)->createPDF($data_pdf,$action);
         session()->flash('message', "L'upgrate du client a reussi. ".$message_con);
         return  redirect()->route('upgrader')->with('info', "L'upgrate du client a reussi. ".$message_con);
     }
@@ -438,7 +474,7 @@ class ClientController extends Controller
 
         if (!empty($client) && $message_con!="") {
             session()->flash('message', 'Le client a bien été enregistré dans la base de données. '.$message_con);
-            $pdf = (new PDFController)->createPDF($data);
+            //$pdf = (new PDFController)->createPDF($data);
             return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. '.$message_con);
         }
 
