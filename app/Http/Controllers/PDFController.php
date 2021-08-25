@@ -99,7 +99,8 @@ class PDFController extends Controller
         if ($action ="UPGRADE") {
             $this->fpdf->Cell(130, 5, 'Upgrade', 1, 0);
             $this->fpdf->Cell(25, 5, "1", 1, 0);
-            $this->fpdf->Cell(34, 5, $data->difference, 1, 1);//Fin de ligne
+//            $this->fpdf->Cell(34, 5, $data->difference, 1, 1);//Fin de ligne
+            $this->fpdf->Cell(34, 5, $data->prix_formule, 1, 1);//Fin de ligne
         }
         //Total
         $this->fpdf->Cell(130,5,'',0,0);
