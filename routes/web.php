@@ -50,6 +50,7 @@ Route::prefix('dashboard')->group(function()
 
     //Reabonnement
     Route::get('reabonner',[ClientController::class,'review'])->name('review.reabonner');
+    Route::post('reabonner/add',[ClientController::class,'reabonneAdd'])->name('store.client.reabonnement');
     Route::get('new_reabonner/{id_client}',[ClientController::class,'reabonne'])->name('reabonne.client');
     Route::post('updateR/{id_client}',[ClientController::class,'updateR'])->name('updateR.client');
 

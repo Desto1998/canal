@@ -85,31 +85,30 @@ class PDFController extends Controller
 
         $this->fpdf->SetFont('Arial','',12);
 
-        if($action ="ABONNEMENT") {
+
             $this->fpdf->SetFont("Arial",'B',12);
             $this->fpdf->Cell(130,5,'Abonnement',1,0);
             $this->fpdf->Cell(25,5,$data->duree,1,0);
-            $this->fpdf->Cell(34,5,"{$data->duree} * {$data->prix_formule}",1,1);//Fin de ligne
-        }
-        if ($action ="REABONNEMENT") {
+            $this->fpdf->Cell(34,5,"{$data->duree} * {$data->prix_formuleA}",1,1);//Fin de ligne
+
+
             $this->fpdf->Cell(130, 5, 'Reabonnement', 1, 0);
             $this->fpdf->Cell(25, 5, $data->duree, 1, 0);
-            $this->fpdf->Cell(34, 5, "{$data->duree} * {$data->prix_formule}", 1, 1);//Fin de ligne
-        }
-        if ($action ="UPGRADE") {
+            $this->fpdf->Cell(34, 5, "{$data->duree} * {$data->prix_formuleR}", 1, 1);//Fin de ligne
+
             $this->fpdf->Cell(130, 5, 'Upgrade', 1, 0);
             $this->fpdf->Cell(25, 5, "1", 1, 0);
 //            $this->fpdf->Cell(34, 5, $data->difference, 1, 1);//Fin de ligne
-            $this->fpdf->Cell(34, 5, $data->prix_formule, 1, 1);//Fin de ligne
-        }
+            $this->fpdf->Cell(34, 5, $data->prix_formuleU, 1, 1);//Fin de ligne
+
         //Total
         $this->fpdf->Cell(130,5,'',0,0);
         $this->fpdf->Cell(25,5,'Total',0,0);
-        $this->fpdf->Cell(34,5,$data->duree*$data->prix_formule,1,1,'R');//Fin de ligne
+        $this->fpdf->Cell(34,5,$data->total,1,1,'R');//Fin de ligne
 
         $this->fpdf->Cell(189,5,'',0,1);
 
-        $this->fpdf->Cell(189,5,'Arrete le present recu a la somme de :',0,1);
+        $this->fpdf->Cell(189,5,'Arrete le present recu a la somme de : '.$data->total.' FCFA',0,1);
         $this->fpdf->Line(195,125,10,125);
         $this->fpdf->Cell(189,5,'',0,1);
         $this->fpdf->Cell(189,5,'',0,1);

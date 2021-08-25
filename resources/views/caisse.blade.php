@@ -2,7 +2,7 @@
     <x-slot name="slot">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h4 class="m-2 font-weight-bold text-primary">Liste des clients</h4>
+                <h4 class="m-2 font-weight-bold text-primary">CGA</h4>
             </div>
             @include('layouts/flash-message')
 
