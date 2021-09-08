@@ -60,7 +60,7 @@ Route::prefix('dashboard')->group(function()
     Route::post('upgradeClient/{id_client}',[ClientController::class,'upgradeClient'])->name('upgrade.client');
 
     Route::get('modif_client/{id_client}',[ClientController::class,'edit_client'])->name('edit.client');
-    Route::post('updateM/{id_client}',[ClientController::class,'updateM'])->name('updateM.client');
+    Route::post('updateM',[ClientController::class,'updateM'])->name('updateM.client');
 
     Route::get('modif_formule/{id_formule}',[FormuleController::class,'edit_formule'])->name('edit.formule');
     Route::post('update/{id_formule}',[FormuleController::class,'update'])->name('update.formule');

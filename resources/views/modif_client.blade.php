@@ -8,23 +8,23 @@
               <div class="card-body">
 
 
-                  <form role="form" method="post" action="{{route('updateM.client',$datas->id_client)}}">
+                  <form role="form" method="post" action="{{route('updateM.client')}}">
                     @csrf
-
+                    <input type="hidden" name="id_client" value="{{ $datas->id_client }}" required>
                     <div class="form-group">
-                      Nom client<br><input class="form-control" placeholder="{{ $datas->nom_client }}" name="nom_client" required>
+                      Nom client<br><input class="form-control" value="{{ $datas->nom_client }}" name="nom_client" required>
                     </div>
                     <div class="form-group">
-                      Prenom client<br><input class="form-control" placeholder="{{ $datas->prenom_client }}" name="prenom_client" required>
+                      Prenom client<br><input class="form-control" value="{{ $datas->prenom_client }}" name="prenom_client" required>
                     </div>
                     <div class="form-group">
-                      N° téléphone client<br><input class="form-control" placeholder="{{ $datas->telephone_client }}" name="telephone_client" required>
+                      N° téléphone client<br><input class="form-control" value="{{ $datas->telephone_client }}" name="telephone_client" required>
                     </div>
                     <div class="form-group">
-                      N° decodeur<br><input class="form-control" placeholder="{{ $datas->num_decodeur }}" name="num_decodeur" disabled>
+                      N° decodeur<br><input class="form-control" value="{{ $datas->num_decodeur }}" name="num_decodeur" disabled>
                     </div>
                     <div class="form-group">
-                      Adresse client<br><input class="form-control" placeholder="{{ $datas->adresse_client }}" name="adresse_client" required>
+                      Adresse client<br><input class="form-control" value="{{ $datas->adresse_client }}" name="adresse_client" required>
                     </div>
                     <div class="form-group">
                       Formule: <select  name="formule" disabled>

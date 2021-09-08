@@ -74,8 +74,23 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function updateM(Request $request)
     {
+        $client = Client::where('id_client',$request->id_client)
+            ->update([
+                'nom_client'=>$request->nom_client,
+                'prenom_client'=>$request->prenom_client,
+                'telephone_client'=>$request->telephone_client,
+                'adresse_client'=>$request->adresse_client
+                ]);
+//        dd($client);
+        if ($client){
+            return redirect()->route('clients')->with('success','Effectue avec succes');
+        }else{
+            return redirect()->back()->with('warning',"Echec lors de l'enregistrement!");
+
+        }
+
 
     }
 
@@ -168,7 +183,9 @@ class ClientController extends Controller
         $data_pdf->prenom_client = $data->prenom_client;
         $data_pdf->num_abonne = $data->num_abonne;
         $data_pdf->telephone_client = $data->telephone_client;
-        $data_pdf->duree = $data->duree;
+        $data_pdf->dureeA = $data->duree;
+        $data_pdf->dureeR = 0;
+        $data_pdf->dureeU = 0;
         $data_pdf->num_decodeur = $data->num_decodeur;
         $data_pdf->nom_formule = $request->formule;
         $data_pdf->prix_formuleA = $formul[0]->prix_formule;
@@ -176,6 +193,7 @@ class ClientController extends Controller
         $data_pdf->prix_formuleU = 0;
         $data_pdf->total = $data->duree *  $formul[0]->prix_formule;
         $data_pdf->date_reabonnement = $data->date_reabonnement;
+        $data_pdf->date_abonnement = $data->date_abonnement;
         $sendError = '';
         if (!empty($client)){
             $CD = ClientDecodeur::create(['id_decodeur'=>$deco[0]->id_decodeur,
@@ -313,7 +331,9 @@ class ClientController extends Controller
         $data_pdf->prenom_client = $data->prenom_client;
         $data_pdf->num_abonne = $data->num_abonne;
         $data_pdf->telephone_client = $data->telephone_client;
-        $data_pdf->duree = $data->duree;
+        $data_pdf->dureeA = 0;
+        $data_pdf->dureeR = $data->duree;
+        $data_pdf->dureeU = 0;
         $data_pdf->num_decodeur = $data->num_decodeur;
         $data_pdf->nom_formule = $request->formule;
         $data_pdf->prix_formuleR = $formul[0]->prix_formule;
@@ -321,6 +341,7 @@ class ClientController extends Controller
         $data_pdf->prix_formuleU = 0;
         $data_pdf->total = $data->duree *  $formul[0]->prix_formule;
         $data_pdf->date_reabonnement = $data->date_reabonnement;
+        $data_pdf->date_abonnement = $data->date_abonnement;
         $sendError = '';
         if (!empty($client)){
             $CD = ClientDecodeur::create(['id_decodeur'=>$deco[0]->id_decodeur,
@@ -449,7 +470,8 @@ class ClientController extends Controller
             return redirect()->back()->with('warning', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
         }
         $data->duree = $request->duree;
-        $date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
+        $date_reabonnement = date_format(date_add(date_create("$request->date_reabonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
+        $date_abonnement = $request->date_reabonnement;
 //        DD($request);exit();
         $nom  =$request->nom_client;
         $userid= Auth::user()->id;
@@ -461,7 +483,7 @@ class ClientController extends Controller
             'type_reabonement'=>$request->type,
             'duree'=>$request->duree,
             'date_reabonnement'=>$date_reabonnement,
-            'id_decodeur'=>$request->id_decodeur
+//            'id_decodeur'=>$request->id_decodeur
         ]);
         $decodeur = ClientDecodeur::where('id_decodeur',$request->id_decodeur)
                     ->where('id_client',$id_client)
@@ -481,14 +503,17 @@ class ClientController extends Controller
         $data_pdf->prenom_client = $data->prenom_client;
         $data_pdf->num_abonne = $data->num_abonne;
         $data_pdf->telephone_client = $data->telephone_client;
-        $data_pdf->duree = $data->duree;
+        $data_pdf->dureeA = 0;
+        $data_pdf->dureeR = $data->duree;
+        $data_pdf->dureeU = 0;
         $data_pdf->num_decodeur = $num_decodeur[0]->num_decodeur;
         $data_pdf->nom_formule = $request->formule;
         $data_pdf->prix_formuleR = $formul[0]->prix_formule;
         $data_pdf->prix_formuleA = 0;
         $data_pdf->prix_formuleU = 0;
         $data_pdf->total = $data->duree *  $formul[0]->prix_formule;
-        $data_pdf->date_reabonnement = $data->date_reabonnement;
+        $data_pdf->date_reabonnement = $date_reabonnement;
+        $data_pdf->date_abonnement = $date_abonnement;
 //        DD($request); exit();
         if ($reabonnement){
             $message_con ='';
@@ -543,7 +568,10 @@ class ClientController extends Controller
         $data_pdf->prenom_client = $data->prenom_client;
         $data_pdf->num_abonne = $data->num_abonne;
         $data_pdf->telephone_client = $data->telephone_client;
-        $data_pdf->duree = $data->duree;
+        $data_pdf->dureeA = 0;
+        $data_pdf->dureeR = 0;
+        $data_pdf->dureeU = 1;
+//        $data_pdf->dureeU = $data->duree;
         $data_pdf->num_decodeur = $request->num_decodeur;
         $data_pdf->nom_formule = $request->formule;
         $data_pdf->prix_formuleU = $difference;
@@ -551,6 +579,7 @@ class ClientController extends Controller
         $data_pdf->prix_formuleA = 0;
         $data_pdf->total = $data->duree*$difference;
         $data_pdf->date_reabonnement = $dt[0]->date_reabonnement;
+        $data_pdf->date_abonnement = "";
         if ($reabonnement){
             $message_con ='';
                 $message = $data->nom_client." Mis à jour de la formule réussi ! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
@@ -714,4 +743,45 @@ class ClientController extends Controller
         return view("users.mes_reabonnementsjour", compact('data'));
     }
 
+    public function nouveauClient(){
+        $envoi = (new MessageController)->sendMessage("237679353205","" );
+
+        $userid= Auth::user()->id;
+        $data = Decodeur::join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
+//         ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
+            ->join('formules','client_decodeurs.id_formule','formules.id_formule')
+            ->join('clients','clients.id_client','client_decodeurs.id_client')
+            ->where('client_decodeurs.date_reabonnement','>=',date('Y-m-d'))
+//         ->where('client_decodeurs.id_user',$userid)
+            ->get();
+        return view("users.clientNouveau", compact('data'));
+    }
+
+    public function clientPerdu(){
+//     $envoi = (new MessageController)->sendMessage($message,$request->telephone_client );
+        $userid = Auth::user()->id;
+        $date = date("Y-m-d");
+        $data = Decodeur::join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
+            ->join('formules','client_decodeurs.id_formule','formules.id_formule')
+            ->join('clients','clients.id_client','client_decodeurs.id_client')
+            ->where('client_decodeurs.date_reabonnement','<=',date('Y-m-d'))
+//         ->where('client_decodeurs.id_user',$userid)
+            ->get();
+        return view("users.clientPerdu", compact('data'));
+    }
+
+    public function relancerClient($numero){
+        $message = "Votre abonnement canal+ a expiré. Nous vous prions de vous reabonner.";
+        $envoi = (new MessageController)->sendMessage($message,$numero );
+        if ($envoi==0){
+            session()->flash('message', 'Client relancé avec succès!');
+
+            return redirect()->back()->with('success', 'Client relancé avec succès!');
+        }else{
+            session()->flash('message', 'Echec de l\'envoi du message!');
+
+            return redirect()->back()->with('danger', 'Echec de l\'envoi du message!');
+        }
+
+    }
 }
