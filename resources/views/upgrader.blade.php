@@ -2,7 +2,7 @@
   <x-slot name="slot">
     <div class="row show-grid">
       <!-- Clients -->
-      <div class="col-md-6">
+      <div class="col-md-12">
         <!-- Nombre Clients -->
         <div class="card shadow mb-4">
           <div class="card-header py-3">

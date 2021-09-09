@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use DateInterval;
+use DateTime;
+use http\Env\Response;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Models\Client;
@@ -158,6 +161,10 @@ class ClientController extends Controller
         $data->id_materiel = $deco[0]->id_decodeur;
         $data->date_abonnement = $request->date_abonnement;
         $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
+        $date = new DateTime($data->date_reabonnement);
+        $date->sub(new DateInterval('P1D'));
+        $date =  date("Y-m-d", strtotime($date->format('Y-m-d')));
+        $data->date_reabonnement = $date;
         $date_reabonnement=$data->date_reabonnement;
         $data->id_user = $userid;
 //        "237679353205",
@@ -306,7 +313,12 @@ class ClientController extends Controller
         $data->id_materiel = $deco[0]->id_decodeur;
         $data->date_abonnement = $request->date_abonnement;
         $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
-        $date_reabonnement=$data->date_reabonnement;
+
+        $date = new DateTime($data->date_reabonnement);
+        $date->sub(new DateInterval('P1D'));
+        $date =  date("Y-m-d", strtotime($date->format('Y-m-d')));
+        $data->date_reabonnement = $date;
+        $date_reabonnement = $data->date_reabonnement;
         $data->id_user = $userid;
 //        "237679353205",
 
@@ -471,7 +483,15 @@ class ClientController extends Controller
         }
         $data->duree = $request->duree;
         $date_reabonnement = date_format(date_add(date_create("$request->date_reabonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
+
+        $date = new DateTime($date_reabonnement);
+        $date->sub(new DateInterval('P1D'));
+        $date =  date("Y-m-d", strtotime($date->format('Y-m-d')));
+        $data->date_reabonnement = $date;
+        $date_reabonnement = $data->date_reabonnement;
+
         $date_abonnement = $request->date_reabonnement;
+//        dd($data->date_reabonnement, $request->date_reabonnement);
 //        DD($request);exit();
         $nom  =$request->nom_client;
         $userid= Auth::user()->id;
@@ -726,8 +746,13 @@ class ClientController extends Controller
             ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
             ->join('decodeurs','decodeurs.id_decodeur','reabonnements.id_decodeur')
             ->where('reabonnements.id_user', $userid)
+            ->OrderBy('reabonnements.id_reabonnement','DESC')
             ->get();
-        return view("users.mes_reabonnements", compact('data'));
+        $reabonnement = Reabonnement::all();
+//            ->get('reabonnements.*','decodeurs.id_decodeur','decodeurs.num_decodeur','formules.nom_formule','formules.prix_formule',
+//                'clients.nom_client','clients.prenom_client','clients.num_abonne','clients.telephone_client'
+//            );
+        return view("users.mes_reabonnements", compact('data','reabonnement'));
     }
     public function mesReabonnementsAjour()
     {
@@ -738,6 +763,7 @@ class ClientController extends Controller
             ->join('decodeurs','decodeurs.id_decodeur','reabonnements.id_decodeur')
             ->where('reabonnements.created_at', 'LIKE', "%{$date}%")
             ->where('clients.id_user', $userid)
+            ->OrderBy('reabonnements.id_reabonnement','DESC')
             ->get();
 //        return view("users.mes_reabonnementsjour", compact('data'));
         return view("users.mes_reabonnementsjour", compact('data'));
@@ -783,5 +809,11 @@ class ClientController extends Controller
             return redirect()->back()->with('danger', 'Echec de l\'envoi du message!');
         }
 
+    }
+
+    public function deleteReabonne( Request $request){
+        $id = $request->id;
+        $delete = Reabonnement::where('id_reabonnement',$id)->delete();
+        return Response()->json($delete);
     }
 }
