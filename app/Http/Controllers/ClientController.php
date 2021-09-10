@@ -843,4 +843,17 @@ class ClientController extends Controller
         $delete = Reabonnement::where('id_reabonnement',$id)->delete();
         return Response()->json($delete);
     }
+
+    public function recoverReabonne( Request $request){
+        $id = $request->id;
+        $delete = Reabonnement::where('id_reabonnement',$id)->update(['type_reabonement'=>1]);
+        return Response()->json($delete);
+    }
+
+    public function deleteAbonne( Request $request){
+        $id = $request->id_client;
+        $delete = ClientDecodeur::where('id_client',$id)->delete();
+        $deletec = Client::where('id_client',$id)->delete();
+        return Response()->json($delete);
+    }
 }

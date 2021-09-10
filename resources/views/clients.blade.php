@@ -4,7 +4,7 @@
         <div class="card-header py-3">
           <h4 class="m-2 font-weight-bold text-primary">Liste des clients</h4>
             <label class="mr-5"><a class="btn btn-primary" href="{{route('user.client.nouveau')}}"> Client nouveau</a></label>
-            <label class="ml-4"><a class="btn btn-danger"  href="{{route('user.client.perdu')}}"> Clients echruis</a></label>
+            <label class="ml-4"><a class="btn btn-danger"  href="{{route('user.client.perdu')}}"> Clients échus</a></label>
         </div>
           @include('layouts/flash-message')
 

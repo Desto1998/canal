@@ -21,7 +21,7 @@
                             <th>Numéro Décodeur</th>
                             <th>Formule</th>
                             <th>Durée</th>
-                            <th>Montant formule(FCFA)</th>
+                            <th>Montant formule</th>
 
                             <th>Montant total</th>
                             <th>Type</th>
@@ -85,13 +85,23 @@
                                          }
 
                                 @endphp
-                                <td class="text-center">
-                                    <button {{ $canDelete == 1? '' : "disabled" }} id="supprimer" title="Supprimer"
-                                            href="javascript:void(0);"
-                                            class="btn btn-danger btn-supp"
-                                            onclick="deleteFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
-                                        <i class="fas fa-fw fa-trash"></i>
-                                    </button>
+                                <td class="text-center d-f lex">
+{{--                                    <div class="row">--}}
+                                        <button {{ $canDelete == 1? '' : "disabled" }} id="supprimer" title="Supprimer"
+                                           href="javascript:void(0);"
+                                           class="btn btn-danger btn-supp"
+                                           onclick="deleteFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
+                                            <i class="fas fa-fw fa-trash"></i>
+                                        </button>
+                                        <button {{ $value->type_reabonement == 0? '' : "disabled" }} id="Recouvrement" title="Recouvrir le crédit"
+                                           href="javascript:void(0);"
+                                           class="btn btn-success btn-supp ml-1"
+                                           onclick="recouvrirFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
+                                            <i class="fas fa-fw fa-check"></i>
+                                        </button>
+{{--                                    </div>--}}
+
+
                                 </td>
                             </tr>
                             @php
@@ -134,6 +144,33 @@
             $.ajax({
                 type: "POST",
                 url: "{{ route('reabonnement.delete') }}",
+                data: {id: id, id_client: id_client},
+                dataType: 'json',
+                success: function (res) {
+                    if (res) {
+                        alert("Supprimé avec succès!");
+                        window.location.reload(200);
+
+                    } else {
+                        alert("Une erreur s'est produite!");
+                    }
+
+                }
+            });
+        }
+    }
+    function recouvrirFunc(id, id_client) {
+        // $('#success').addClass('hidden');
+        // $('#error').addClass('hidden');
+        if (confirm("Supprimer cet abonnement?") == true) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "{{ route('reabonnement.recover') }}",
                 data: {id: id, id_client: id_client},
                 dataType: 'json',
                 success: function (res) {

@@ -2,8 +2,10 @@
     <x-slot name="slot">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <label class="mr-5"><a class="btn btn-primary" href="{{route('user.abonnement.jour')}}"> Abonnements du jour</a></label>
-                <label class="ml-4"><a class="btn btn-success"  href="{{route('user.abonnement')}}"> Tous mes abonnements</a></label>
+                <label class="mr-5"><a class="btn btn-primary" href="{{route('user.abonnement.jour')}}"> Abonnements du
+                        jour</a></label>
+                <label class="ml-4"><a class="btn btn-success" href="{{route('user.abonnement')}}"> Tous mes
+                        abonnements</a></label>
             </div>
             @include('layouts/flash-message')
 
@@ -13,7 +15,7 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Nom et Prénom </th>
+                            <th>Nom et Prénom</th>
                             <th>Numéro de téléphone</th>
                             <th>Numéro client</th>
                             <th>Numéro Décodeur</th>
@@ -22,6 +24,7 @@
                             <th>Durée</th>
                             <th>Montant de la formule(FCFA)</th>
                             <th>Montant total</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -42,6 +45,32 @@
                                 <td>{{ $value->duree }} mois</td>
                                 <td>{{ $value->prix_formule }}</td>
                                 <td>{{ ($value->prix_formule * $value->duree) + $value->prix_decodeur }}</td>
+                                @php
+                                    $canDelete =0;
+                                              $created = new DateTime($value->created_at);
+                                            $created =  date("Y-m-d H:i:s", strtotime($value->created_at));
+
+                                            $date = new DateTime($created);
+                                         $date->add(new DateInterval('P1D'));
+                                        $datenow =  date('Y-m-d H:i:s');
+                                     //$date->format('');
+                                        $date =  date("Y-m-d H:i:s", strtotime($date->format('Y-m-d H:i:s')));
+                                        // dd($date);
+                                            if ($datenow <= $date){
+                                                 $canDelete = 1;
+                                             }else{
+                                                 $canDelete = 0;
+                                             }
+                                @endphp
+                                <td class="text-center">
+                                    <button {{ $canDelete == 1? '' : "disabled" }} id="supprimer" title="Supprimer"
+                                            href="javascript:void(0);"
+                                            class="btn btn-danger btn-supp"
+                                            onclick="deleteFunc({{ $value->id }},{{ $value->id_client }})">
+                                        <i class="fas fa-fw fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
                             </tr>
                             @php
                                 $chiffre += ($value->prix_formule * $value->duree) + $value->prix_decodeur ;
@@ -64,48 +93,31 @@
     </x-slot>
 </x-app-layout>
 <script>
-    function controlNumero1(){
+    function deleteFunc(id, id_client) {
 
+        if (confirm("Supprimer cet abonnement?") == true) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "{{ route('abonnement.delete') }}",
+                data: {id: id, id_client: id_client},
+                dataType: 'json',
+                success: function (res) {
+                    if (res) {
+                        alert("Supprimé avec succès!");
+                        window.location.reload(200);
 
-        var long = $('#num_abonne').val();
+                    } else {
+                        alert("Une erreur s'est produite!");
+                    }
 
-        if(long.length != 8){
-            $('.ereur-numeroa').removeClass('hidden');
-        }else{
-            $('.ereur-numeroa').addClass('hidden');
+                }
+            });
         }
-
     }
-    function controlNumero(val){
-        // alert("test");
-        var long = $('#num_decodeur').val();
-        if(long.length != 14){
-            $('.ereur-numerod').removeClass('hidden');
-        }else{
-            $('.ereur-numerod').addClass('hidden');
-        }
-
-    }
-    $( "#abonneForm" ).submit(function( event ) {
-
-        var numdeco = $('#num_decodeur').val();
-        var numabonne = $('#num_abonne').val();
-        if(numdeco.length == 14){
-            $('.ereur-numerod').addClass('hidden');
-            return;
-        }else{
-            $('.ereur-numerod').removeClass('hidden');
-            event.preventDefault();
-        }
-        if(numabonne.length == 8){
-            $('.ereur-numeroa').addClass('hidden');
-            return;
-        }else{
-            $('.ereur-numeroa').removeClass('hidden');
-            event.preventDefault();
-        }
-        // $( "span" ).text( "Not valid!" ).show().fadeOut( 1000 );
-        // event.preventDefault();
-    });
 
 </script>

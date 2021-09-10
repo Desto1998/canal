@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CaisseController;
+use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -30,7 +31,7 @@ Route::get('compte/blocke', function () {
 })->name('compte/blocke');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/', function () {
-    return view('dashboard');
+    return redirect()->route('home');
 })->name('dashboard');
 
 Route::prefix('dashboard')->group(function()
@@ -41,18 +42,23 @@ Route::prefix('dashboard')->group(function()
         Route::get('pdf', [PDFController::class, 'createPDF']);
 //        Route::get('/', function () {
 //            return view('dashboard');
-//        });
+//        }
+        Route::get('dashboard',[GeneralController::class,'dashboard'])->name('home');
+        Route::post('app/recherche',[GeneralController::class,'rechercherGlobal'])->name('app.rechercher');
         //Abonnement
+        Route::get('abonner_add', [ClientController::class, 'add'])->name('add.client');
         Route::get('abonner_add', [ClientController::class, 'add'])->name('add.client');
         Route::post('store', [ClientController::class, 'store'])->name('store.client');
         Route::get('abonner', [ClientController::class, 'view'])->name('view.abonner');
         Route::get('show/{id_client}', [ClientController::class, 'show'])->name('clients.show');
+        Route::post('abonner/delete',[ClientController::class,'deleteAbonne'])->name('abonnement.delete');
 
-    //Reabonnement
+        //Reabonnement
     Route::get('reabonner',[ClientController::class,'review'])->name('review.reabonner');
     Route::post('reabonner/add',[ClientController::class,'reabonneAdd'])->name('store.client.reabonnement');
     Route::get('new_reabonner/{id_client}',[ClientController::class,'reabonne'])->name('reabonne.client');
     Route::post('reabonner/delete',[ClientController::class,'deleteReabonne'])->name('reabonnement.delete');
+    Route::post('reabonner/recover',[ClientController::class,'recoverReabonne'])->name('reabonnement.recover');
     Route::post('updateR/{id_client}',[ClientController::class,'updateR'])->name('updateR.client');
 
     //Modifier

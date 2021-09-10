@@ -21,8 +21,9 @@
                             <th>Numéro Décodeur</th>
                             <th>Formule</th>
                             <th>Durée</th>
-                            <th>Montant de la formule(FCFA)</th>
+                            <th>Montant formule</th>
                             <th>Montant total</th>
+                            <th>Type</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -59,12 +60,18 @@
                                     @endif
 
                                 </td>
-                                <td>
+                                <td class="d-flex">
                                     <a type="button" id="supprimer"  title="Supprimer" href="javascript:void(0);"
                                        class="btn btn-danger btn-supp"
                                        onclick="deleteFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
                                         <i class="fas fa-fw fa-trash"></i>
                                     </a>
+                                    <button {{ $value->type_reabonement == 0? '' : "disabled" }} id="Recouvrement" title="Recouvrir le crédit"
+                                            href="javascript:void(0);"
+                                            class="btn btn-success ml-1 btn-supp"
+                                            onclick="recouvrirFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
+                                        <i class="fas fa-fw fa-check"></i>
+                                    </button>
                                 </td>
                             </tr>
                             @php
@@ -122,50 +129,31 @@
         }
     }
 
-    function controlNumero1() {
+    function recouvrirFunc(id, id_client) {
+        // $('#success').addClass('hidden');
+        // $('#error').addClass('hidden');
+        if (confirm("Supprimer cet abonnement?") == true) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "{{ route('reabonnement.recover') }}",
+                data: {id: id, id_client: id_client},
+                dataType: 'json',
+                success: function (res) {
+                    if (res) {
+                        alert("Supprimé avec succès!");
+                        window.location.reload(200);
 
+                    } else {
+                        alert("Une erreur s'est produite!");
+                    }
 
-        var long = $('#num_abonne').val();
-
-        if (long.length != 8) {
-            $('.ereur-numeroa').removeClass('hidden');
-        } else {
-            $('.ereur-numeroa').addClass('hidden');
+                }
+            });
         }
-
     }
-
-    function controlNumero(val) {
-        // alert("test");
-        var long = $('#num_decodeur').val();
-        if (long.length != 14) {
-            $('.ereur-numerod').removeClass('hidden');
-        } else {
-            $('.ereur-numerod').addClass('hidden');
-        }
-
-    }
-
-    $("#abonneForm").submit(function (event) {
-
-        var numdeco = $('#num_decodeur').val();
-        var numabonne = $('#num_abonne').val();
-        if (numdeco.length == 14) {
-            $('.ereur-numerod').addClass('hidden');
-            return;
-        } else {
-            $('.ereur-numerod').removeClass('hidden');
-            event.preventDefault();
-        }
-        if (numabonne.length == 8) {
-            $('.ereur-numeroa').addClass('hidden');
-            return;
-        } else {
-            $('.ereur-numeroa').removeClass('hidden');
-            event.preventDefault();
-        }
-        // $( "span" ).text( "Not valid!" ).show().fadeOut( 1000 );
-        // event.preventDefault();
-    });
-
 </script>

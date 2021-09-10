@@ -129,17 +129,19 @@
                     <td><strong>{{ $client->nom_client }}</strong></td>
                     <td><strong>{{ $client->telephone_client }}</strong></td>
                     <td><strong>{{ $client->num_abonne }}</strong></td>
-                    <td align="right">
+                    <td class="text-center">
                         <div class="btn_group">
-                            <a class="button is-primary" href="{{ route('clients.show', $client->id_client) }}"><i class="fas fa-fw fa-list-alt"></i> Details</a>
                             <div class="btn-group">
-                                <a type="button" class="btn btn-primary bg-gradient-primary dropdown no-arrow" data-toggle="dropdown" style="color:white;">
+                                <a type="button" class="btn btn-primary bg-gradient-primary dropdown no-arrow" data-toggle="dropdown" >
                                 ... <span class="caret"></span></a>
                                 <ul class="dropdown-menu text-center" role="menu">
                                     <li>
-                                        <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="{{route('edit.client',$client->id_client)}}">
-                                        <i class="fas fa-fw fa-edit"></i> Modifier
+                                        <a class="btn btn-info" href="{{ route('clients.show', $client->id_client) }}" title="Details sur le client"><i class="fas fa-fw fa-list-alt"></i> </a>
+
+                                        <a type="button" class="btn btn-warning" title="Modifier les infos du client"  href="{{route('edit.client',$client->id_client)}}">
+                                        <i class="fas fa-fw fa-edit"></i>
                                         </a>
+
                                     </li>
                                 </ul>
                             </div>
