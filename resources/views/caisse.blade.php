@@ -48,7 +48,7 @@
                         @endphp
                         <tr>
                             <th>#</th>
-                            <th>Utilisateu</th>
+                            <th>Utilisateur</th>
                             <th>Montant</th>
                             <th>Date d'ajout</th>
                             <th>Action</th>

@@ -46,7 +46,7 @@ Route::prefix('dashboard')->group(function()
         Route::get('abonner_add', [ClientController::class, 'add'])->name('add.client');
         Route::post('store', [ClientController::class, 'store'])->name('store.client');
         Route::get('abonner', [ClientController::class, 'view'])->name('view.abonner');
-        Route::get('show', [ClientController::class, 'show'])->name('clients.show');
+        Route::get('show/{id_client}', [ClientController::class, 'show'])->name('clients.show');
 
     //Reabonnement
     Route::get('reabonner',[ClientController::class,'review'])->name('review.reabonner');
@@ -76,6 +76,7 @@ Route::prefix('dashboard')->group(function()
 
     //Liste des clients
     Route::get('clients',[ClientController::class,'allview'])->name('clients');
+    Route::post('clients/delete',[ClientController::class,'deleteClient'])->name('client.delete');
 
     //Stock
     Route::get('stock',[MaterielController::class,'index'])->name('stock');

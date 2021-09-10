@@ -101,9 +101,9 @@
                     <td><strong>{{ $client->nom_client }}</strong></td>
                     <td><strong>{{ $client->telephone_client }}</strong></td>
                     <td><strong>{{ $client->num_abonne }}</strong></td>
-                    <td align="right"><div class="btn_group">
-                      <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="{{route('reabonne.client',$client->id_client)}}">
-                        <i class="fas fa-fw fa-edit"></i> Réabonner
+                    <td class="text-center">
+                      <a type="button" class="btn btn-warning" title="Réabonner"  href="{{route('reabonne.client',$client->id_client)}}">
+                        <i class="fas fa-fw fa-plus"></i>
                       </a>
                     </td>
                 </tr>

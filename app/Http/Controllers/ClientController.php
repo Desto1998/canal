@@ -162,7 +162,8 @@ class ClientController extends Controller
         $data->date_abonnement = $request->date_abonnement;
         $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
         $date = new DateTime($data->date_reabonnement);
-        $date->sub(new DateInterval('P1D'));
+//        $date->sub(new DateInterval('P1D'));
+        $date->sub(new DateInterval("P{$request->duree}D"));
         $date =  date("Y-m-d", strtotime($date->format('Y-m-d')));
         $data->date_reabonnement = $date;
         $date_reabonnement=$data->date_reabonnement;
@@ -315,7 +316,8 @@ class ClientController extends Controller
         $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
 
         $date = new DateTime($data->date_reabonnement);
-        $date->sub(new DateInterval('P1D'));
+//        $date->sub(new DateInterval('P1D'));
+        $date->sub(new DateInterval("P{$request->duree}D"));
         $date =  date("Y-m-d", strtotime($date->format('Y-m-d')));
         $data->date_reabonnement = $date;
         $date_reabonnement = $data->date_reabonnement;
@@ -410,7 +412,32 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        //return view('abonner',compact('client'));
+        $client = Client::where('id_client',$id)
+            ->get();
+        $user = User::where('id',$client[0]->id_user)->get();
+        $decodeurs =ClientDecodeur::join('decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
+            ->where('client_decodeurs.id_client',$id)->get();
+        $reabonnements = Reabonnement::join('users','users.id','reabonnements.id_user')
+            ->join('decodeurs','decodeurs.id_decodeur','reabonnements.id_decodeur')
+            ->join('formules','formules.id_formule','reabonnements.id_formule')
+            ->where('reabonnements.id_client',$id)
+            ->OrderBy('id_reabonnement','DESC')
+            ->get();
+        $reabonnement= Reabonnement::where('id_client',$id)->get();
+        return view('detailsclient',compact('client','decodeurs','reabonnements','user','reabonnement'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteClient(Request $request)
+    {
+        $id = $request->id_client;
+        $delete = Client::where('id_client',$id)->delete();
+        return Response()->json($delete);
     }
 
     /**
@@ -485,7 +512,7 @@ class ClientController extends Controller
         $date_reabonnement = date_format(date_add(date_create("$request->date_reabonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
 
         $date = new DateTime($date_reabonnement);
-        $date->sub(new DateInterval('P1D'));
+        $date->sub(new DateInterval("P{$request->duree}D"));
         $date =  date("Y-m-d", strtotime($date->format('Y-m-d')));
         $data->date_reabonnement = $date;
         $date_reabonnement = $data->date_reabonnement;
