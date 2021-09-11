@@ -215,7 +215,7 @@
       <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
           <form role="search" class="sr-input-func d-flex" method="post" action="{{ route('app.rechercher') }}">
               @csrf
-              <input type="text" placeholder="Rechercher un client..." class="search-int form-control">
+              <input type="text" name="research" required="Veiller entrer une valeur:nom, num abonne ou tel" placeholder="Rechercher un client..." class="search-int form-control">
               <button class="btn btn-success ml-1" title="Rechercher" style="border: 1px solid #eee;" type="submit"><i class="fa fa-search"></i></button>
           </form>
 

@@ -78,6 +78,26 @@ class GeneralController extends Controller
     }
 
     public function rechercherGlobal(Request  $request){
-        dd($request);exit();
+        if (empty($request->research)){
+            return redirect()->back()->with('warning','Mauvaise valeur de saisie');
+
+        }
+        $rechercher = strtotime($request->research);
+        $research = Client::where('nom_client','LIKE', "%{$request->research}%")
+            ->orWhere('telephone_client', 'LIKE', "%{$request->research}")
+            ->orWhere('num_abonne','=', $request->research)
+            ->get();
+        if (count($research)===0){
+            return redirect()->back()->with('warning','Auccun résultat trouvé pour: <<'.$request->research.'>>');
+        }
+        if (count($research)===1){
+            return (new ClientController)->show($research[0]->id_client);
+        }else{
+
+            $data  = $research;
+            return view('globalresearchresult',compact('data'));
+
+        }
+
     }
 }

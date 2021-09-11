@@ -24,7 +24,7 @@
               <tbody>
                 @foreach($allClients as $key => $client)
                 <tr>
-                    <td>{{ $client->id_client }}</td>
+                    <td>{{ $key+1 }}</td>
                     <td><strong>{{ $client->prenom_client }}</strong></td>
                     <td><strong>{{ $client->nom_client }}</strong></td>
                     <td><strong>{{ $client->telephone_client }}</strong></td>

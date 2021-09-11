@@ -1,7 +1,9 @@
 <x-app-layout>
     <x-slot name="slot">
         <div class="show-grid">
+            @include('layouts.flash-message')
 {{--            <!-- Clients -->--}}
+
             <div class="row">
 {{--                <!-- Nombre Clients -->--}}
                 <div class="col-md-3 mb-3">
@@ -17,7 +19,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-users fa-2x text-gray-300"></i>
+                                    <i class="fas  fa-users-cog fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
@@ -36,7 +38,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-user fa-2x text-gray-300"></i>
+                                    <i class="fas fa-user-check fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
@@ -56,7 +58,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-users fa-2x text-gray-300"></i>
+                                    <i class="fas fa-user-alt fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
@@ -76,7 +78,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-user fa-2x text-gray-300"></i>
+                                    <i class="fas fa-user-lock fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
@@ -102,7 +104,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-users fa-2x text-gray-300"></i>
+                                    <i class="fas fa-boxes fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
@@ -120,7 +122,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-users fa-2x text-gray-300"></i>
+                                    <i class="fas fa-check fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
@@ -138,7 +140,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-users fa-2x text-gray-300"></i>
+                                    <i class="fas fa-lock fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
@@ -164,7 +166,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-user fa-2x text-gray-300"></i>
+                                    <i class="fas fa-balance-scale fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
@@ -183,7 +185,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-user fa-2x text-gray-300"></i>
+                                    <i class="fas fa-money-bill-alt fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
@@ -202,7 +204,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-user fa-2x text-gray-300"></i>
+                                    <i class="fas fa-money-check fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
@@ -224,7 +226,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-user fa-2x text-gray-300"></i>
+                                    <i class="fas fa-fax fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
@@ -245,7 +247,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-user fa-2x text-gray-300"></i>
+                                    <i class="fas fa-users fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
@@ -265,7 +267,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-user fa-2x text-gray-300"></i>
+                                    <i class="fas fa-object-group fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>

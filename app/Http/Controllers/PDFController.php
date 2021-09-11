@@ -55,7 +55,7 @@ class PDFController extends Controller
         $this->fpdf->SetFont("Arial", 'B', 10);
         $this->fpdf->Cell(30, 5, 'Nom et prenom:', 0, 0);
         $this->fpdf->SetFont("Times", '', 10);
-        $this->fpdf->Cell(80, 5, $data->nom_client . " " . $data->prenom_client, 0, 0);
+        $this->fpdf->Cell(80, 5, strtoupper($data->nom_client) . " " . ucfirst(strtolower($data->prenom_client)), 0, 0);
 
         $this->fpdf->SetFont("Arial", 'B', 10);
         $this->fpdf->Cell(20, 5, 'Telephone:', 0, 0);
@@ -144,7 +144,7 @@ class PDFController extends Controller
         $this->fpdf->Cell(179, 5, '', 0, 1);
 //        $this->fpdf->Cell(159, 5, '', 0, 1);
         $this->fpdf->Cell(150, 5, 'GETEL SARL', 0, 0);
-        $this->fpdf->Cell(67, 5, $data->nom_client . " " . $data->prenom_client, 0, 1);
+        $this->fpdf->Cell(67, 5, strtoupper($data->nom_client) . " " . ucfirst(strtolower($data->prenom_client)), 0, 1);
 
         $this->fpdf->Cell(179, 5, '', 0, 1);
         $this->fpdf->SetFont("Times", '', 9);
