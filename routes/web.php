@@ -122,6 +122,7 @@ Route::prefix('dashboard')->group(function()
             Route::get('users/lient/perdu', [ClientController::class, 'clientPerdu'])->name('user.client.perdu');
             Route::get('user/client/nouveau', [ClientController::class, 'nouveauClient'])->name('user.client.nouveau');
             Route::get('user/client/relancer/{numero}', [ClientController::class, 'relancerClient'])->name('user.client.relancer');
+            Route::get('user/client/terme', [ClientController::class, 'bientotATerme'])->name('user.client.terme');
 
     });
 

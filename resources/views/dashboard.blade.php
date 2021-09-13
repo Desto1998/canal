@@ -12,7 +12,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-0">
                                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        <a href="{{ route('clients') }}">Clients</a>
+                                        <a href="{{ route('clients') }}" class="text-primary">Clients</a>
                                     </div>
                                     <div class="h6 mb-0 font-weight-bold text-gray-800">
                                         {{ count($clients) }}
@@ -31,7 +31,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-0">
                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                        <a href="{{ route('user.client.nouveau') }}"> Abonnés nouveaux </a>
+                                        <a href="{{ route('user.client.nouveau') }}" class="text-success"> Abonnés nouveaux </a>
                                     </div>
                                     <div class="h6 mb-0 font-weight-bold text-gray-800">
                                          {{ count($clientnouveaux) }}
@@ -50,8 +50,8 @@
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-0">
-                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Abonnés
-                                        bientot à terme
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        <a href="{{ route('user.client.terme') }}" class="text-warning">Abonnés bientot à terme</a>
                                     </div>
                                     <div class="h6 mb-0 font-weight-bold text-gray-800">
                                         {{ count($bientotaterme) }}
@@ -71,7 +71,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-0">
                                     <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                        <a href="{{ route('user.client.perdu') }}">Abonnés échus</a>
+                                        <a href="{{ route('user.client.perdu') }}" class="text-danger">Abonnés échus</a>
                                     </div>
                                     <div class="h6 mb-0 font-weight-bold text-gray-800">
                                         {{ count($clientperdu) }}
@@ -96,7 +96,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-0">
                                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        <a href="{{ route('stock') }}">Décodeurs</a>
+                                        <a href="{{ route('stock') }}" class="text-primary">Décodeurs</a>
                                     </div>
                                     <div class="h6 mb-0 font-weight-bold text-gray-800">
 
@@ -158,7 +158,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-0">
                                     <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                        <a href="{{ route('caisse') }}"> Total caisse </a>
+                                        <a href="{{ route('caisse') }}" class="text-info"> Total caisse </a>
 
                                     </div>
                                     <div class="h6 mb-0 font-weight-bold text-gray-800">
@@ -239,7 +239,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-0">
                                     <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                        <a href="{{ route('compte') }}">      Utilisateurs </a>
+                                        <a href="{{ route('compte') }}" class="text-info">      Utilisateurs </a>
 
                                     </div>
                                     <div class="h6 mb-0 font-weight-bold text-gray-800">

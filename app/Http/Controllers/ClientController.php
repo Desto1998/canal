@@ -810,6 +810,18 @@ class ClientController extends Controller
         return view("users.clientNouveau", compact('data'));
     }
 
+    public function bientotATerme(){
+        $date_reabonnement = date_format(date_add(date_create(date("Y-m-d")),date_interval_create_from_date_string("3 days")),'Y-m-d');
+
+        $data = Decodeur::join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
+            ->join('formules','client_decodeurs.id_formule','formules.id_formule')
+            ->join('clients','clients.id_client','client_decodeurs.id_client')
+            ->where('client_decodeurs.date_reabonnement','<=',$date_reabonnement)
+//         ->where('client_decodeurs.id_user',$userid)
+            ->get();
+        return view("users.bientoTerme", compact('data'));
+    }
+
     public function clientPerdu(){
 //     $envoi = (new MessageController)->sendMessage($message,$request->telephone_client );
         $userid = Auth::user()->id;

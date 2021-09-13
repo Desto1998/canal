@@ -2,7 +2,7 @@
     <x-slot name="slot">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h4 class="text-primary"> Clients échus</h4>
+                <h4 class="text-primary">Clients bientàt à terme</h4>
                 <label class=""><a class="btn btn-success" href="{{route('user.client.nouveau')}}"> Client nouveau</a></label>
                 <label class="ml-4"><a class="btn btn-warning"  href="{{route('user.client.terme')}}"> Bientot a terme</a></label>
                 <label class="ml-4"><a class="btn btn-danger"  href="{{route('user.client.perdu')}}"> Clients échus</a></label>
@@ -19,50 +19,37 @@
                             <th>Numéro de téléphone</th>
                             <th>Numéro client</th>
                             <th>Numéro Décodeur</th>
-                            <th>Dernière formule</th>
+                            <th>Formule actuelle</th>
                             <th>Durée</th>
                             <th>Date d'expiration</th>
-                            <th>Montant de la formule(FCFA)</th>
-                            <th>Montant total</th>
-                            <th> Relancer</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @php
-                            $compt = 1;
-                            $chiffre = 0;
-                        @endphp
+
                         @foreach($data as $key => $value)
 
-                            <tr class="text-danger">
-                                <td>{{$compt}}</td>
+                            <tr>
+                                <td>{{ $key+1 }}</td>
                                 <td><strong>{{ $value->nom_client }} {{$value->prenom_client }}</strong></td>
                                 <td><strong>{{ $value->telephone_client }}</strong></td>
                                 <td>{{ $value->num_abonne }}</td>
                                 <td>{{ $value->num_decodeur }}</td>
-                                <td>{{ $value->nom_formule }}</td>
+                                <td>{{ $value->nom_formule }} ( {{ $value->prix_formule  }} )</td>
                                 <td>{{ $value->duree }} mois</td>
                                 <td>{{ $value->date_reabonnement }} </td>
-                                <td>{{ $value->prix_formule }}</td>
-                                <td>{{ ($value->prix_formule * $value->duree) + $value->prix_decodeur }}</td>
-                                <td><a href="{{route('user.client.relancer',$value->telephone_client)}}" class="btn btn-success btn-info" title="Cliquer pour envoyer un message"><i class="fas fa-envelope "></i></a></td>
+                                <td>
+                                    <button class="btn btn-success" title="Envoyer un message de notification">
+                                        <i class="fa fa-envelope"></i>
+                                    </button>
+                                </td>
                             </tr>
-                            @php
-                                $chiffre += ($value->prix_formule * $value->duree) ;
-                                    $compt ++;
-                            @endphp
                         @endforeach
-
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-6">
-                    <h2>Total général : <span class="text-danger">{{$chiffre}} FCFA</span></h2>
-                </div>
             </div>
         </div>
-
-
         </div>
     </x-slot>
 </x-app-layout>
