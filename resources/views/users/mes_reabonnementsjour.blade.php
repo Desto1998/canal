@@ -2,9 +2,11 @@
     <x-slot name="slot">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <label class="mr-5"><a class="btn btn-primary" href="{{route('user.reabonnement.jour')}}"> Reabonnements
+                <label class=""><a class="btn btn-primary" href="{{route('user.reabonnement.jour')}}"> Reabonnements
                         du jour</a></label>
-                <label class="ml-4"><a class="btn btn-success" href="{{route('user.reabonnement')}}"> Tous mes
+                <label class="ml-6"><a class="btn btn-success" href="{{route('user.reabonnement')}}"> Tous mes
+                        reabonnements</a></label>
+                <label class="ml-6"><a class="btn btn-info" href="{{route('user.reabonnement.all')}}"> Tous les
                         reabonnements</a></label>
             </div>
             @include('layouts/flash-message')
@@ -132,7 +134,7 @@
     function recouvrirFunc(id, id_client) {
         // $('#success').addClass('hidden');
         // $('#error').addClass('hidden');
-        if (confirm("Supprimer cet abonnement?") == true) {
+        if (confirm("Recouvrir ce Réabonnement?") == true) {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

@@ -24,7 +24,6 @@
                             <th>Formule</th>
                             <th>Durée</th>
                             <th>Montant formule</th>
-
                             <th>Montant total</th>
                             <th>Type</th>
                             <th>Action</th>
@@ -88,20 +87,20 @@
 
                                 @endphp
                                 <td class="text-center d-f lex">
-{{--                                    <div class="row">--}}
-                                        <button {{ $canDelete == 1? '' : "disabled" }} id="supprimer" title="Supprimer"
-                                           href="javascript:void(0);"
-                                           class="btn btn-danger btn-supp"
-                                           onclick="deleteFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
-                                            <i class="fas fa-fw fa-trash"></i>
-                                        </button>
-                                        <button {{ $value->type_reabonement == 0? '' : "disabled" }} id="Recouvrement" title="Recouvrir le crédit"
-                                           href="javascript:void(0);"
-                                           class="btn btn-success btn-supp ml-1"
-                                           onclick="recouvrirFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
-                                            <i class="fas fa-fw fa-check"></i>
-                                        </button>
-{{--                                    </div>--}}
+                                    {{--                                    <div class="row">--}}
+                                    <button {{ $canDelete == 1? '' : "disabled" }} id="supprimer" title="Supprimer"
+                                            href="javascript:void(0);"
+                                            class="btn btn-danger btn-supp"
+                                            onclick="deleteFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
+                                        <i class="fas fa-fw fa-trash"></i>
+                                    </button>
+                                    <button {{ $value->type_reabonement == 0? '' : "disabled" }} id="Recouvrement" title="Recouvrir le crédit"
+                                            href="javascript:void(0);"
+                                            class="btn btn-success btn-supp ml-1"
+                                            onclick="recouvrirFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
+                                        <i class="fas fa-fw fa-check"></i>
+                                    </button>
+                                    {{--                                    </div>--}}
 
 
                                 </td>

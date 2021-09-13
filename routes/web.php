@@ -60,8 +60,10 @@ Route::prefix('dashboard')->group(function()
     Route::post('reabonner/delete',[ClientController::class,'deleteReabonne'])->name('reabonnement.delete');
     Route::post('reabonner/recover',[ClientController::class,'recoverReabonne'])->name('reabonnement.recover');
     Route::post('updateR/{id_client}',[ClientController::class,'updateR'])->name('updateR.client');
+    Route::get('reabonnement/all', [ClientController::class, 'allReabonnement'])->name('user.reabonnement.all');
 
-    //Modifier
+
+        //Modifier
     Route::get('upgrader',[ClientController::class,'viewModif'])->name('upgrader');
     Route::get('upgrade_client/{id_client}',[ClientController::class,'up_client'])->name('up.client');
     Route::post('upgradeClient/{id_client}',[ClientController::class,'upgradeClient'])->name('upgrade.client');
@@ -82,6 +84,7 @@ Route::prefix('dashboard')->group(function()
 
     //Liste des clients
     Route::get('clients',[ClientController::class,'allview'])->name('clients');
+    Route::post('clients/new_decodeur',[ClientController::class,'newDecodeur'])->name('clients.new_decodeur');
     Route::post('clients/delete',[ClientController::class,'deleteClient'])->name('client.delete');
 
     //Stock

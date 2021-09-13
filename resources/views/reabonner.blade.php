@@ -4,9 +4,12 @@
         <div class="card-header py-3">
           <h4 class="m-2 font-weight-bold text-primary">Réabonnement</h4>
             <h4 class="m-2 font-weight-bold text-primary">Nouveau&nbsp;<a  href="{{ route('add.client')}}" data-toggle="modal"  data-target="#clientModal" type="button" class="btn btn-primary bg-gradient-primary" style="border-radius: 0px;"><i class="fas fa-fw fa-plus"></i></a></h4>
-
-            <label class="mr-5"><a class="btn btn-primary" href="{{route('user.reabonnement.jour')}}"> Reabonnements du jour</a></label>
-            <label class="ml-4"><a class="btn btn-success"  href="{{route('user.reabonnement')}}"> Tous mes reabonnements</a></label>
+            <label class=""><a class="btn btn-primary" href="{{route('user.reabonnement.jour')}}"> Reabonnements
+                    du jour</a></label>
+            <label class="ml-6"><a class="btn btn-success" href="{{route('user.reabonnement')}}"> Tous mes
+                    reabonnements</a></label>
+            <label class="ml-6"><a class="btn btn-info" href="{{route('user.reabonnement.all')}}"> Tous les
+                    reabonnements</a></label>
         </div>
           <div class="modal fade" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog" role="document">
@@ -96,7 +99,7 @@
               <tbody>
                 @foreach($allClients as $key => $client)
                 <tr>
-                    <td>{{ $client->id_client }}</td>
+                    <td>{{ $key+1 }}</td>
                     <td><strong>{{ $client->prenom_client }}</strong></td>
                     <td><strong>{{ $client->nom_client }}</strong></td>
                     <td><strong>{{ $client->telephone_client }}</strong></td>

@@ -46,6 +46,12 @@
                             <span class="mr-2">par:</span> <span class="mr-2 text-black-50 font-semibold">{{ $user[0]->name }}</span>
 
                         </div>
+                        <div class="col-md-12 mt-2">
+                            décodeurs( {{ count($decodeurs) }} ):
+                            @foreach($decodeurs as $k => $item)
+                                <span class="mr-2 text-black-50 m-2 font-semibold"> {{ $item->num_decodeur }} </span>
+                            @endforeach
+                        </div>
                     </div>
                     <div class="row">
 

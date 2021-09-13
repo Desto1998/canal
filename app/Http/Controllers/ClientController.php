@@ -52,7 +52,9 @@ class ClientController extends Controller
     {
         $allClients = Client::all();
         $allFormules = Formule::all();
-        return view('clients',compact('allClients','allFormules'));
+        $decodeurs = Decodeur::join('client_decodeurs','client_decodeurs.id_decodeur','decodeurs.id_decodeur')
+            ->get();
+        return view('clients',compact('allClients','allFormules', 'decodeurs'));
     }
 
     public function viewModif()
@@ -108,7 +110,7 @@ class ClientController extends Controller
         $clients = Client::all();
         $formul = Formule::where('nom_formule',$request->formule)->get();
         $deco = Decodeur::where('num_decodeur',$request->num_decodeur)->get();
-        $clientdeco = ClientDecodeur::where('id_decodeur',$request->num_decodeur)->get();
+        $clientdeco = ClientDecodeur::where('id_decodeur',$deco[0]->id_decodeur)->get();
         $data = new client;
         $action = "ABONNEMENT";
 
@@ -118,7 +120,7 @@ class ClientController extends Controller
 
 
         if (empty($deco[0])){
-            session()->flash('message', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre.');
+            session()->flash('message', ' Le décodeur n\' existepas! Veillez l\'enregistrer ou entrez un autre.');
 
             return redirect()->back()->with('warning', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre!');
         }
@@ -686,7 +688,7 @@ class ClientController extends Controller
         }
         $message_con ="";
 //        DD($client->id_client);exit();
-
+        $sendError = "";
 
 
         if (!empty($client)){
@@ -766,6 +768,17 @@ class ClientController extends Controller
    //     dd($data);exit();
         return view("users.abonnementsjours",compact('data'));
     }
+
+    public function allReabonnement(){
+        $data = Reabonnement::join('clients', 'reabonnements.id_client', 'clients.id_client')
+            ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
+            ->join('decodeurs','decodeurs.id_decodeur','reabonnements.id_decodeur')
+            ->OrderBy('reabonnements.id_reabonnement','DESC')
+            ->get();
+        $reabonnement = Reabonnement::all();
+        return view("users.allreabonnement", compact('data','reabonnement'));
+    }
+
     public function mesReabonnements(){
         $userid = Auth::user()->id;
         $date = date("Y-m-d");
@@ -867,5 +880,135 @@ class ClientController extends Controller
         $delete = ClientDecodeur::where('id_client',$id)->delete();
         $deletec = Client::where('id_client',$id)->delete();
         return Response()->json($delete);
+    }
+
+    public function newDecodeur(Request $request){
+
+        $userid= Auth::user()->id;
+        $clients = Client::where('id_client',$request->id_client)->get();
+        $formul = Formule::where('nom_formule',$request->formule)->get();
+        $deco = Decodeur::where('num_decodeur',$request->num_decodeur)->get();
+        if(!empty($deco[0])) {
+            $clientdeco = ClientDecodeur::where('id_decodeur', $deco[0]->id_decodeur)->get();
+        }
+        $data = new client;
+        $action = "ABONNEMENT";
+//        $id_decodeur = 0;
+
+        $data->telephone_client = $clients[0]->telephone_client;
+
+
+        if(!empty($clientdeco[0])){
+            session()->flash('message', ' Ce décodeur est déja utilisé par client!');
+
+            return redirect()->back()->with('warning', 'Ce décodeur est déja utilisé par client!');
+        }
+
+        if (!empty($deco[0])){
+            $id_decodeur = $deco[0]->id_decodeur;
+            $prix_decodeur = $deco[0]->prix_decodeur;
+        }else{
+            $deco = Decodeur::create([
+               'num_decodeur'=> $request->num_decodeur,
+               'quantite'=>1,
+               'prix_decodeur'=>$request->prix_decodeur,
+               'date_livaison'=>date('Y-m-d'),
+               'id_user'=>$userid
+            ]);
+            $id_decodeur = $deco->id;
+
+            $prix_decodeur = $request->prix_decodeur;
+        }
+
+//        $data->id_decodeur = $deco[0]->id_decodeur;
+//        foreach($formul as $formul1){
+        $id_formule = $formul[0]->id_formule;
+        $statutcaisse = (new MessageController)->resteCaisse();
+        if ($statutcaisse < $formul[0]->prix_formule * $request->duree){
+            session()->flash('message', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
+
+            return redirect()->back()->with('warning', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
+        }
+//        }
+        $data->nom_client = $clients[0]->nom_client;
+        $data->num_abonne = $clients[0]->num_abonne;
+        $data->prenom_client = $clients[0]->prenom_client;
+        $data->adresse_client = $clients[0]->adresse_client;
+        $data->num_decodeur =$request->num_decodeur;
+        $data->duree = $request->duree;
+        $data->id_materiel = $id_decodeur;
+        $data->date_abonnement = $request->date_abonnement;
+        $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"),date_interval_create_from_date_string("$request->duree months")),'Y-m-d');
+        $date = new DateTime($data->date_reabonnement);
+//        $date->sub(new DateInterval('P1D'));
+        $date->sub(new DateInterval("P{$request->duree}D"));
+        $date =  date("Y-m-d", strtotime($date->format('Y-m-d')));
+        $data->date_reabonnement = $date;
+        $date_reabonnement=$data->date_reabonnement;
+        $data->id_user = $userid;
+
+        $message_con ="";
+
+        $data_pdf = new Array_();
+        $data_pdf->nom_client = $data->nom_client;
+        $data_pdf->prenom_client = $data->prenom_client;
+        $data_pdf->num_abonne = $data->num_abonne;
+        $data_pdf->telephone_client = $data->telephone_client;
+        $data_pdf->dureeA = $data->duree;
+        $data_pdf->dureeR = 0;
+        $data_pdf->dureeU = 0;
+        $data_pdf->num_decodeur = $data->num_decodeur;
+        $data_pdf->nom_formule = $request->formule;
+        $data_pdf->prix_formuleA = $formul[0]->prix_formule;
+        $data_pdf->prix_formuleR = 0;
+        $data_pdf->prix_formuleU = 0;
+        $data_pdf->total = $data->duree *  $formul[0]->prix_formule + $prix_decodeur;
+        $data_pdf->date_reabonnement = $data->date_reabonnement;
+        $data_pdf->date_abonnement = $data->date_abonnement;
+        $sendError = '';
+        if (!empty($request->id_client)){
+            $CD = ClientDecodeur::create(['id_decodeur'=>$id_decodeur,
+                'id_client'=>$request->id_client,
+                'id_user'=>$userid,
+                'date_abonnement'=> $data->date_abonnement,
+                'date_reabonnement'=>$date_reabonnement,
+                'id_formule'=>$id_formule,
+            ]);
+
+            $reabonnement = Reabonnement::create(['id_decodeur'=>$id_decodeur,
+                'id_client'=>$request->id_client,
+                'id_formule'=>$id_formule,
+                'id_user'=>$userid,
+                'type_reabonement'=>1,
+                'duree'=>$data->duree,
+                'date_reabonnement'=>$date_reabonnement
+            ]);
+//                $message = ($request->nom_client." Merci de vous etre abonné chez nous! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".");
+//                $envoi = (new MessageController)->sendMessage($message,$request->telephone_client );
+//                if ($envoi == 0) {
+//                    $message_con ="Un message a été envoyé au client.";
+//                }else{
+//                    $sendError =$envoi;
+//                }
+
+        }
+
+        if (!empty($reabonnement) && !empty($CD)) {
+            session()->flash('message', 'Enregistré avec succès. '.$message_con);
+            $pdf = (new PDFController)->createPDF($data_pdf,$action);
+
+            return  redirect()->back()->with('info', 'Enregistré avec succès. '.$message_con);
+        }
+
+        if (!empty($reabonnement)  and empty($message_con)) {
+            session()->flash('message', 'Enregistré avec succès. Mais le message n\'a pas été envoyé '.$sendError  );
+            $pdf = (new PDFController)->createPDF($data_pdf,$action);
+            return  redirect()->back()->with('warning', 'Enregistré avec succès. Mais le message n\'a pas été envoyé.'."\n Statut:".$sendError);
+        } else {
+            session()->flash('message', 'Erreur lors de l\'enregistrement!');
+
+            return redirect()->back()->with('danger', 'Erreur lors de l\'enregistrement!');
+        }
+
     }
 }
