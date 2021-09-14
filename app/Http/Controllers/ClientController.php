@@ -88,11 +88,21 @@ class ClientController extends Controller
                 'telephone_client'=>$request->telephone_client,
                 'adresse_client'=>$request->adresse_client
                 ]);
-//        dd($client);
-        if ($client){
-            return redirect()->route('clients')->with('success','Effectue avec succes');
+        if (count($request->num_decodeur) === count($request->id_decodeur)){
+           for ( $i = 0; $i < count($request->num_decodeur); $i++ ){
+               $decodeur[$i] = Decodeur::where('id_decodeur',$request->id_decodeur[$i])
+                   ->update([
+                       'num_decodeur'=>$request->num_decodeur[$i],
+                   ]);
+           }
         }else{
-            return redirect()->back()->with('warning',"Echec lors de l'enregistrement!");
+            return redirect()->back()->with('danger',"Echec lors de l'enregistrement! données du formulaire mal saisie.");
+        }
+//        dd($client);
+        if ($client && $decodeur){
+            return redirect()->route('clients')->with('success','Effectué avec succes');
+        }else{
+            return redirect()->back()->with('danger',"Erreur lors de l'enregistrement!");
 
         }
 
@@ -461,8 +471,10 @@ class ClientController extends Controller
     public function edit_client( $id_client)
     {
         $datas = Client::find($id_client);
+        $decodeurs = ClientDecodeur::join('decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
+            ->where('id_client',$id_client)->get();
         //dd($datas);
-        return view('modif_client',compact('datas'));
+        return view('modif_client',compact('datas','decodeurs'));
     }
 
     public function up_client( $id_client)

@@ -20,26 +20,31 @@
                     <div class="form-group">
                       N° téléphone client<br><input class="form-control" value="{{ $datas->telephone_client }}" name="telephone_client" required>
                     </div>
-                    <div class="form-group">
-                      N° decodeur<br><input class="form-control" value="{{ $datas->num_decodeur }}" name="num_decodeur" disabled>
-                    </div>
+{{--                    <div class="form-group">--}}
+{{--                      N° decodeur<br><input class="form-control" value="{{ $datas->num_decodeur }}" name="num_decodeur" disabled>--}}
+{{--                    </div>--}}
                     <div class="form-group">
                       Adresse client<br><input class="form-control" value="{{ $datas->adresse_client }}" name="adresse_client" required>
                     </div>
-                    <div class="form-group">
-                      Formule: <select  name="formule" disabled>
-                        <option value="ACCESS" selected> ACCESS </option>
-                        <option value="ACCESS +"> ACCESS + </option>
-                        <option value="EVASION"> EVASION </option>
-                        <option value="EVASION +"> EVASION + </option>
-                        <option value="PRESTIGE"> PRESTIGE </option>
-                        <option value="ESSENTIEL +"> ESSENTIEL + </option>
-                        <option value="TOUT CANAL"> TOUT CANAL </option>
-                       </select>
-                    </div>
-                    <div class="form-group">
-                      Date reabonnement<br><input class="form-control" name="date_reabonnement" type="date" disabled>
-                    </div>
+                      Décodeurs
+                      @foreach( $decodeurs as $key =>$item)
+                          <input type="text"  maxlength="14" minlength="14" class="form-control" value="{{ $item->num_decodeur }}" name="num_decodeur[]" required>
+                          <input type="hidden"   value="{{ $item->id_decodeur }}" name="id_decodeur[]" required>
+                      @endforeach
+{{--                    <div class="form-group">--}}
+{{--                      Formule: <select  name="formule" disabled>--}}
+{{--                        <option value="ACCESS" selected> ACCESS </option>--}}
+{{--                        <option value="ACCESS +"> ACCESS + </option>--}}
+{{--                        <option value="EVASION"> EVASION </option>--}}
+{{--                        <option value="EVASION +"> EVASION + </option>--}}
+{{--                        <option value="PRESTIGE"> PRESTIGE </option>--}}
+{{--                        <option value="ESSENTIEL +"> ESSENTIEL + </option>--}}
+{{--                        <option value="TOUT CANAL"> TOUT CANAL </option>--}}
+{{--                       </select>--}}
+{{--                    </div>--}}
+{{--                    <div class="form-group">--}}
+{{--                      Date reabonnement<br><input class="form-control" name="date_reabonnement" type="date" disabled>--}}
+{{--                    </div>--}}
                     <hr>
 
 
