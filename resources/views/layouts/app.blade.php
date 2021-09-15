@@ -57,6 +57,9 @@
   <!-- Custom styles for this page -->
   <link href={{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }} rel="stylesheet">
   {{--Datatables css--}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+{{--    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>--}}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="http://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
   {{--Datatables js--}}
   <script src="http://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
@@ -71,7 +74,9 @@
 
   <script src="{{ asset('js/app.js') }}" defer></script>
   <script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
-  <script>
+
+
+    <script>
     @if(Session::has('message'))
       var type = "{{ Session::get('alert-type', 'info') }}";
       switch(type){
@@ -192,6 +197,13 @@
                 <a class="nav-link {{ ($route=='compte')?'active':'' }}" href="{{ route('compte') }}">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Comptes</span></a>
+            </li>
+        @endif
+        @if( Auth::user()->is_admin==1)
+            <li class="nav-item">
+                <a class="nav-link {{ ($route=='settings')?'active':'' }}" href="{{ route('settings') }}">
+                    <i class="fas fa-fw fa-cogs"></i>
+                    <span>Paramètres</span></a>
             </li>
         @endif
 
