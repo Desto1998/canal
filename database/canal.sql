@@ -42,7 +42,7 @@ create table message_envoyes(
     nom_client varchar(100) null ,
     telephone_client varchar(20) null,
     message varchar(255) not null ,
-    descition_sms varchar(255) null ,
+    description_sms varchar(255) null ,
     statut int null ,
     quantite int default 1,
     id_user int null,

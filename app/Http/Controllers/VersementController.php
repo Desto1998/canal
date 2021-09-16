@@ -25,6 +25,10 @@ class VersementController extends Controller
 
     public function update(Request $request)
     {
+        $request->validate([
+            'montant_versement'=>'required',
+            'id_versement'=>'required',
+        ]);
         $userid= Auth::user()->id;
 
         $data = Versement::where('id_versement',$request->id_versement)
@@ -42,6 +46,9 @@ class VersementController extends Controller
     }
     public function store(Request $request)
     {
+        $request->validate([
+            'montant_versement'=>'required',
+        ]);
         $userid= Auth::user()->id;
         $data = Versement::create([
             'montant_versement'=>$request->montant_versement,

@@ -4,6 +4,7 @@ use App\Http\Controllers\CaisseController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VersementController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientController;
@@ -129,10 +130,17 @@ Route::prefix('dashboard')->group(function () {
         Route::get('user/client/terme', [ClientController::class, 'bientotATerme'])->name('user.client.terme');
 
         Route::get('settings', [SettingController::class, 'index'])->name('settings');
+
         Route::post('settings/store/sms/standard', [MessageController::class, 'storestandart'])->name('settings.store.sms.standart');
         Route::post('settings/store/sms', [MessageController::class, 'store'])->name('settings.store.sms');
         Route::get('message/delete/{id}', [MessageController::class, 'delete'])->name('message.delete');
         Route::post('message/update', [MessageController::class, 'update'])->name('message.update');
+
+        Route::post('settings/store/versement', [VersementController::class, 'store'])->name('settings.store.versement');
+        Route::get('versement/delete/{id}', [VersementController::class, 'delete'])->name('versement.delete');
+        Route::post('versement/update', [VersementController::class, 'update'])->name('versement.update');
+
+        Route::get('test/message', [MessageController::class, 'messageData'])->name('test.message');
 
     });
 

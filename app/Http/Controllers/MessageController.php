@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Caisse;
+use App\Models\Decodeur;
 use App\Models\Formule;
 use App\Models\Message;
+use App\Models\Message_Envoye;
+use App\Models\Reabonnement;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Array_;
 use Vonage\Client\Exception\Exception;
 class MessageController extends Controller
 {
@@ -112,6 +116,106 @@ class MessageController extends Controller
         }else{
             return redirect()->back()->with('danger','Echec de suppression. Une erreur est survenue veillez reessayer.');
         }
+    }
+
+    public function prepareMessage(  $data, $type )
+    {
+//        $id_client
+//        <NOM><PRENOM><MONTANT><DATEECHEANCE><DATEREABO>
+        $message = Message::where('type_sms',$type)->get();
+        $messagecontent = $message[0]->message;
+        if (strpos($message[0]->message, "<NOM>") !== false) {
+            $messagecontent = str_replace("<NOM>",$data->nom,$messagecontent);
+        }
+        if (strpos($message[0]->message, "<PRENOM>") !== false) {
+            $messagecontent = str_replace("<PRENOM>",$data->prenom,$messagecontent);
+        }
+        if (strpos($message[0]->message, "<MONTANT>") !== false) {
+            $messagecontent = str_replace("<MONTANT>",$data->montant,$messagecontent);
+        }
+        if (strpos($message[0]->message, "<DATEECHEANCE>") !== false) {
+            $messagecontent = str_replace("<DATEECHEANCE>",$data->dateecheance,$messagecontent);
+        }
+        if (strpos($message[0]->message, "<DATEREABO>") !== false) {
+            $messagecontent = str_replace("<DATEREABO>",$data->datereabo,$messagecontent);
+        }
+
+//        dd($messagecontent);
+        $send = $this->sendMessage($messagecontent,$data->phone);
+        $data->message = $messagecontent;
+        if ($send==0){
+            $statut = 0;
+        }else{
+            $statut = 1;
+        }
+        $data->statut = $statut;
+        $saveSend = $this->storeSened($data);
+        return $messagecontent;
+
+    }
+
+    public function PrepareStandartMessage(Request $request)
+    {
+        $request->validate([
+            'id_message'=>'required',
+            'phone'=>'required',
+            'id_client'=>'required',
+            'nom_client'=>'required',
+        ]);
+        $data = new Array_();
+        $data->nom = $request->nom;
+        $data->phone = $request->telephone_client;
+        $data->id_client = $request->id_client;
+        $data->id_message = $request->id_message;
+
+        $message = Message::where('id_message',$request->id_message)->get();
+        $messagecontent = $message[0]->message;
+        $send = $this->sendMessage($messagecontent,$request->phone);
+        if ($send==0){
+            $statut = 0;
+        }else{
+            $statut = 1;
+        }
+        $data->message = $messagecontent;
+        $data->statut = $statut;
+        $saveSend = $this->storeSened($data);
+        return $send;
+
+    }
+
+    public function messageData(){
+        $data = Reabonnement::join('clients', 'reabonnements.id_client', 'clients.id_client')
+            ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
+            ->join('decodeurs','decodeurs.id_decodeur','reabonnements.id_decodeur')
+            ->join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
+            ->where('id_reabonnement',29)
+            ->get();
+        //REABONNEMENT
+        //ABONNEMENT
+        //VERSEMENT
+        $data_message= new Array_();
+        $data_message->nom = $data[0]->nom_client;
+        $data_message->prenom = $data[0]->prenom_client;
+        $data_message->datereabo = $data[0]->date_reabonnement ;
+        $data_message->dateecheance = $data[0]->date_reabonnement ;
+        $data_message->montant = $data[0]->prix_formule * $data[0]->duree ;
+        $data_message->phone = "679353205" ;
+
+        $message  = $this->prepareMessage($data_message,'VERSEMENT');
+        return $message;
+    }
+
+    public function storeSened($data)
+    {
+        $envoi = Message_Envoye::create([
+            'id_message'=>$data->id_message,
+            'id_client'=>$data->id_client,
+            'nom_client'=>$data->nom.$data->prenom,
+            'telephone_client'=>$data->phone,
+            'message'=>$data->mesage,
+            'statut'=>$data->statut,
+        ]);
+        return $envoi;
     }
 
     public function totalCaisse(){

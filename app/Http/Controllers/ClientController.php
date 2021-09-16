@@ -215,6 +215,17 @@ class ClientController extends Controller
         $data_pdf->date_reabonnement = $data->date_reabonnement;
         $data_pdf->date_abonnement = $data->date_abonnement;
         $sendError = '';
+
+        $data_message = new Array_();
+        $data_message->nom = $data->nom_client;
+        $data_message->prenom = $data->prenom_client;
+        $data_message->phone = $data->telephone_client;
+        $data_message->datereabo = $data->date_abonnement;
+        $data_message->dateecheance = $data->date_reabonnement;
+        $data_message->montant = $data->duree *  $formul[0]->prix_formule;
+        $data_message->id_client = $client->id_client;
+
+
         if (!empty($client)){
             $CD = ClientDecodeur::create(['id_decodeur'=>$deco[0]->id_decodeur,
                 'id_client'=>$client->id_client,
@@ -232,7 +243,7 @@ class ClientController extends Controller
                 'duree'=>$data->duree,
                 'date_reabonnement'=>$date_reabonnement
             ]);
-//                $message = ($request->nom_client." Merci de vous etre abonné chez nous! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".");
+//            $envoi = (new MessageController)->prepareMessage($data_message,'ABONNEMENT');
 //                $envoi = (new MessageController)->sendMessage($message,$request->telephone_client );
 //                if ($envoi == 0) {
 //                    $message_con ="Un message a été envoyé au client.";
@@ -369,6 +380,15 @@ class ClientController extends Controller
         $data_pdf->date_reabonnement = $data->date_reabonnement;
         $data_pdf->date_abonnement = $data->date_abonnement;
         $sendError = '';
+
+        $data_message = new Array_();
+        $data_message->nom = $data->nom_client;
+        $data_message->prenom = $data->prenom_client;
+        $data_message->phone = $data->telephone_client;
+        $data_message->datereabo = $data->date_abonnement;
+        $data_message->dateecheance = $data->date_reabonnement;
+        $data_message->montant = $data->duree *  $formul[0]->prix_formule;
+        $data_message->id_client = $client->id_client;
         if (!empty($client)){
             $CD = ClientDecodeur::create(['id_decodeur'=>$deco[0]->id_decodeur,
                 'id_client'=>$client->id_client,
@@ -387,7 +407,7 @@ class ClientController extends Controller
                 'date_reabonnement'=>$date_reabonnement
             ]);
 //                $message = ($request->nom_client." Merci de vous etre abonné chez nous! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".");
-//                $envoi = (new MessageController)->sendMessage($message,$request->telephone_client );
+//                $envoi = (new MessageController)->prepareMessage($data_message,'REABONNEMENT' );
 //                if ($envoi == 0) {
 //                    $message_con ="Un message a été envoyé au client.";
 //                }else{
@@ -575,11 +595,20 @@ class ClientController extends Controller
         $data_pdf->total = $data->duree *  $formul[0]->prix_formule;
         $data_pdf->date_reabonnement = $date_reabonnement;
         $data_pdf->date_abonnement = $date_abonnement;
+
+        $data_message = new Array_();
+        $data_message->nom = $data->nom_client;
+        $data_message->prenom = $data->prenom_client;
+        $data_message->phone = $data->telephone_client;
+        $data_message->datereabo = $data->date_abonnement;
+        $data_message->dateecheance = $data->date_reabonnement;
+        $data_message->montant = $data->duree *  $formul[0]->prix_formule;
+        $data_message->id_client = $id_client;
 //        DD($request); exit();
         if ($reabonnement){
             $message_con ='';
                 $message = $nom." Votre réabonnement à été effectué avec success! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
-//                $envoi = (new MessageController)->sendMessage($message,$telephone );
+//                $envoi = (new MessageController)->prepareMessage($data_message,'REABONNEMENT' );
 //                if ($envoi == 0) {
 //                    $message_con ="Un message a été envoyé au client.";
 //                }else{
@@ -641,10 +670,20 @@ class ClientController extends Controller
         $data_pdf->total = $data->duree*$difference;
         $data_pdf->date_reabonnement = $dt[0]->date_reabonnement;
         $data_pdf->date_abonnement = "";
+
+        $data_message = new Array_();
+        $data_message->nom = $data->nom_client;
+        $data_message->prenom = $data->prenom_client;
+        $data_message->phone = $data->telephone_client;
+        $data_message->datereabo = "";
+        $data_message->dateecheance = $dt[0]->date_reabonnement;
+        $data_message->montant = $data->duree*$difference;
+        $data_message->id_client = $id_client;
+
         if ($reabonnement){
             $message_con ='';
                 $message = $data->nom_client." Mis à jour de la formule réussi ! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
-//                $envoi = (new MessageController)->sendMessage($message,$data->telephone_client );
+//                $envoi = (new MessageController)->prepareMessage($data_message,'REABONNEMENT' );
 //                if ($envoi == 0) {
 //                    $message_con ="Un message a été envoyé au client.";
 //                }else{
@@ -978,6 +1017,16 @@ class ClientController extends Controller
         $data_pdf->date_reabonnement = $data->date_reabonnement;
         $data_pdf->date_abonnement = $data->date_abonnement;
         $sendError = '';
+
+        $data_message = new Array_();
+        $data_message->nom = $data->nom_client;
+        $data_message->prenom = $data->prenom_client;
+        $data_message->phone = $data->telephone_client;
+        $data_message->datereabo = $data->date_abonnement;
+        $data_message->dateecheance = $data->date_reabonnement;
+        $data_message->montant = $data->duree *  $formul[0]->prix_formule+ $prix_decodeur;
+        $data_message->id_client = $request->id_client;
+
         if (!empty($request->id_client)){
             $CD = ClientDecodeur::create(['id_decodeur'=>$id_decodeur,
                 'id_client'=>$request->id_client,
@@ -996,7 +1045,7 @@ class ClientController extends Controller
                 'date_reabonnement'=>$date_reabonnement
             ]);
 //                $message = ($request->nom_client." Merci de vous etre abonné chez nous! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".");
-//                $envoi = (new MessageController)->sendMessage($message,$request->telephone_client );
+                $envoi = (new MessageController)->prepareMessage($data_message,'ABONNEMENT' );
 //                if ($envoi == 0) {
 //                    $message_con ="Un message a été envoyé au client.";
 //                }else{
