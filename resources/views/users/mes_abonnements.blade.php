@@ -2,10 +2,13 @@
     <x-slot name="slot">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
+                <h6 class="mb-1 text-success"> Mes abonnements</h6>
                 <label class="mr-5"><a class="btn btn-primary" href="{{route('user.abonnement.jour')}}"> Abonnements du
                         jour</a></label>
                 <label class="ml-4"><a class="btn btn-success" href="{{route('user.abonnement')}}"> Tous mes
                         abonnements</a></label>
+                <label class="ml-6"><a class="btn btn-danger" href="{{route('user.reabonnement.credit')}}">
+                        Reabonnements à crédit</a></label>
             </div>
             @include('layouts/flash-message')
 
@@ -62,13 +65,14 @@
                                                  $canDelete = 0;
                                              }
                                 @endphp
-                                <td class="text-center">
+                                <td class="text-center d-flex">
                                     <button {{ $canDelete == 1? '' : "disabled" }} id="supprimer" title="Supprimer"
                                             href="javascript:void(0);"
                                             class="btn btn-danger btn-supp"
                                             onclick="deleteFunc({{ $value->id }},{{ $value->id_client }})">
                                         <i class="fas fa-fw fa-trash"></i>
                                     </button>
+
                                 </td>
                             </tr>
                             </tr>

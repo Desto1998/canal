@@ -59,14 +59,28 @@ class ClientController extends Controller
 
     public function viewModif()
     {
-        return view('upgrader',[
-            'allClients' => Client::all(),
-            // 'allFormules' => Formule::all(),
-            // 'allMateriels' => Materiel::all(),
-            // 'allDecodeurs' => Decodeur::all(),
-            // 'allUsers' => User::all(),
-            // 'allMessages' => Message::all(),
-        ]);
+        $userid= Auth::user()->id;
+        $clientdecodeur = Decodeur::join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
+            ->where('client_decodeurs.date_reabonnement','>=',date('Y-m-d'))
+            ->get();
+        $data = Reabonnement::join('clients', 'reabonnements.id_client', 'clients.id_client')
+            ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
+            ->join('decodeurs','decodeurs.id_decodeur','reabonnements.id_decodeur')
+            ->join('client_decodeurs','reabonnements.id_decodeur','client_decodeurs.id_decodeur')
+            ->where('client_decodeurs.date_reabonnement','>=',date('Y-m-d'))
+            ->where('clients.id_user', $userid)
+            ->OrderBy('reabonnements.id_reabonnement','DESC')
+            ->get();
+        $reabonnement = Reabonnement::all();
+        return view("upgrader", compact('data','reabonnement','clientdecodeur'));
+//        return view('upgrader',[
+//            'allClients' => Client::all(),
+//            // 'allFormules' => Formule::all(),
+//            // 'allMateriels' => Materiel::all(),
+//            // 'allDecodeurs' => Decodeur::all(),
+//            // 'allUsers' => User::all(),
+//            // 'allMessages' => Message::all(),
+//        ]);
     }
 
     public function add()
@@ -277,7 +291,7 @@ class ClientController extends Controller
         $decora = Decodeur::create([
             'num_decodeur'=>$request->num_decodeur,
             'prix_decodeur'=>0,
-            'date_livaison'=>'2021-08-17',
+            'date_livaison'=>date("Y-m-d"),
             'quantite'=> 1,
             'id_user'=>$userid
         ]);
@@ -497,24 +511,21 @@ class ClientController extends Controller
         return view('modif_client',compact('datas','decodeurs'));
     }
 
-    public function up_client( $id_client)
+    public function up_client( $id_client,$id_reabonnement)
     {
-        $datas = Client::find($id_client);
-        $formule = Formule::where('id_formule',$datas->id_formule)->get();
-        $decodeur = Decodeur::where('id_decodeur',$datas->id_decodeur)->get();
+
+        $reabonnement = Reabonnement::where('id_reabonnement',$id_reabonnement)->get();
+        $decodeur = Decodeur::where('id_decodeur',$reabonnement[0]->id_decodeur)->get();
         $decos = Decodeur::join('client_decodeurs','client_decodeurs.id_decodeur','decodeurs.id_decodeur')
             ->where('client_decodeurs.id_client',$id_client)
             ->get();
         return view('upgrade',[
             'datas' => Client::find($id_client),
-            'formule' => Formule::where('id_formule',$datas->id_formule)->get(),
-            'decodeur' => Decodeur::where('id_decodeur',$datas->id_decodeur)->get(),
-            'decos'=>$decos,
-            // 'allDecodeurs' => Decodeur::all(),
-            // 'allUsers' => User::all(),
-            // 'allMessages' => Message::all(),
+            'reabonnement' => Reabonnement::where('id_reabonnement',$id_reabonnement)->get(),
+            'formule' => Formule::where('id_formule',$reabonnement[0]->id_formule)->get(),
+            'decodeur' => Decodeur::where('id_decodeur',$reabonnement[0]->id_decodeur)->get(),
+            'decos'=>$decos
         ]);
-        //return view('upgrade',compact('datas','formule','decodeur'));
     }
 
     /**
@@ -627,11 +638,8 @@ class ClientController extends Controller
             'formule'=>'required',
         ]);
         $data = Client::find($id_client);
-
-        $action = "UPGRADE";
-
-        $dt = Reabonnement::where('id_client',$id_client)->get();
-        $formule = Formule::where('id_formule',$dt[0]->id_formule)->get();
+        $dt = Reabonnement::where('id_client',$request->id_reabonnement)->get();
+        $formule = Formule::where('id_formule',$request->id_formule)->get();
         $formul = Formule::where('nom_formule',$request->formule)->get();
             $id_formule = $formul[0]->id_formule;
         $statutcaisse = (new MessageController)->resteCaisse();
@@ -644,14 +652,11 @@ class ClientController extends Controller
             }
         }
         $userid= Auth::user()->id;
-        $reabonnement = Reabonnement::create(['id_decodeur'=>$request->id_decodeur,
-            'id_client'=>$id_client,
+        $reabonnement = Reabonnement::where('id_reabonnement',$request->id_reabonnement)
+            ->update(['id_decodeur'=>$request->id_decodeur,
             'id_formule'=>$id_formule,
             'id_user'=>$userid,
             'type_reabonement'=>$request->type,
-            'id_decodeur'=>$request->id_decodeur,
-            'duree'=>$dt[0]->duree,
-            'date_reabonnement'=>$dt[0]->date_reabonnement,
         ]);
         $data_pdf = new Array_();
         $data_pdf->nom_client = $data->nom_client;
@@ -668,7 +673,7 @@ class ClientController extends Controller
         $data_pdf->prix_formuleR = 0;
         $data_pdf->prix_formuleA = 0;
         $data_pdf->total = $data->duree*$difference;
-        $data_pdf->date_reabonnement = $dt[0]->date_reabonnement;
+        $data_pdf->date_reabonnement = $request->date_reabonnement;
         $data_pdf->date_abonnement = "";
 
         $data_message = new Array_();
@@ -676,7 +681,7 @@ class ClientController extends Controller
         $data_message->prenom = $data->prenom_client;
         $data_message->phone = $data->telephone_client;
         $data_message->datereabo = "";
-        $data_message->dateecheance = $dt[0]->date_reabonnement;
+        $data_message->dateecheance = $request->date_reabonnement;
         $data_message->montant = $data->duree*$difference;
         $data_message->id_client = $id_client;
 
@@ -691,7 +696,7 @@ class ClientController extends Controller
 //                }
         }
 //        $data->save();
-        $pdf = (new PDFController)->createPDF($data_pdf,$action);
+        $pdf = (new PDFController)->createPDF($data_pdf,'UPGRADE');
         session()->flash('message', "L'upgrate du client a reussi. ".$message_con);
         return  redirect()->route('upgrader')->with('info', "L'upgrate du client a reussi. ".$message_con);
     }
@@ -828,6 +833,16 @@ class ClientController extends Controller
             ->get();
         $reabonnement = Reabonnement::all();
         return view("users.allreabonnement", compact('data','reabonnement'));
+    }
+    public function creditReabonnement(){
+        $data = Reabonnement::join('clients', 'reabonnements.id_client', 'clients.id_client')
+            ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
+            ->join('decodeurs','decodeurs.id_decodeur','reabonnements.id_decodeur')
+            ->where('reabonnements.type_reabonement',0)
+            ->OrderBy('reabonnements.id_reabonnement','DESC')
+            ->get();
+        $reabonnement = Reabonnement::all();
+        return view("users.reabonnements_credit", compact('data','reabonnement'));
     }
 
     public function mesReabonnements(){

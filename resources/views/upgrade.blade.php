@@ -10,7 +10,13 @@
 
                     <form role="form" method="post" action="{{route('upgrade.client',$datas->id_client)}}">
                       @csrf
-
+                        <input type="hidden" name="id_reabonnement" value="{{ $reabonnement[0]->id_reabonnement }}">
+                        <input type="hidden" name="id_decodeur" value="{{ $reabonnement[0]->id_decodeur }}">
+                        <input type="hidden" name="id_formule" value="{{ $reabonnement[0]->id_formule }}">
+                        <input type="hidden" name="montant" value="{{ $formule[0]->montant }}">
+                        <input type="hidden" name="num_decodeur" value="{{ $decodeur[0]->num_decodeur }}">
+                        <input type="hidden" name="date_reabonnement" value="{{ $decodeur[0]->date_reabonnement }}">
+{{--                        <input type="hidden" name="id_client" value="{{ $reabonnement[0]->id_client }}">--}}
                       <div class="form-group">
                         Nom client<br><input class="form-control" placeholder="{{ $datas->nom_client }}" name="nom_client" disabled>
                       </div>
@@ -28,18 +34,16 @@
                       <div class="form-group">
                         Adresse client<br><input class="form-control" placeholder="{{ $datas->adresse_client }}" name="adresse_client" disabled>
                       </div>
-                      @foreach ($formule as $fm)
+
                       <div class="form-group">
-                        Formule précedent :<br><input class="form-control" placeholder="{{ $fm->nom_formule }}" name="adresse_client" disabled>
+                        Formule précedente :<br><input class="form-control" placeholder="{{ $formule[0]->nom_formule }}" name="adresse_client" disabled>
                       </div>
-                      @endforeach
                       <div class="form-group">
-                        Décodeurs: <select name="id_decodeur">
-                            @foreach($decos as $key => $val)
-                                <option value="{{$val->id_decodeur}}">{{$val->num_decodeur}}</option>
-                                @endforeach
-                        </select>
-                      Formule: <select  name="formule" required>
+{{--                        Décodeurs: <select class="form-control" name="id_decodeur" required>--}}
+
+{{--                                <option value="{{$decodeur[0]->id_decodeur}}">{{$decodeur[0]->num_decodeur}}</option>--}}
+{{--                        </select>--}}
+                      Formule: <select class="form-control"  name="formule" required>
                           <option value="ACCESS" selected> ACCESS </option>
                           <option value="ACCESS +"> ACCESS + </option>
                           <option value="EVASION"> EVASION </option>
@@ -54,7 +58,7 @@
                       <label class="ml-4"><input required type="radio" value="0" name="type">&nbsp; A crédit</label>
                     </div>
                       <div class="form-group">
-                      Date reabonnement<br><input class="form-control" placeholder="{{ $datas->data_reabonnement }}" value="Date de reabonnement" name="date_reabonnement" type="date" required>
+                      Date reabonnement<br><input class="form-control"  placeholder="{{ $datas->data_reabonnement }}" value="{{ $decos[0]->date_reabonnement }}" name="date_reabonnement" type="date" readonly required>
                     </div>
                       <hr>
 

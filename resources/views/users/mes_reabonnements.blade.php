@@ -2,12 +2,15 @@
     <x-slot name="slot">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
+                <h6 class="mb-1 text-success">Tous mes reabonnements</h6>
                 <label class=""><a class="btn btn-primary" href="{{route('user.reabonnement.jour')}}"> Reabonnements
                         du jour</a></label>
                 <label class="ml-6"><a class="btn btn-success" href="{{route('user.reabonnement')}}"> Tous mes
                         reabonnements</a></label>
                 <label class="ml-6"><a class="btn btn-info" href="{{route('user.reabonnement.all')}}"> Tous les
                         reabonnements</a></label>
+                <label class="ml-6"><a class="btn btn-danger" href="{{route('user.reabonnement.credit')}}">
+                        Reabonnements à crédit</a></label>
             </div>
             @include('layouts/flash-message')
 
@@ -87,7 +90,7 @@
                                          }
 
                                 @endphp
-                                <td class="text-center d-f lex">
+                                <td class="text-center d-flex">
 {{--                                    <div class="row">--}}
                                         <button {{ $canDelete == 1? '' : "disabled" }} id="supprimer" title="Supprimer"
                                            href="javascript:void(0);"
@@ -101,6 +104,9 @@
                                            onclick="recouvrirFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
                                             <i class="fas fa-fw fa-check"></i>
                                         </button>
+                                    <a target="_blank" title="Imprimer la facture" href="{{ route('printpdf', $value->id_reabonnement ) }}" class="btn btn-info ml-1">
+                                        <i class="fas fa-fw fa-print"></i>
+                                    </a>
 {{--                                    </div>--}}
 
 

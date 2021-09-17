@@ -9,6 +9,7 @@ use App\Models\Message;
 use App\Models\Message_Envoye;
 use App\Models\Reabonnement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use phpDocumentor\Reflection\Types\Array_;
 use Vonage\Client\Exception\Exception;
 class MessageController extends Controller
@@ -33,6 +34,7 @@ class MessageController extends Controller
 //            $message_con = "Error: ". $e->getMessage();
 //        }
 //        return $message_con;
+        return 0;
     }
 
     public function store( Request $request )
@@ -149,8 +151,14 @@ class MessageController extends Controller
             $statut = 1;
         }
         $data->statut = $statut;
+        $data->id_message = $message[0]->id_message;
+//        dd($data);
         $saveSend = $this->storeSened($data);
-        return $messagecontent;
+        if ($saveSend){
+            return $messagecontent;
+        }else{
+            return 'Error!';
+        }
 
     }
 
@@ -200,6 +208,7 @@ class MessageController extends Controller
         $data_message->dateecheance = $data[0]->date_reabonnement ;
         $data_message->montant = $data[0]->prix_formule * $data[0]->duree ;
         $data_message->phone = "679353205" ;
+        $data_message->id_client = 29 ;
 
         $message  = $this->prepareMessage($data_message,'VERSEMENT');
         return $message;
@@ -207,14 +216,21 @@ class MessageController extends Controller
 
     public function storeSened($data)
     {
+        $userId = Auth::user()->id;
         $envoi = Message_Envoye::create([
             'id_message'=>$data->id_message,
             'id_client'=>$data->id_client,
             'nom_client'=>$data->nom.$data->prenom,
             'telephone_client'=>$data->phone,
-            'message'=>$data->mesage,
+            'message'=>$data->message,
             'statut'=>$data->statut,
+            'id_user'=>$userId
         ]);
+        if ($envoi){
+            echo "Sended";
+        }else{
+            echo 'Error!';
+        }
         return $envoi;
     }
 

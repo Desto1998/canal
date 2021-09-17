@@ -15,7 +15,7 @@
 
                     </div>
                     <div class="col-md-6">
-                        <h4>Ajouter</h4> &nbsp;&nbsp;&nbsp;
+                        <h4>Recourvrement</h4> &nbsp;&nbsp;&nbsp;
                         <form action="{{isset($datas)?route('caisse.update'):route('caisse.ajouter')}}" method="post">
                             {{--                        <div class="form-group">--}}
                             @csrf
@@ -62,7 +62,7 @@
                                 <td>{{$value->montant}}</td>
                                 <td>{{$value->date_ajout}}</td>
                                 <td>
-                                        <a  href="{{$value->id == Auth::user()->id? route('caisse.get',$value->id_caisse ):'#'}}"   class="btn btn-warning" type="Modifier"><i class="fa fa-edit"></i></a>
+{{--                                        <a  href="{{$value->id == Auth::user()->id? route('caisse.get',$value->id_caisse ):'#'}}"   class="btn btn-warning" type="Modifier"><i class="fa fa-edit"></i></a>--}}
                                         <a href="{{$value->id == Auth::user()->id? route('caisse.delete',$value->id_caisse ):'#'}}"  class="btn btn-danger" title="Supprimer"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>

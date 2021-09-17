@@ -2,6 +2,7 @@
     <x-slot name="slot">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
+                <h6 class="mb-1 text-primary">Mes abonnements du jour</h6>
                 <label class="mr-5"><a class="btn btn-primary" href="{{route('user.abonnement.jour')}}"> Abonnements du jour</a></label>
                 <label class="ml-4"><a class="btn btn-success"  href="{{route('user.abonnement')}}"> Tous mes abonnements</a></label>
             </div>

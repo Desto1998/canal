@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CaisseController;
+use App\Http\Controllers\FactureController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
@@ -67,7 +68,7 @@ Route::prefix('dashboard')->group(function () {
 
         //Modifier
         Route::get('upgrader', [ClientController::class, 'viewModif'])->name('upgrader');
-        Route::get('upgrade_client/{id_client}', [ClientController::class, 'up_client'])->name('up.client');
+        Route::get('upgrade_client/{id_client}/{id_reabonnement?}', [ClientController::class, 'up_client'])->name('up.client');
         Route::post('upgradeClient/{id_client}', [ClientController::class, 'upgradeClient'])->name('upgrade.client');
 
         Route::get('modif_client/{id_client}', [ClientController::class, 'edit_client'])->name('edit.client');
@@ -122,6 +123,7 @@ Route::prefix('dashboard')->group(function () {
         Route::get('user/abonnement/jour', [ClientController::class, 'mesAbonnementsjour'])->name('user.abonnement.jour');
         Route::get('user/reabonnement', [ClientController::class, 'mesReabonnements'])->name('user.reabonnement');
         Route::get('user/reabonnement/jour', [ClientController::class, 'mesReabonnementsAjour'])->name('user.reabonnement.jour');
+        Route::get('user/reabonnement/credit', [ClientController::class, 'creditReabonnement'])->name('user.reabonnement.credit');
 
 
         Route::get('users/lient/perdu', [ClientController::class, 'clientPerdu'])->name('user.client.perdu');
@@ -139,9 +141,12 @@ Route::prefix('dashboard')->group(function () {
         Route::post('settings/store/versement', [VersementController::class, 'store'])->name('settings.store.versement');
         Route::get('versement/delete/{id}', [VersementController::class, 'delete'])->name('versement.delete');
         Route::post('versement/update', [VersementController::class, 'update'])->name('versement.update');
+        Route::get('printFacture/{id_reabonnement}', [FactureController::class, 'printFactureReabo'])->name('printpdf');
 
         Route::get('test/message', [MessageController::class, 'messageData'])->name('test.message');
 
     });
-
+    Route::get('canal/doc', function () {
+        return view('layouts.doc');
+    })->name('canal.doc');
 });

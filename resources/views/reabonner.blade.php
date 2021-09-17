@@ -10,6 +10,8 @@
                     reabonnements</a></label>
             <label class="ml-6"><a class="btn btn-info" href="{{route('user.reabonnement.all')}}"> Tous les
                     reabonnements</a></label>
+            <label class="ml-6"><a class="btn btn-danger" href="{{route('user.reabonnement.credit')}}">
+                    Reabonnements à crédit</a></label>
         </div>
           <div class="modal fade"  id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog"  role="document">
