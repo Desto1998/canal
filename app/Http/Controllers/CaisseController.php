@@ -66,4 +66,25 @@ class CaisseController extends Controller
         session()->flash('message', "Supprimé avec succès.");
         return  redirect()->back()->with('info', "Supprimé avec succès.");
     }
+
+    public function debitCaisse($montant,$raison)
+    {
+        $userid= Auth::user()->id;
+        $data = Caisse::create(['montant'=>$montant,
+            'raison'=>$raison,
+            'id_user'=>$userid,
+            'date_ajout'=>date("Y-m-d")
+        ]);
+        return $data;
+    }
+    public function creditCaisse($montant,$raison)
+    {
+        $userid= Auth::user()->id;
+        $data = Caisse::create(['montant'=>$montant,
+            'raison'=>$raison,
+            'id_user'=>$userid,
+            'date_ajout'=>date("Y-m-d")
+        ]);
+        return $data;
+    }
 }

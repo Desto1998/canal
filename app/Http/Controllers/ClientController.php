@@ -68,19 +68,11 @@ class ClientController extends Controller
             ->join('decodeurs','decodeurs.id_decodeur','reabonnements.id_decodeur')
             ->join('client_decodeurs','reabonnements.id_decodeur','client_decodeurs.id_decodeur')
             ->where('client_decodeurs.date_reabonnement','>=',date('Y-m-d'))
-            ->where('clients.id_user', $userid)
+//            ->where('clients.id_user', $userid)
             ->OrderBy('reabonnements.id_reabonnement','DESC')
             ->get();
         $reabonnement = Reabonnement::all();
         return view("upgrader", compact('data','reabonnement','clientdecodeur'));
-//        return view('upgrader',[
-//            'allClients' => Client::all(),
-//            // 'allFormules' => Formule::all(),
-//            // 'allMateriels' => Materiel::all(),
-//            // 'allDecodeurs' => Decodeur::all(),
-//            // 'allUsers' => User::all(),
-//            // 'allMessages' => Message::all(),
-//        ]);
     }
 
     public function add()
@@ -171,7 +163,7 @@ class ClientController extends Controller
 //        $data->id_decodeur = $deco[0]->id_decodeur;
 //        foreach($formul as $formul1){
             $id_formule = $formul[0]->id_formule;
-             $statutcaisse = (new MessageController)->resteCaisse();
+             $statutcaisse = (new VersementController)->resteVersement();
              if ($statutcaisse < $formul[0]->prix_formule * $request->duree){
                  session()->flash('message', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
 
@@ -241,6 +233,7 @@ class ClientController extends Controller
 
 
         if (!empty($client)){
+
             $CD = ClientDecodeur::create(['id_decodeur'=>$deco[0]->id_decodeur,
                 'id_client'=>$client->id_client,
                 'id_user'=>$userid,
@@ -257,6 +250,7 @@ class ClientController extends Controller
                 'duree'=>$data->duree,
                 'date_reabonnement'=>$date_reabonnement
             ]);
+
 //            $envoi = (new MessageController)->prepareMessage($data_message,'ABONNEMENT');
 //                $envoi = (new MessageController)->sendMessage($message,$request->telephone_client );
 //                if ($envoi == 0) {
@@ -335,7 +329,7 @@ class ClientController extends Controller
 //        $data->id_decodeur = $deco[0]->id_decodeur;
 //        foreach($formul as $formul1){
         $id_formule = $formul[0]->id_formule;
-        $statutcaisse = (new MessageController)->resteCaisse();
+        $statutcaisse = (new VersementController)->resteVersement();
         if ($statutcaisse < $formul[0]->prix_formule * $request->duree){
             session()->flash('message', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
 
@@ -544,7 +538,7 @@ class ClientController extends Controller
         $data = Client::find($id_client);
         $formul = Formule::where('nom_formule',$request->formule)->get();
             $id_formule = $formul[0]->id_formule;
-        $statutcaisse = (new MessageController)->resteCaisse();
+        $statutcaisse = (new VersementController)->resteVersement();
 
         $action = "REABONNEMENT";
 
@@ -642,7 +636,7 @@ class ClientController extends Controller
         $formule = Formule::where('id_formule',$request->id_formule)->get();
         $formul = Formule::where('nom_formule',$request->formule)->get();
             $id_formule = $formul[0]->id_formule;
-        $statutcaisse = (new MessageController)->resteCaisse();
+        $statutcaisse = (new VersementController)->resteVersement();
         $difference = $formul[0]->prix_formule - $formule[0]->prix_formule;
         if ( $difference > 0){
             if ($statutcaisse < $difference){
@@ -735,7 +729,7 @@ class ClientController extends Controller
 //        "237679353205",
 //        $id_formule = $formul[0]->id_formule;
 
-        $statutcaisse = (new MessageController)->resteCaisse();
+        $statutcaisse = (new VersementController)->resteVersement();
        // if($formul[0]->prix_formule >)
         if ($statutcaisse < $formul[0]->prix_formule){
             session()->flash('message', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
@@ -989,7 +983,7 @@ class ClientController extends Controller
 //        $data->id_decodeur = $deco[0]->id_decodeur;
 //        foreach($formul as $formul1){
         $id_formule = $formul[0]->id_formule;
-        $statutcaisse = (new MessageController)->resteCaisse();
+        $statutcaisse = (new VersementController)->resteVersement();
         if ($statutcaisse < $formul[0]->prix_formule * $request->duree){
             session()->flash('message', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' .$statutcaisse.' FCFA en caisse.');
 
