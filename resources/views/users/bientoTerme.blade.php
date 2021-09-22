@@ -27,23 +27,80 @@
                         </thead>
                         <tbody>
 
-                        @foreach($data as $key => $value)
+                        @foreach($data as $key => $client)
 
                             <tr>
                                 <td>{{ $key+1 }}</td>
-                                <td><strong>{{ $value->nom_client }} {{$value->prenom_client }}</strong></td>
-                                <td><strong>{{ $value->telephone_client }}</strong></td>
-                                <td>{{ $value->num_abonne }}</td>
-                                <td>{{ $value->num_decodeur }}</td>
-                                <td>{{ $value->nom_formule }} ( {{ $value->prix_formule  }} )</td>
-                                <td>{{ $value->duree }} mois</td>
-                                <td>{{ $value->date_reabonnement }} </td>
+                                <td><strong>{{ $client->nom_client }} {{$client->prenom_client }}</strong></td>
+                                <td><strong>{{ $client->telephone_client }}</strong></td>
+                                <td>{{ $client->num_abonne }}</td>
+                                <td>{{ $client->num_decodeur }}</td>
+                                <td>{{ $client->nom_formule }} ( {{ $client->prix_formule  }} )</td>
+                                <td>{{ $client->duree }} mois</td>
+                                <td>{{ $client->date_reabonnement }} </td>
                                 <td>
-                                    <button class="btn btn-success" title="Envoyer un message de notification">
-                                        <i class="fa fa-envelope"></i>
-                                    </button>
+                                    <a type="button" class="btn btn-info" title="Envoyer un message"  href="#" data-toggle="modal" data-target="#messageModal{{ $client->id_client }}">
+                                        <i class="fas fa-fw fa-envelope"></i>
+                                    </a>
                                 </td>
                             </tr>
+                            <div class="modal fade justify-center justify-content-center" id="messageModal{{ $client->id_client }}" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalLabel{{ $client->id_client }}"
+                                 aria-hidden="true">
+                                <div class="modal-dialog text-center" role="document">
+                                    <div class="modal-content text-center">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel{{ $client->id_client }}">Envoyer un message</h5>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body text-center justify-content-center align-content-center">
+                                            <form role="form" id="abonneForm{{ $client->id_client }}" method="post"
+                                                  action="{{ route('send.message') }}">
+                                                @csrf
+                                                <input type="hidden" name="id_client" value="{{ $client->id_client }}">
+                                                <input type="hidden" name="phone" value="{{ $client->telephone_client }}">
+                                                <input type="hidden" name="nom_client" value="{{ $client->nom_client }}">
+                                                <div class="form-group">
+                                                    <label><span><i class="fas fa-address-book"></i> </span> Nom client</label>
+                                                    <input class="form-control text-uppercase" type="text" value="{{ $client->nom_client }}"
+                                                           name="nom" disabled>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><span><i class="fas fa-phone"></i> </span> Numéro du client</label>
+                                                    <input class="form-control text-uppercase" type="text" value="{{ $client->telephone_client }}"
+                                                           name="tel" disabled>
+                                                </div>
+                                                <div class="for-group">
+                                                    <select name="id_message" id="showmessage{{ $client->id_client }}" onchange="showSMSArea({{$client->id_client}})"  class="form-control showarea">
+                                                        <option value="0">Message Standart</option>
+                                                        @foreach($messages as $sms => $value)
+                                                            <option value="{{ $value->id_message }}"> {{ $value->titre_sms }} </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="form-group messagearea" id="message0{{ $client->id_client }}">
+                                                    <label><span><i class="fas fa-pen"></i></span>Message</label>
+                                                    <textarea class="form-control" name="message" placeholder="Saisisser un message ici..."></textarea>
+                                                </div>
+                                                @foreach($messages as $sms => $value)
+                                                    <div class="form-group hidden messagearea" id="message{{ $value->id_message }}{{ $client->id_client }}">
+                                                        <label><span><i class="fas fa-pen"></i></span>Message</label>
+                                                        <textarea class="form-control" name="message" >{{ $value->message }}</textarea>
+                                                    </div>
+                                                @endforeach
+
+                                                <hr>
+                                                <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer
+                                                </button>
+                                                <button type="reset" class="btn btn-danger"><i class="fa fa-times fa-fw"></i>Retour</button>
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                         </tbody>
                     </table>
@@ -53,3 +110,12 @@
         </div>
     </x-slot>
 </x-app-layout>
+<script>
+    function showSMSArea(id)
+    {
+        $('.messagearea').addClass('hidden');
+        var value = $('#showmessage'+id).val();
+        $('#message'+value+id).removeClass('hidden');
+
+    }
+</script>

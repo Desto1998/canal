@@ -12,11 +12,52 @@ use App\Models\Client;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Http;
+//use GuzzleHttp\Client;
 class GeneralController extends Controller
 {
     public function dashboard()
     {
+//        $client = new Client();
+//        $client = new Client();
+//        $sendurl = 'https://smsvas.com/bulk/public/index.php/api/v1/sendsms';
+//       $sendurl = 'https://smsvas.com/bulk/public/index.php/api/v1/sendsms?user=teneyemdesto@gmail.com&password=getel2021&senderid=Getel&sms=Bonjour&mobiles=679353205&scheduletime=yyyy-MM-dd%25hh:mm:ss';
+//        $balanceurl = 'https://smsvas.com/bulk/public/index.php/api/v1/smscredit';
+//        $headers = [
+//            'Accept' => 'application/json',
+//            'Content-Type' => 'application/json',
+//        ];
+//        $data = [
+//            "user "=> "teneyemdesto@gmail.com",
+//            "password"=> "getel2021",
+//        ];
+//        $response = $client->request('POST', $balanceurl,
+//            [
+//                'headers' => $headers,
+//                'json' => $data
+//            ]
+//        );
+//        $balanceurl = 'https://smsvas.com/bulk/public/index.php/api/v1/smscredit?user=teneyemdesto@gmail.com&password=getel2021';
+//        $response = Http::get($balanceurl);
+//        $response = Http::get($sendurl);
+
+//        $response = Http::post($balanceurl, [
+//            'Accept' => 'application/json',
+//            'Content-Type' => 'application/json',
+//            "user"=> "teneyemdesto@gmail.com",
+//             "password"=> "getel2021"
+//        ]);
+//        $response = Http::post('https://smsvas.com/bulk/public/index.php/api/v1/sendsms', [
+//            'Accept' => 'application/json',
+//            'Content-Type' => 'application/json',
+//            "user"=> "teneyemdesto@gmail.com",
+//            "password"=> "getel2021",
+//             "senderid"=> "Getel",
+//             "sms"=> "Bonjour desto",
+//             "mobiles"=> "237679353205"
+//        ]);
+//        $send = (new MessageController)->sendMessage('Test Message','679353205');
+        $balance = (new MessageController)->getSMSBalance() ;
         $allFormules = Formule::all();
         $decodeurs= Decodeur::all();
         $reabonnements = Reabonnement::all();
@@ -29,12 +70,16 @@ class GeneralController extends Controller
         $statutcaisse = (new MessageController)->resteCaisse();
 //        $difference = (new MessageController)->resteCaisse();
         $consommeCaisse = (new MessageController)->dejaConsomme();
+        $totalVersement  = (new VersementController)->totalVersement();
+        $statutVersement = (new VersementController)->resteVersement();
+//        $difference = (new MessageController)->resteCaisse();
+        $consommeVersement = (new VersementController)->dejaUtilise();
         $clientnouveaux = $this->nouveauClient();
         $clientperdu = $this->clientPerdu();
         $bientotaterme = $this->bientATerme();
         return view('dashboard',compact('allFormules','reabonnements','decodeurs','clients',
             'decodeuroccupe','materiels','materiels','users','caisse','totalCaisse','statutcaisse','consommeCaisse'
-            ,'clientnouveaux','clientperdu','bientotaterme'
+            ,'clientnouveaux','clientperdu','bientotaterme','balance','totalVersement','statutVersement','consommeVersement'
         ));
     }
 
@@ -95,7 +140,9 @@ class GeneralController extends Controller
         }else{
 
             $data  = $research;
-            return view('globalresearchresult',compact('data'));
+            $messages = (new MessageController)->getStandart();
+
+            return view('globalresearchresult',compact('data','messages'));
 
         }
 

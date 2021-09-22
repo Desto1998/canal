@@ -166,7 +166,90 @@
             </div>
 
             <div class="row">
+                <div class="col-md-3 mb-3">
+                    <a href="{{ route('settings') }}" class="text-info" >
+                        <div class="card border-left-info shadow h-100 py-2 card-hover">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-0">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                            Total Versement
 
+                                        </div>
+                                        <div class="h6 mb-0 font-weight-bold text-gray-800">
+                                            {{ $totalVersement }}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-balance-scale fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card border-left-success shadow h-100 py-2 card-hover card-hover">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-0">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        GCA utilisé
+
+                                    </div>
+                                    <div class="h6 mb-0 font-weight-bold text-gray-800">
+                                        {{ $consommeVersement }}
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-money-bill-alt fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card border-left-danger shadow h-100 py-2 card-hover card-hover">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-0">
+                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                        GCA Restant
+
+                                    </div>
+                                    <div class="h6 mb-0 font-weight-bold text-gray-800">
+                                        {{ $statutVersement }}
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-money-check fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card border-left-primary shadow h-100 py-2 card-hover card-hover">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-0">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Solde SMS
+
+                                    </div>
+                                    <div class="h6 mb-0 font-weight-bold text-gray-800">
+                                        {{ $balance }}
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-envelope fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-3 mb-3">
                     <a href="{{ route('caisse') }}" class="text-info" >
                         <div class="card border-left-info shadow h-100 py-2 card-hover">
@@ -178,7 +261,7 @@
 
                                         </div>
                                         <div class="h6 mb-0 font-weight-bold text-gray-800">
-                                            {{ $totalCaisse }}
+                                            {{ $consommeCaisse }}
                                         </div>
                                     </div>
                                     <div class="col-auto">
@@ -198,7 +281,7 @@
 
                                     </div>
                                     <div class="h6 mb-0 font-weight-bold text-gray-800">
-                                        {{ $consommeCaisse }}
+                                        {{ $totalVersement }}
                                     </div>
                                 </div>
                                 <div class="col-auto">
@@ -218,7 +301,7 @@
 
                                     </div>
                                     <div class="h6 mb-0 font-weight-bold text-gray-800">
-                                        {{ $statutcaisse }}
+                                        {{ $consommeCaisse - $totalVersement }}
                                     </div>
                                 </div>
                                 <div class="col-auto">

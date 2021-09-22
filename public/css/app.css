@@ -2591,3 +2591,6 @@ select {
     box-shadow: 0 14px 24px rgba(62, 57, 107, 0.1)
 }
 
+textarea{
+    min-height: 150px!important;
+}

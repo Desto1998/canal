@@ -144,6 +144,8 @@ Route::prefix('dashboard')->group(function () {
         Route::get('printFacture/{id_reabonnement}', [FactureController::class, 'printFactureReabo'])->name('printpdf');
 
         Route::get('test/message', [MessageController::class, 'messageData'])->name('test.message');
+        Route::post('send/message', [MessageController::class, 'PrepareStandartMessage'])->name('send.message');
+        Route::post('send/message/group', [MessageController::class, 'PrepareGroupMessage'])->name('send.message.group');
 
     });
     Route::get('canal/doc', function () {

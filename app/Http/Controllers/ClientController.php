@@ -54,7 +54,8 @@ class ClientController extends Controller
         $allFormules = Formule::all();
         $decodeurs = Decodeur::join('client_decodeurs','client_decodeurs.id_decodeur','decodeurs.id_decodeur')
             ->get();
-        return view('clients',compact('allClients','allFormules', 'decodeurs'));
+        $messages = (new MessageController)->getStandart();
+        return view('clients',compact('allClients','allFormules', 'decodeurs','messages'));
     }
 
     public function viewModif()
@@ -230,6 +231,8 @@ class ClientController extends Controller
         $data_message->dateecheance = $data->date_reabonnement;
         $data_message->montant = $data->duree *  $formul[0]->prix_formule;
         $data_message->id_client = $client->id_client;
+//        $send = (new MessageController)->sendMessage('Test Message','679353205');
+        $balance = (new MessageController)->getSMSBalance() ;
 
 
         if (!empty($client)){
@@ -251,7 +254,7 @@ class ClientController extends Controller
                 'date_reabonnement'=>$date_reabonnement
             ]);
 
-//            $envoi = (new MessageController)->prepareMessage($data_message,'ABONNEMENT');
+            $envoi = (new MessageController)->prepareMessage($data_message,'ABONNEMENT');
 //                $envoi = (new MessageController)->sendMessage($message,$request->telephone_client );
 //                if ($envoi == 0) {
 //                    $message_con ="Un message a été envoyé au client.";
@@ -262,20 +265,20 @@ class ClientController extends Controller
         }
 
         if (!empty($client) && $message_con!="") {
-            session()->flash('message', 'Le client a bien été enregistré dans la base de données. '.$message_con);
+            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Solde message:'.$balance.$message_con);
             $pdf = (new PDFController)->createPDF($data_pdf,$action);
 
-            return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. '.$message_con);
+            return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. Solde message:'.$balance);
         }
 
         if (!empty($client)  and empty($message_con)) {
-            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé '.$sendError  );
+            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé. solde message :'.$balance  );
             $pdf = (new PDFController)->createPDF($data_pdf,$action);
-            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'."\n Statut:".$sendError);
+            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'."\n Statut: solde message".$balance);
         } else {
             session()->flash('message', 'Erreur! Le client n\' pas été enrgistré!');
 
-            return redirect()->back()->with('danger', 'Erreur! Le client n\' pas été enrgistré!');
+            return redirect()->back()->with('danger', 'Erreur! Le client n\' pas été enrgistré! Solde message:'.$balance);
         }
     }
 
@@ -415,7 +418,7 @@ class ClientController extends Controller
                 'date_reabonnement'=>$date_reabonnement
             ]);
 //                $message = ($request->nom_client." Merci de vous etre abonné chez nous! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".");
-//                $envoi = (new MessageController)->prepareMessage($data_message,'REABONNEMENT' );
+                $envoi = (new MessageController)->prepareMessage($data_message,'REABONNEMENT' );
 //                if ($envoi == 0) {
 //                    $message_con ="Un message a été envoyé au client.";
 //                }else{
@@ -423,18 +426,19 @@ class ClientController extends Controller
 //                }
 
         }
-
+//        $send = (new MessageController)->sendMessage('Test Message','679353205');
+        $balance = (new MessageController)->getSMSBalance() ;
         if (!empty($client) && $message_con!="") {
-            session()->flash('message', 'Le client a bien été enregistré dans la base de données. '.$message_con);
+            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Solde SMS: '.$balance);
             $pdf = (new PDFController)->createPDF($data_pdf,$action);
 
-            return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. '.$message_con);
+            return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. Solde SMS: '.$balance);
         }
 
         if (!empty($client)  and empty($message_con)) {
-            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé '.$sendError  );
+            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé. Solde SMS: '.$balance  );
             $pdf = (new PDFController)->createPDF($data_pdf,$action);
-            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'."\n Statut:".$sendError);
+            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'."\n Statut: Solde SMS ".$balance);
         } else {
             session()->flash('message', 'Erreur! Le client n\' pas été enrgistré!');
 
@@ -613,17 +617,19 @@ class ClientController extends Controller
         if ($reabonnement){
             $message_con ='';
                 $message = $nom." Votre réabonnement à été effectué avec success! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
-//                $envoi = (new MessageController)->prepareMessage($data_message,'REABONNEMENT' );
+                $envoi = (new MessageController)->prepareMessage($data_message,'REABONNEMENT' );
 //                if ($envoi == 0) {
 //                    $message_con ="Un message a été envoyé au client.";
 //                }else{
 //                    $message_con ="Erreur d'envoie du message".$envoi;
 //                }
         }
+        //        $send = (new MessageController)->sendMessage('Test Message','679353205');
+        $balance = (new MessageController)->getSMSBalance() ;
 //        $data->save();
         $pdf = (new PDFController)->createPDF($data_pdf,$action);
-        session()->flash('message', 'Le reabonnement a reussi. '.$message_con);
-        return  redirect()->route('review.reabonner')->with('info', 'Le reabonnement a reussi.'.$message_con);
+        session()->flash('message', 'Le reabonnement a reussi. Solde SMS: '.$balance);
+        return  redirect()->route('review.reabonner')->with('info', 'Le reabonnement a reussi. Solde SMS: '.$balance);
     }
 
     public function upgradeClient(Request $request,$id_client)
@@ -682,7 +688,7 @@ class ClientController extends Controller
         if ($reabonnement){
             $message_con ='';
                 $message = $data->nom_client." Mis à jour de la formule réussi ! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
-//                $envoi = (new MessageController)->prepareMessage($data_message,'REABONNEMENT' );
+                $envoi = (new MessageController)->prepareMessage($data_message,'REABONNEMENT' );
 //                if ($envoi == 0) {
 //                    $message_con ="Un message a été envoyé au client.";
 //                }else{
@@ -690,9 +696,11 @@ class ClientController extends Controller
 //                }
         }
 //        $data->save();
+        //        $send = (new MessageController)->sendMessage('Test Message','679353205');
+        $balance = (new MessageController)->getSMSBalance() ;
         $pdf = (new PDFController)->createPDF($data_pdf,'UPGRADE');
-        session()->flash('message', "L'upgrate du client a reussi. ".$message_con);
-        return  redirect()->route('upgrader')->with('info', "L'upgrate du client a reussi. ".$message_con);
+        session()->flash('message', "L'upgrate du client a reussi. Solde SMS: ".$balance);
+        return  redirect()->route('upgrader')->with('info', "L'upgrate du client a reussi. Solde SMS: ".$balance);
     }
 
 
@@ -759,7 +767,7 @@ class ClientController extends Controller
                 'date_reabonnement'=>$date_rea,
             ]);
                 $message = ($data->nom_client." Merci de vous etre abonné chez nous! Formule: " .$request->formule . ", expire le: ".$date_rea .".");
-//                $envoi = (new MessageController)->sendMessage($message,$data->telephone_client );
+                $envoi = (new MessageController)->sendMessage($message,$data->telephone_client );
 //                if ($envoi == 0) {
 //                    $message_con ="Un message a été envoyé au client.";
 //                }else{
@@ -767,16 +775,17 @@ class ClientController extends Controller
 //                }
 
         }
-
+//        $send = (new MessageController)->sendMessage('Test Message','679353205');
+        $balance = (new MessageController)->getSMSBalance() ;
         if (!empty($client) && $message_con!="") {
-            session()->flash('message', 'Le client a bien été enregistré dans la base de données. '.$message_con);
+            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Solde SMS '.$balance);
             //$pdf = (new PDFController)->createPDF($data);
-            return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. '.$message_con);
+            return  redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. '.$balance);
         }
 
         if (!empty($client)  and empty($message_con)) {
-            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé '.$sendError  );
-            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'+"\n Statut:".$sendError);
+            session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé '  );
+            return  redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.'+"\n Statut: Solde SMS: ".$balance);
         } else {
             session()->flash('message', 'Erreur! Le client n\' pas été enrgistré!');
 
@@ -880,7 +889,8 @@ class ClientController extends Controller
             ->where('client_decodeurs.date_reabonnement','>=',date('Y-m-d'))
 //         ->where('client_decodeurs.id_user',$userid)
             ->get();
-        return view("users.clientNouveau", compact('data'));
+        $messages = (new MessageController)->getStandart();
+        return view("users.clientNouveau", compact('data','messages'));
     }
 
     public function bientotATerme(){
@@ -892,7 +902,8 @@ class ClientController extends Controller
             ->where('client_decodeurs.date_reabonnement','<=',$date_reabonnement)
 //         ->where('client_decodeurs.id_user',$userid)
             ->get();
-        return view("users.bientoTerme", compact('data'));
+        $messages = (new MessageController)->getStandart();
+        return view("users.bientoTerme", compact('data','messages'));
     }
 
     public function clientPerdu(){
@@ -905,7 +916,8 @@ class ClientController extends Controller
             ->where('client_decodeurs.date_reabonnement','<=',date('Y-m-d'))
 //         ->where('client_decodeurs.id_user',$userid)
             ->get();
-        return view("users.clientPerdu", compact('data'));
+        $messages = (new MessageController)->getStandart();
+        return view("users.clientPerdu", compact('data','messages'));
     }
 
     public function relancerClient($numero){
@@ -1062,18 +1074,19 @@ class ClientController extends Controller
 //                }
 
         }
-
+//        $send = (new MessageController)->sendMessage('Test Message','679353205');
+        $balance = (new MessageController)->getSMSBalance() ;
         if (!empty($reabonnement) && !empty($CD)) {
-            session()->flash('message', 'Enregistré avec succès. '.$message_con);
+            session()->flash('message', 'Enregistré avec succès. Solde SMS: '.$balance);
             $pdf = (new PDFController)->createPDF($data_pdf,$action);
 
-            return  redirect()->back()->with('info', 'Enregistré avec succès. '.$message_con);
+            return  redirect()->back()->with('info', 'Enregistré avec succès. Solde SMS: '.$balance);
         }
 
         if (!empty($reabonnement)  and empty($message_con)) {
-            session()->flash('message', 'Enregistré avec succès. Mais le message n\'a pas été envoyé '.$sendError  );
+            session()->flash('message', 'Enregistré avec succès. Mais le message n\'a pas été envoyé. solde SMS: '.$balance  );
             $pdf = (new PDFController)->createPDF($data_pdf,$action);
-            return  redirect()->back()->with('warning', 'Enregistré avec succès. Mais le message n\'a pas été envoyé.'."\n Statut:".$sendError);
+            return  redirect()->back()->with('warning', 'Enregistré avec succès. Mais le message n\'a pas été envoyé.'."\n Statut: solde SMS: ".$balance);
         } else {
             session()->flash('message', 'Erreur lors de l\'enregistrement!');
 

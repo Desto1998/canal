@@ -3,17 +3,17 @@
         <div class="row">
             <h4 class="text-uppercase ml-6"> Paramétres </h4>
         </div>
-        <a href="{{ route('test.message') }}" > Testmessage</a>
-{{--        <div class="card shadow mb-4 col-xs-12 col-md-8 border-bottom-primary">--}}
-{{--            <div class="card-header py-3">--}}
-{{--                <h4 class="m-2 font-weight-bold text-primary">Upgrader client</h4>--}}
-{{--            </div>--}}
-{{--            <a type="button" class="btn btn-primary bg-gradient-primary btn-block" href="{{route('upgrader')}}"> <i--}}
-{{--                    class="fas fa-flip-horizontal fa-fw fa-share"></i> Retour </a>--}}
-{{--            <div class="card-body">--}}
+    {{--        <a href="{{ route('test.message') }}" > Testmessage</a>--}}
+    {{--        <div class="card shadow mb-4 col-xs-12 col-md-8 border-bottom-primary">--}}
+    {{--            <div class="card-header py-3">--}}
+    {{--                <h4 class="m-2 font-weight-bold text-primary">Upgrader client</h4>--}}
+    {{--            </div>--}}
+    {{--            <a type="button" class="btn btn-primary bg-gradient-primary btn-block" href="{{route('upgrader')}}"> <i--}}
+    {{--                    class="fas fa-flip-horizontal fa-fw fa-share"></i> Retour </a>--}}
+    {{--            <div class="card-body">--}}
 
-{{--            </div>--}}
-{{--        </div>--}}
+    {{--            </div>--}}
+    {{--        </div>--}}
     @include('layouts.flash-message')
     <!-- Tabs -->
         <div class="card">
@@ -54,14 +54,16 @@
                                                                        name="type_sms[]">
                                                                 <input type="hidden" value="Message après réabonnement"
                                                                        name="titre_sms[]">
+                                                                @php
+                                                                    $message='';
+                                                                        foreach( $messages as $key => $value ){
+                                                                                if( $value->type_sms==='REABONNEMENT' ){
+                                                                                    $message = $value->message;
+                                                                                }
+                                                                        }
+                                                                @endphp
                                                                 <textarea class="form-control" name="message[]"
-                                                                          placeholder="Saisisez le message ici...">
-                                                                    @foreach( $messages as $key => $value )
-                                                                        @if( $value->type_sms==='REABONNEMENT' )
-                                                                            {{ $value->message }}
-                                                                        @endif
-                                                                    @endforeach
-                                                                </textarea>
+                                                                          placeholder="Saisisez le message ici...">{{ $message }}</textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -84,14 +86,16 @@
                                                                        name="type_sms[]">
                                                                 <input type="hidden" value="Message après récrutement"
                                                                        name="titre_sms[]">
+                                                                @php
+                                                                    $message='';
+                                                                        foreach( $messages as $key => $value ){
+                                                                                if( $value->type_sms==='ABONNEMENT' ){
+                                                                                    $message = $value->message;
+                                                                                }
+                                                                            }
+                                                                @endphp
                                                                 <textarea class="form-control" name="message[]"
-                                                                          placeholder="Saisisez le message ici...">
-                                                                    @foreach( $messages as $key => $value )
-                                                                        @if( $value->type_sms==='ABONNEMENT' )
-                                                                            {{ $value->message }}
-                                                                        @endif
-                                                                    @endforeach
-                                                                </textarea>
+                                                                          placeholder="Saisisez le message ici...">{{ $message }}</textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -114,14 +118,16 @@
                                                                        name="type_sms[]">
                                                                 <input type="hidden" value="Message après versement"
                                                                        name="titre_sms[]">
-                                                                <textarea class="form-control" name="message[]"
-                                                                          placeholder="Saisisez le message ici...">
-                                                                    @foreach( $messages as $key => $value )
-                                                                        @if( $value->type_sms==='VERSEMENT' )
-                                                                            {{ $value->message }}
-                                                                        @endif
-                                                                    @endforeach
-                                                                </textarea>
+                                                                @php
+                                                                    $message='';
+                                                                        foreach( $messages as $key => $value ){
+                                                                                if( $value->type_sms==='VERSEMENT' ){
+                                                                                    $message = $value->message;
+                                                                                }
+                                                                            }
+                                                                @endphp
+                                                                <textarea class="form-control"  name="message[]"
+                                                                          placeholder="Saisisez le message ici...">{{ $message }}</textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -165,7 +171,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div class="tab-pane  p-20 pt-2" id="messagestantdard" role="tabpanel">
@@ -209,16 +214,17 @@
                                                                 class="fa fa-trash"></i></a>
                                                     </td>
                                                 </tr>
-{{--                                                Edit messages modal--}}
+                                                {{--                                                Edit messages modal--}}
                                                 <div class="modal fade justify-center justify-content-center"
-                                                     id="messageModal{{ $value->id_message }}" tabindex="-1" role="dialog"
+                                                     id="messageModal{{ $value->id_message }}" tabindex="-1"
+                                                     role="dialog"
                                                      aria-labelledby="exampleModalLabel"
                                                      aria-hidden="true">
                                                     <div class="modal-dialog text-center" role="document">
                                                         <div class="modal-content text-center">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title" id="exampleModalLabel">Modifier
-                                                                    le message:  {{$value->titre_sms}}</h5>
+                                                                    le message: {{$value->titre_sms}}</h5>
                                                                 <button class="close" type="button" data-dismiss="modal"
                                                                         aria-label="Close">
                                                                     <span aria-hidden="true">×</span>
@@ -229,16 +235,20 @@
                                                                 <form role="form" id="abonneForm" method="post"
                                                                       action="{{ route('message.update') }}">
                                                                     @csrf
-                                                                    <input type="hidden" value="{{ $value->id_message }}" name="id_message">
+                                                                    <input type="hidden"
+                                                                           value="{{ $value->id_message }}"
+                                                                           name="id_message">
                                                                     <div class="form-group">
                                                                         <label>Titre</label>
                                                                         <input class="form-control text-uppercase"
-                                                                               type="text" placeholder="Titre" value="{{$value->titre_sms}}"
+                                                                               type="text" placeholder="Titre"
+                                                                               value="{{$value->titre_sms}}"
                                                                                name="titre_sms" required>
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label>Message</label>
-                                                                        <textarea class="form-control" name="message" required> {{$value->message}}</textarea>
+                                                                        <textarea class="form-control" name="message"
+                                                                                  required> {{$value->message}}</textarea>
                                                                     </div>
                                                                     <hr>
                                                                     <button type="submit" class="btn btn-success"><i
@@ -271,16 +281,20 @@
                     <div class="p-20">
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
-                                <h6 class="m-2 font-weight-bold text-primary">Liste des Opérations de Versements Canal</h6>
+                                <h6 class="m-2 font-weight-bold text-primary">Liste des Opérations de Versements
+                                    Canal</h6>
                             </div>
                             @include('layouts/flash-message')
 
                             <div class="card-body">
                                 <div class="row col-md-12 d-flex mb-6">
                                     <div class="col-md-6">
-                                        <h3>Total versement: <span class="text-secondary">{{ $totalVersement }} </span> FCFA</h3>
-                                        <h3 class="mt-4">Déja  utilisé: <span class="text-success">{{ $dejaUTilise }}</span> FCFA</h3>
-                                        <h3 class="mt-4"> Disponible : <span class="text-warning">{{ $resteVersement }}</span> FCFA</h3>
+                                        <h3>Total versement: <span class="text-secondary">{{ $totalVersement }} </span>
+                                            FCFA</h3>
+                                        <h3 class="mt-4">Déja utilisé: <span
+                                                class="text-success">{{ $dejaUTilise }}</span> FCFA</h3>
+                                        <h3 class="mt-4"> Disponible : <span
+                                                class="text-warning">{{ $resteVersement }}</span> FCFA</h3>
 
                                     </div>
                                     <div class="col-md-6 pull-right text-right">
@@ -314,51 +328,69 @@
                                                 <td>
                                                     @foreach($users as $k => $item)
                                                         @if($value->id_user === $item->id)
-                                                         {{$item->name}}
+                                                            {{$item->name}}
                                                         @endif
                                                     @endforeach
                                                 </td>
                                                 <td>{{$value->created_at}}</td>
                                                 <td class="d-flex">
                                                     <a href="#" data-toggle="modal"
-                                                       data-target="#versementModal{{ $value->id_versement }}" {{$value->id_user == Auth::user()->id? '':'disabled'}}
+                                                       data-target="#versementModal{{ $value->id_versement }}"
+                                                       {{$value->id_user == Auth::user()->id? '':'disabled'}}
                                                        class="btn btn-warning mr-1" type="Modifier"><i
                                                             class="fa fa-edit"></i></a>
-                                                    <a href="{{$value->id_user == Auth::user()->id? route('versement.delete',$value->id_versement ):'#'}}"  class="btn btn-danger" title="Supprimer"><i class="fa fa-trash"></i></a>
+                                                    <a href="{{$value->id_user == Auth::user()->id? route('versement.delete',$value->id_versement ):'#'}}"
+                                                       class="btn btn-danger" title="Supprimer"><i
+                                                            class="fa fa-trash"></i></a>
                                                 </td>
                                             </tr>
-                                            <div class="modal fade justify-center  justify-content-center" id="versementModal{{ $value->id_versement }}" tabindex="-1" role="dialog"
+                                            <div class="modal fade justify-center  justify-content-center"
+                                                 id="versementModal{{ $value->id_versement }}" tabindex="-1"
+                                                 role="dialog"
                                                  aria-labelledby="exampleModalLabel"
                                                  aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Modifier versement</h5>
-                                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Modifier
+                                                                versement</h5>
+                                                            <button class="close" type="button" data-dismiss="modal"
+                                                                    aria-label="Close">
                                                                 <span aria-hidden="true">×</span>
                                                             </button>
                                                         </div>
-                                                        <div class="modal-body justify-content-center align-content-center">
-                                                            <form role="form" id="versementForm{{ $value->id_versement }}" method="post"
+                                                        <div
+                                                            class="modal-body justify-content-center align-content-center">
+                                                            <form role="form"
+                                                                  id="versementForm{{ $value->id_versement }}"
+                                                                  method="post"
                                                                   action="{{ route('versement.update') }}">
                                                                 @csrf
-                                                                <input type="hidden" name="id_versement" value="{{ $value->id_versement }}" required>
+                                                                <input type="hidden" name="id_versement"
+                                                                       value="{{ $value->id_versement }}" required>
                                                                 <div class="form-group">
                                                                     <label>Montant</label>
-                                                                    <input class="form-control text-uppercase" type="number" min="5000"
-                                                                           name="montant_versement" value="{{$value->montant_versement}}" required>
+                                                                    <input class="form-control text-uppercase"
+                                                                           type="number" min="5000"
+                                                                           name="montant_versement"
+                                                                           value="{{$value->montant_versement}}"
+                                                                           required>
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label>Description(facultatif)</label>
-                                                                    <textarea class="form-control" name="description">{{$value->description}}
-
-                                                                    </textarea>
+                                                                    <textarea class="form-control"
+                                                                              name="description">{{$value->description}}</textarea>
                                                                 </div>
                                                                 <hr>
-                                                                <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer
+                                                                <button type="submit" class="btn btn-success"><i
+                                                                        class="fa fa-check fa-fw"></i>Enregistrer
                                                                 </button>
-                                                                <button type="reset" class="btn btn-danger"><i class="fa fa-times fa-fw"></i>Retour</button>
-                                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
+                                                                <button type="reset" class="btn btn-danger"><i
+                                                                        class="fa fa-times fa-fw"></i>Retour
+                                                                </button>
+                                                                <button class="btn btn-secondary" type="button"
+                                                                        data-dismiss="modal">Annuler
+                                                                </button>
                                                             </form>
                                                         </div>
                                                     </div>
@@ -377,7 +409,7 @@
         </div>
 
         {{--        // modal section--}}
-{{--        message modal--}}
+        {{--        message modal--}}
         <div class="modal fade justify-center justify-content-center" id="messageModal" tabindex="-1" role="dialog"
              aria-labelledby="exampleModalLabel"
              aria-hidden="true">
@@ -400,9 +432,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Message</label>
-                                <textarea class="form-control" name="message" required>
-
-                                    </textarea>
+                                <textarea class="form-control" name="message"></textarea>
                             </div>
                             <hr>
                             <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer
@@ -415,7 +445,7 @@
             </div>
         </div>
 
-{{--        Versement modal--}}
+        {{--        Versement modal--}}
         <div class="modal fade justify-center justify-content-center" id="versementModal" tabindex="-1" role="dialog"
              aria-labelledby="exampleModalLabel"
              aria-hidden="true">
@@ -438,9 +468,8 @@
                             </div>
                             <div class="form-group">
                                 <label>Description(facultatif)</label>
-                                <textarea class="form-control" name="description">
-
-                                    </textarea>
+                                <textarea class="form-control" name="description"
+                                          placeholder="Description ..."></textarea>
                             </div>
                             <hr>
                             <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer

@@ -24,7 +24,7 @@ class CaisseController extends Controller
             ->get();
         return view('caisse',compact('Caisse','totalcaisse','restecaisse','dejeconsomme'));
     }
-
+///"guzzlehttp/guzzle": "^6.2|^7.0.1","guzzlehttp/guzzle": "~6.0",/"guzzlehttp/guzzle": "^7.0.1",
     public function get($id_caisse)
     {
         $totalcaisse = (new MessageController)->totalCaisse();
