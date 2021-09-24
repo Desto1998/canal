@@ -40,7 +40,7 @@ create table message_envoyes(
     id_message int not null ,
     id_client int not null,
     nom_client varchar(100) null ,
-    telephone_client varchar(20) null,
+    telephone_client varchar(255) null,
     message varchar(255) not null ,
     description_sms varchar(255) null ,
     statut int null ,

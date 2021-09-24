@@ -134,7 +134,7 @@
       <li class="nav-item">
         <a class="nav-link {{ ($route=='dashboard')?'active':'' }}" href="{{ route('dashboard') }}">
           <i class="fas fa-fw fa-home"></i>
-          <span>DASHBOARD</span></a>
+          <span>Tableau de bord</span></a>
       </li>
       <!-- Divider -->
       <hr class="sidebar-divider">
@@ -165,7 +165,12 @@
       <li class="nav-item">
         <a class="nav-link {{ ($route=='historiques')?'active':'' }}" href="{{ route('historiques') }}">
           <i class="fas fa-fw fa-history"></i>
-          <span>Historiques</span></a>
+          <span>Historiques des messages</span></a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link {{ ($route=='messagerie')?'active':'' }}" href="{{ route('messagerie') }}">
+          <i class="fas fa-fw fa-envelope"></i>
+          <span>Envoyer un message</span></a>
       </li>
 
      <li class="nav-item">

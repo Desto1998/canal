@@ -80,10 +80,7 @@ Route::prefix('dashboard')->group(function () {
         Route::get('modif_materiel/{type_id}', [MaterielController::class, 'edit'])->name('edit.materiel');
         Route::post('update/{id_type}', [MaterielController::class, 'update'])->name('update.materiel');
 
-        //Historiques
-        Route::get('/historiques', function () {
-            return view('historiques');
-        })->name('historiques');
+
 
         //Liste des clients
         Route::get('clients', [ClientController::class, 'allview'])->name('clients');
@@ -146,7 +143,10 @@ Route::prefix('dashboard')->group(function () {
         Route::get('test/message', [MessageController::class, 'messageData'])->name('test.message');
         Route::post('send/message', [MessageController::class, 'PrepareStandartMessage'])->name('send.message');
         Route::post('send/message/group', [MessageController::class, 'PrepareGroupMessage'])->name('send.message.group');
+        Route::post('send/message/manual', [MessageController::class, 'sendManual'])->name('send.message.manual');
 
+        //Historiques des messages
+        Route::get('messages/historiques', [MessageController::class, 'listSend'])->name('historiques');
     });
     Route::get('canal/doc', function () {
         return view('layouts.doc');

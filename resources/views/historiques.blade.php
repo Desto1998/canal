@@ -1,51 +1,56 @@
+<meta charset="utf-8">
 <x-app-layout>
-  <x-slot name="slot">
-    <div class="col-lg-6">
-      <div class="card shadow h-100">
-        <div class="card-body">
-          <div class="row no-gutters align-items-center">
-
-            <div class="col-auto">
-              <i class="fa fa-th-list fa-fw"></i> 
+    <x-slot name="slot">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-2 font-weight-bold text-primary">Liste des messages envoyés&nbsp;</h6>
             </div>
+            @include('layouts/flash-message')
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" >
+                        <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Téléphone</th>
+                            <th width="200">Message</th>
+                            <th>Qté</th>
+                            <th>Envoyé Par</th>
+                            <th>Envoyé le</th>
+                            <th>Status</th>
+{{--                            <th>Action</th>--}}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($messages as $key => $item)
+                            <tr>
+                                <td>{{ $item->nom_client }}</td>
+                                <td>{{ $item->telephone_client }}</td>
+                                <td>{{ $item->message }}</td>
+                                <td>{{ $item->quantite }}</td>
+                                <td>{{ $item->name }}
+                                    @foreach($users as $u=>$user)
+                                        @if($user->id === $item->id_user)
+                                            {{ $user->name }}
+                                        @endif
+                                    @endforeach
+                                </td>
+                                <td>{{ $item->created_at }}</td>
+                                <td class="text-center">
+                                    @if($item->statut==1)
+                                        <span class="bg-success p-1"> Succès </span>
+                                    @else
+                                        <span class="bg-danger p-1"> Echec </span>
+                                    @endif
+                                </td>
+{{--                                <td></td>--}}
+                            </tr>
+                        @endforeach
 
-          <div class="panel-heading"> Historiques
-          </div>
-          <div class="row no-gutters align-items-center mt-1">
-          <div class="col-auto">
-            <div class="h6 mb-0 mr-0 text-gray-800">
-          <!-- /.panel-heading -->
-          
-          <div class="panel-body">
-              <div class="list-group">
-                <a href='#' class='list-group-item text-gray-800'>
-                  <i class='fa fa-tasks fa-fw'></i>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Exercitationem dolores deserunt saepe repellat aut iste amet, provident quidem, suscipit eaque rem quis animi omnis doloremque illo. Blanditiis ex commodi quam!
-                </a>
-                <a href='#' class='list-group-item text-gray-800'>
-                  <i class='fa fa-tasks fa-fw'></i>Historiques 2
-                </a>
-                <a href='#' class='list-group-item text-gray-800'>
-                  <i class='fa fa-tasks fa-fw'></i>Historiques 3
-                </a>
-                <a href='#' class='list-group-item text-gray-800'>
-                  <i class='fa fa-tasks fa-fw'></i>Historiques 4
-                </a>
-                <a href='#' class='list-group-item text-gray-800'>
-                  <i class='fa fa-tasks fa-fw'></i>Historiques 5
-                </a>
-                <a href='#' class='list-group-item text-gray-800'>
-                  <i class='fa fa-tasks fa-fw'></i>Historiques 6
-                </a>
-              </div>
-              <!-- /.list-group -->
-              <a href="##" class="btn btn-default btn-block">Voir tous les historiques</a>
-          </div>
-          <!-- /.panel-body -->
-      </div></div></div></div></div></div>
-          
-        
-          
-
-      </div>
-  </x-slot>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </x-slot>
 </x-app-layout>

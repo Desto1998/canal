@@ -194,7 +194,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-0">
                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                        GCA utilisé
+                                        CGA utilisé
 
                                     </div>
                                     <div class="h6 mb-0 font-weight-bold text-gray-800">
@@ -214,7 +214,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-0">
                                     <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                        GCA Restant
+                                        CGA Restant
 
                                     </div>
                                     <div class="h6 mb-0 font-weight-bold text-gray-800">

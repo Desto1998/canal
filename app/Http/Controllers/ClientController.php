@@ -900,6 +900,7 @@ class ClientController extends Controller
             ->join('formules','client_decodeurs.id_formule','formules.id_formule')
             ->join('clients','clients.id_client','client_decodeurs.id_client')
             ->where('client_decodeurs.date_reabonnement','<=',$date_reabonnement)
+            ->where('client_decodeurs.date_reabonnement','>=',date('Y-m-d'))
 //         ->where('client_decodeurs.id_user',$userid)
             ->get();
         $messages = (new MessageController)->getStandart();
