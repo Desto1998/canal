@@ -9,11 +9,72 @@
             </div>
             @include('layouts/flash-message')
 
+            <div class="modal fade" id="sendtoallModal" tabindex="-1" role="dialog"
+                 aria-labelledby="sendtoallModal"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel2">Envoyer un message</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form role="form" id="sendtoallModal" method="post"
+                                  action="{{ route('send.message.to.selected') }}">
+                                @csrf
+                                <input class="form-control text-uppercase selectphone" type="hidden" value="" id="selectphonehidden"
+                                       name="phone" >
+                                <div class="form-group">
+                                    <label><span><i class="fas fa-phone"></i> </span> Téléphone</label>
+                                    <input class="form-control text-uppercase selectphone" type="text" value="" id="selectphone"
+                                           name="phone" disabled>
+                                </div>
+                                <div class="for-group">
+                                    <select name="id_message" id="showselectmessage" onchange="showselectedSMSArea()"  class="form-control showarea">
+                                        <option value="0">Message Standart</option>
+                                        @foreach($messages as $sms => $value)
+                                            <option value="{{ $value->id_message }}"> {{ $value->titre_sms }} </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group selectmessagearea" id="message0">
+                                    <label><span><i class="fas fa-pen"></i></span>Message</label>
+                                    <textarea class="form-control" name="message" placeholder="Saisisser un message ici..."></textarea>
+                                </div>
+                                @foreach($messages as $sms => $value)
+                                    <div class="form-group hidden selectmessagearea" id="message{{ $value->id_message }}">
+                                        <label><span><i class="fas fa-pen"></i></span>Message</label>
+                                        <textarea class="form-control" name="message" >{{ $value->message }}</textarea>
+                                    </div>
+                                @endforeach
+
+                                <hr>
+                                <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer
+                                </button>
+                                <button type="reset" class="btn btn-danger"><i class="fa fa-times fa-fw"></i>Retour</button>
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card-body">
+                <label class="float-right">
+                    <a  class="btn btn-info" id="sendmessage" title="Envoyer un SMS aux sélectionés" href="#"
+                        data-toggle="modal" onclick="getNumber()" data-target="#sendtoallModal">
+                        <i class="fas fa-sms" ></i>
+                    </a>
+                </label>
                 <div class="table-responsive">
                     <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                         <tr>
+                            <th>
+                                <input type="checkbox" style="border-radius: 3px" name="selectall" value="-1" class="selectall" id="selectall" >
+                            </th>
                             <th>#</th>
                             <th>Nom et Prénom </th>
                             <th>Numéro de téléphone</th>
@@ -35,6 +96,9 @@
                         @foreach($data as $key => $client)
 
                             <tr class="text-danger">
+                                <td>
+                                    <input type="checkbox" style="border-radius: 3px" name="tel[]" value="{{ $client->telephone_client }}" class="selectid" id="select{{ $client->telephone_client }}" >
+                                </td>
                                 <td>{{$key+1}}</td>
                                 <td><strong>{{ $client->nom_client }} {{$client->prenom_client }}</strong></td>
                                 <td><strong>{{ $client->telephone_client }}</strong></td>
@@ -136,5 +200,30 @@
         var value = $('#showmessage'+id).val();
         $('#message'+value+id).removeClass('hidden');
 
+    }
+    $('#selectall').click(function (){
+
+        if($('#selectall').is(':checked')){
+            $('.selectid').prop('checked', true);
+            console.log(id);
+        }else {
+            $('.selectid').prop('checked', false);
+        }
+    });
+    function showselectedSMSArea()
+    {
+        $('.selectmessagearea').addClass('hidden');
+        var value = $('#showselectmessage').val();
+        $('#message'+value).removeClass('hidden');
+
+    }
+
+    function getNumber(){
+        var values='';
+        $('input[name="tel[]"]:checked').each(function () {
+            values += (this.checked ? $(this).val() : "")+',';
+
+        });
+        $('.selectphone').val(values);
     }
 </script>

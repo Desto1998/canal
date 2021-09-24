@@ -144,6 +144,7 @@ Route::prefix('dashboard')->group(function () {
         Route::post('send/message', [MessageController::class, 'PrepareStandartMessage'])->name('send.message');
         Route::post('send/message/group', [MessageController::class, 'PrepareGroupMessage'])->name('send.message.group');
         Route::post('send/message/manual', [MessageController::class, 'sendManual'])->name('send.message.manual');
+        Route::post('send/message/toselected', [MessageController::class, 'sendSMSToSelected'])->name('send.message.to.selected');
 
         //Historiques des messages
         Route::get('messages/historiques', [MessageController::class, 'listSend'])->name('historiques');

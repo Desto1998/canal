@@ -38,7 +38,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     Décodeurs: <select class="form-control" name="id_decodeur" required>
-                                        <option>Sélectionner un décodeur</option>
+                                        <option disabled selected hidden>Sélectionner un décodeur</option>
                                         @foreach($decos as $key => $val)
                                             <option value="{{$val->id_decodeur}}">{{$val->num_decodeur}}</option>
                                         @endforeach

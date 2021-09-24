@@ -82,7 +82,7 @@
 
                                                 <select class="form-control" required="Sélectionnez un decodeur SVP."
                                                         name="num_decodeur" id="num_decodeur">
-                                                    <option>Sélectionner un decodeur</option>
+                                                    <option disabled selected hidden>Sélectionner un decodeur</option>
                                                     @foreach($decodeur as $key =>$deco)
                                                         @php
                                                             $comp = 0;

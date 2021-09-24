@@ -374,6 +374,57 @@ class MessageController extends Controller
         }
     }
 
+ public function sendSMSToSelected(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required',
+            'message' => 'required',
+        ]);
+//        $monmessage = "Salut maman chérie. c'est a parti de l'application que je
+//         developpe que je t'envoi ce message. Tu vas bien j'espère: Bonne soirée a toi maman.";
+//        $phone = '665326159';
+        $sendurl = 'https://smsvas.com/bulk/public/index.php/api/v1/sendsms';
+        $response = Http::post($sendurl, [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            "user" => "teneyemdesto@gmail.com",
+            "password" => "getel2021",
+            "senderid" => "IngDesto",
+            "sms" => $request->message,
+            "mobiles" => $request->phone
+        ]);
+
+        $status = json_decode($response);
+//        dd($status);
+        $errorcode = $status->sms[0]->errorcode;
+        $confirm = 0;
+        if ($status->responsecode != 1) {
+            $confirm = 0;
+        }
+        if ($errorcode != "" && $errorcode == -10008) {
+            $confirm = $errorcode;
+        }
+        if ($status->responsemessage == 'success' && $errorcode == "") {
+            $confirm = 1;
+        }
+        $datastore = new Array_();
+        $datastore->id_message = 0;
+        $datastore->id_client = 0;
+        $datastore->nom = 'Non défini';
+        $datastore->prenom = '';
+        $datastore->phone = $request->phone;
+        $datastore->message = $request->message;
+        $datastore->statut = $confirm;
+        $this->storeSened($datastore);
+        $balance = $this->getSMSBalance();
+        if ($confirm === 1) {
+            return redirect()->back()->with('info', 'Message envoyé avec succès. Solde SMS: ' . $balance);
+        } else {
+            return redirect()->back()->with('danger', 'Eche de l\'envoi du message! Solde SMS: ' . $balance);
+
+        }
+    }
+
 
     public function totalCaisse()
     {
