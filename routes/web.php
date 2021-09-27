@@ -114,6 +114,9 @@ Route::prefix('dashboard')->group(function () {
         Route::get('caisse/get/{id}', [CaisseController::class, 'get'])->name('caisse.get');
         Route::post('caisse/update', [CaisseController::class, 'update'])->name('caisse.update');
         Route::get('caisse/delete/{id}', [CaisseController::class, 'delete'])->name('caisse.delete');
+        Route::post('caisse/store/achat', [CaisseController::class, 'addVersementAchat'])->name('caisse.store.achat');
+        Route::post('caisse/update/achat', [CaisseController::class, 'EditVersementAchat'])->name('achat.update');
+        Route::get('caisse/delete/achat/{id_achat}', [CaisseController::class, 'deleteVersementAchat'])->name('achat.delete');
 
 
         Route::get('user/abonnement', [ClientController::class, 'mesAbonnements'])->name('user.abonnement');

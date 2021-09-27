@@ -10,7 +10,8 @@ class Caisse extends Model
     use HasFactory;
 
     protected $fillable = [
-        'montant','raison',
-        "id_user","date_ajout"
+        'montant','raison','id_reabonnement','id_abonnement',
+        "id_user","date_ajout",'id_versement','id_upgrade','id_achat',
+        'id_decodeur','id_materiel'
     ];
 }

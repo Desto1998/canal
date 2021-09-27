@@ -3,17 +3,6 @@
         <div class="row">
             <h4 class="text-uppercase ml-6"> Paramétres </h4>
         </div>
-    {{--        <a href="{{ route('test.message') }}" > Testmessage</a>--}}
-    {{--        <div class="card shadow mb-4 col-xs-12 col-md-8 border-bottom-primary">--}}
-    {{--            <div class="card-header py-3">--}}
-    {{--                <h4 class="m-2 font-weight-bold text-primary">Upgrader client</h4>--}}
-    {{--            </div>--}}
-    {{--            <a type="button" class="btn btn-primary bg-gradient-primary btn-block" href="{{route('upgrader')}}"> <i--}}
-    {{--                    class="fas fa-flip-horizontal fa-fw fa-share"></i> Retour </a>--}}
-    {{--            <div class="card-body">--}}
-
-    {{--            </div>--}}
-    {{--        </div>--}}
     @include('layouts.flash-message')
     <!-- Tabs -->
         <div class="card">
@@ -23,8 +12,8 @@
                             class="hidden-sm-up"></span> <span class="hidden-xs-down">Messages</span></a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#messagestantdard" role="tab"><span
                             class="hidden-sm-up"></span> <span class="hidden-xs-down">Messages standart</span></a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#versement" role="tab"><span
-                            class="hidden-sm-up"></span> <span class="hidden-xs-down">Versements</span></a></li>
+{{--                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#versement" role="tab"><span--}}
+{{--                            class="hidden-sm-up"></span> <span class="hidden-xs-down">Versements</span></a></li>--}}
             </ul>
             <!-- Tab panes -->
             <div class="tab-content tabcontent-border">
@@ -277,134 +266,134 @@
 
                     </div>
                 </div>
-                <div class="tab-pane p-20 pt-2" id="versement" role="tabpanel">
-                    <div class="p-20">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-2 font-weight-bold text-primary">Liste des Opérations de Versements
-                                    Canal</h6>
-                            </div>
-                            @include('layouts/flash-message')
+{{--                <div class="tab-pane p-20 pt-2" id="versement" role="tabpanel">--}}
+{{--                    <div class="p-20">--}}
+{{--                        <div class="card shadow mb-4">--}}
+{{--                            <div class="card-header py-3">--}}
+{{--                                <h6 class="m-2 font-weight-bold text-primary">Liste des Opérations de Versements--}}
+{{--                                    Canal</h6>--}}
+{{--                            </div>--}}
+{{--                            @include('layouts/flash-message')--}}
 
-                            <div class="card-body">
-                                <div class="row col-md-12 d-flex mb-6">
-                                    <div class="col-md-6">
-                                        <h3>Total versement: <span class="text-secondary">{{ $totalVersement }} </span>
-                                            FCFA</h3>
-                                        <h3 class="mt-4">Déja utilisé: <span
-                                                class="text-success">{{ $dejaUTilise }}</span> FCFA</h3>
-                                        <h3 class="mt-4"> Disponible : <span
-                                                class="text-warning">{{ $resteVersement }}</span> FCFA</h3>
+{{--                            <div class="card-body">--}}
+{{--                                <div class="row col-md-12 d-flex mb-6">--}}
+{{--                                    <div class="col-md-6">--}}
+{{--                                        <h3>Total versement: <span class="text-secondary">{{ $totalVersement }} </span>--}}
+{{--                                            FCFA</h3>--}}
+{{--                                        <h3 class="mt-4">Déja utilisé: <span--}}
+{{--                                                class="text-success">{{ $dejaUTilise }}</span> FCFA</h3>--}}
+{{--                                        <h3 class="mt-4"> Disponible : <span--}}
+{{--                                                class="text-warning">{{ $resteVersement }}</span> FCFA</h3>--}}
 
-                                    </div>
-                                    <div class="col-md-6 pull-right text-right">
-                                        <a type="button" class="btn btn-primary pull-right -align-right" href="#"
-                                           data-toggle="modal"
-                                           data-target="#versementModal"> <i
-                                                class="fas fa-plus"></i> Ajouter </a>
-                                    </div>
-                                </div>
-                                <div class="table-responsive col-md-12">
-                                    <table class="table table-bordered col-md-12" width="100%" id="dataTable">
-                                        <thead class="text-center">
-                                        @php
-                                            $comp = 0;
-                                        @endphp
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Montant</th>
-                                            <th>Description</th>
-                                            <th>Par</th>
-                                            <td>Le</td>
-                                            <th>Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody class="text-center">
-                                        @foreach($versements as $key => $value)
-                                            <tr>
-                                                <td>{{$key+1}}</td>
-                                                <td>{{$value->montant_versement}}</td>
-                                                <td> {{$value->description}} </td>
-                                                <td>
-                                                    @foreach($users as $k => $item)
-                                                        @if($value->id_user === $item->id)
-                                                            {{$item->name}}
-                                                        @endif
-                                                    @endforeach
-                                                </td>
-                                                <td>{{$value->created_at}}</td>
-                                                <td class="d-flex">
-                                                    <a href="#" data-toggle="modal"
-                                                       data-target="#versementModal{{ $value->id_versement }}"
-                                                       {{$value->id_user == Auth::user()->id? '':'disabled'}}
-                                                       class="btn btn-warning mr-1" type="Modifier"><i
-                                                            class="fa fa-edit"></i></a>
-                                                    <a href="{{$value->id_user == Auth::user()->id? route('versement.delete',$value->id_versement ):'#'}}"
-                                                       class="btn btn-danger" title="Supprimer"><i
-                                                            class="fa fa-trash"></i></a>
-                                                </td>
-                                            </tr>
-                                            <div class="modal fade justify-center  justify-content-center"
-                                                 id="versementModal{{ $value->id_versement }}" tabindex="-1"
-                                                 role="dialog"
-                                                 aria-labelledby="exampleModalLabel"
-                                                 aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Modifier
-                                                                versement</h5>
-                                                            <button class="close" type="button" data-dismiss="modal"
-                                                                    aria-label="Close">
-                                                                <span aria-hidden="true">×</span>
-                                                            </button>
-                                                        </div>
-                                                        <div
-                                                            class="modal-body justify-content-center align-content-center">
-                                                            <form role="form"
-                                                                  id="versementForm{{ $value->id_versement }}"
-                                                                  method="post"
-                                                                  action="{{ route('versement.update') }}">
-                                                                @csrf
-                                                                <input type="hidden" name="id_versement"
-                                                                       value="{{ $value->id_versement }}" required>
-                                                                <div class="form-group">
-                                                                    <label>Montant</label>
-                                                                    <input class="form-control text-uppercase"
-                                                                           type="number" min="5000"
-                                                                           name="montant_versement"
-                                                                           value="{{$value->montant_versement}}"
-                                                                           required>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label>Description(facultatif)</label>
-                                                                    <textarea class="form-control"
-                                                                              name="description">{{$value->description}}</textarea>
-                                                                </div>
-                                                                <hr>
-                                                                <button type="submit" class="btn btn-success"><i
-                                                                        class="fa fa-check fa-fw"></i>Enregistrer
-                                                                </button>
-                                                                <button type="reset" class="btn btn-danger"><i
-                                                                        class="fa fa-times fa-fw"></i>Retour
-                                                                </button>
-                                                                <button class="btn btn-secondary" type="button"
-                                                                        data-dismiss="modal">Annuler
-                                                                </button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
+{{--                                    </div>--}}
+{{--                                    <div class="col-md-6 pull-right text-right">--}}
+{{--                                        <a type="button" class="btn btn-primary pull-right -align-right" href="#"--}}
+{{--                                           data-toggle="modal"--}}
+{{--                                           data-target="#versementModal"> <i--}}
+{{--                                                class="fas fa-plus"></i> Ajouter </a>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                                <div class="table-responsive col-md-12">--}}
+{{--                                    <table class="table table-bordered col-md-12" width="100%" id="dataTable">--}}
+{{--                                        <thead class="text-center">--}}
+{{--                                        @php--}}
+{{--                                            $comp = 0;--}}
+{{--                                        @endphp--}}
+{{--                                        <tr>--}}
+{{--                                            <th>#</th>--}}
+{{--                                            <th>Montant</th>--}}
+{{--                                            <th>Description</th>--}}
+{{--                                            <th>Par</th>--}}
+{{--                                            <td>Le</td>--}}
+{{--                                            <th>Action</th>--}}
+{{--                                        </tr>--}}
+{{--                                        </thead>--}}
+{{--                                        <tbody class="text-center">--}}
+{{--                                        @foreach($versements as $key => $value)--}}
+{{--                                            <tr>--}}
+{{--                                                <td>{{$key+1}}</td>--}}
+{{--                                                <td>{{$value->montant_versement}}</td>--}}
+{{--                                                <td> {{$value->description}} </td>--}}
+{{--                                                <td>--}}
+{{--                                                    @foreach($users as $k => $item)--}}
+{{--                                                        @if($value->id_user === $item->id)--}}
+{{--                                                            {{$item->name}}--}}
+{{--                                                        @endif--}}
+{{--                                                    @endforeach--}}
+{{--                                                </td>--}}
+{{--                                                <td>{{$value->created_at}}</td>--}}
+{{--                                                <td class="d-flex">--}}
+{{--                                                    <a href="#" data-toggle="modal"--}}
+{{--                                                       data-target="#versementModal{{ $value->id_versement }}"--}}
+{{--                                                       {{$value->id_user == Auth::user()->id? '':'disabled'}}--}}
+{{--                                                       class="btn btn-warning mr-1" type="Modifier"><i--}}
+{{--                                                            class="fa fa-edit"></i></a>--}}
+{{--                                                    <a href="{{$value->id_user == Auth::user()->id? route('versement.delete',$value->id_versement ):'#'}}"--}}
+{{--                                                       class="btn btn-danger" title="Supprimer"><i--}}
+{{--                                                            class="fa fa-trash"></i></a>--}}
+{{--                                                </td>--}}
+{{--                                            </tr>--}}
+{{--                                            <div class="modal fade justify-center  justify-content-center"--}}
+{{--                                                 id="versementModal{{ $value->id_versement }}" tabindex="-1"--}}
+{{--                                                 role="dialog"--}}
+{{--                                                 aria-labelledby="exampleModalLabel"--}}
+{{--                                                 aria-hidden="true">--}}
+{{--                                                <div class="modal-dialog" role="document">--}}
+{{--                                                    <div class="modal-content">--}}
+{{--                                                        <div class="modal-header">--}}
+{{--                                                            <h5 class="modal-title" id="exampleModalLabel">Modifier--}}
+{{--                                                                versement</h5>--}}
+{{--                                                            <button class="close" type="button" data-dismiss="modal"--}}
+{{--                                                                    aria-label="Close">--}}
+{{--                                                                <span aria-hidden="true">×</span>--}}
+{{--                                                            </button>--}}
+{{--                                                        </div>--}}
+{{--                                                        <div--}}
+{{--                                                            class="modal-body justify-content-center align-content-center">--}}
+{{--                                                            <form role="form"--}}
+{{--                                                                  id="versementForm{{ $value->id_versement }}"--}}
+{{--                                                                  method="post"--}}
+{{--                                                                  action="{{ route('versement.update') }}">--}}
+{{--                                                                @csrf--}}
+{{--                                                                <input type="hidden" name="id_versement"--}}
+{{--                                                                       value="{{ $value->id_versement }}" required>--}}
+{{--                                                                <div class="form-group">--}}
+{{--                                                                    <label>Montant</label>--}}
+{{--                                                                    <input class="form-control text-uppercase"--}}
+{{--                                                                           type="number" min="5000"--}}
+{{--                                                                           name="montant_versement"--}}
+{{--                                                                           value="{{$value->montant_versement}}"--}}
+{{--                                                                           required>--}}
+{{--                                                                </div>--}}
+{{--                                                                <div class="form-group">--}}
+{{--                                                                    <label>Description(facultatif)</label>--}}
+{{--                                                                    <textarea class="form-control"--}}
+{{--                                                                              name="description">{{$value->description}}</textarea>--}}
+{{--                                                                </div>--}}
+{{--                                                                <hr>--}}
+{{--                                                                <button type="submit" class="btn btn-success"><i--}}
+{{--                                                                        class="fa fa-check fa-fw"></i>Enregistrer--}}
+{{--                                                                </button>--}}
+{{--                                                                <button type="reset" class="btn btn-danger"><i--}}
+{{--                                                                        class="fa fa-times fa-fw"></i>Retour--}}
+{{--                                                                </button>--}}
+{{--                                                                <button class="btn btn-secondary" type="button"--}}
+{{--                                                                        data-dismiss="modal">Annuler--}}
+{{--                                                                </button>--}}
+{{--                                                            </form>--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        @endforeach--}}
 
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+{{--                                        </tbody>--}}
+{{--                                    </table>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
             </div>
         </div>
 
@@ -446,41 +435,41 @@
         </div>
 
         {{--        Versement modal--}}
-        <div class="modal fade justify-center justify-content-center" id="versementModal" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ajouter un versement</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body justify-content-center align-content-center">
-                        <form role="form" id="versementForm" method="post"
-                              action="{{ route('settings.store.versement') }}">
-                            @csrf
-                            <div class="form-group">
-                                <label>Montant</label>
-                                <input class="form-control text-uppercase" type="number" min="5000"
-                                       name="montant_versement" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Description(facultatif)</label>
-                                <textarea class="form-control" name="description"
-                                          placeholder="Description ..."></textarea>
-                            </div>
-                            <hr>
-                            <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer
-                            </button>
-                            <button type="reset" class="btn btn-danger"><i class="fa fa-times fa-fw"></i>Retour</button>
-                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+{{--        <div class="modal fade justify-center justify-content-center" id="versementModal" tabindex="-1" role="dialog"--}}
+{{--             aria-labelledby="exampleModalLabel"--}}
+{{--             aria-hidden="true">--}}
+{{--            <div class="modal-dialog" role="document">--}}
+{{--                <div class="modal-content">--}}
+{{--                    <div class="modal-header">--}}
+{{--                        <h5 class="modal-title" id="exampleModalLabel">Ajouter un versement</h5>--}}
+{{--                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">--}}
+{{--                            <span aria-hidden="true">×</span>--}}
+{{--                        </button>--}}
+{{--                    </div>--}}
+{{--                    <div class="modal-body justify-content-center align-content-center">--}}
+{{--                        <form role="form" id="versementForm" method="post"--}}
+{{--                              action="{{ route('settings.store.versement') }}">--}}
+{{--                            @csrf--}}
+{{--                            <div class="form-group">--}}
+{{--                                <label>Montant</label>--}}
+{{--                                <input class="form-control text-uppercase" type="number" min="5000"--}}
+{{--                                       name="montant_versement" required>--}}
+{{--                            </div>--}}
+{{--                            <div class="form-group">--}}
+{{--                                <label>Description(facultatif)</label>--}}
+{{--                                <textarea class="form-control" name="description"--}}
+{{--                                          placeholder="Description ..."></textarea>--}}
+{{--                            </div>--}}
+{{--                            <hr>--}}
+{{--                            <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer--}}
+{{--                            </button>--}}
+{{--                            <button type="reset" class="btn btn-danger"><i class="fa fa-times fa-fw"></i>Retour</button>--}}
+{{--                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>--}}
+{{--                        </form>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
     </x-slot>
 </x-app-layout>
 

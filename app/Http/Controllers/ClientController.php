@@ -538,6 +538,7 @@ class ClientController extends Controller
         $request->validate([
             'formule'=>'required',
             'date_reabonnement'=>'required',
+            'id_decodeur'=>'required',
         ]);
         $data = Client::find($id_client);
         $formul = Formule::where('nom_formule',$request->formule)->get();
@@ -616,7 +617,9 @@ class ClientController extends Controller
 //        DD($request); exit();
         if ($reabonnement){
             $message_con ='';
-                $message = $nom." Votre réabonnement à été effectué avec success! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
+            $storeCaisse = (new CaisseController)->creditCaisse($reabonnement->id,'REABONNEMENT',$data->duree *  $formul[0]->prix_formule);
+
+            $message = $nom." Votre réabonnement à été effectué avec success! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
                 $envoi = (new MessageController)->prepareMessage($data_message,'REABONNEMENT' );
 //                if ($envoi == 0) {
 //                    $message_con ="Un message a été envoyé au client.";
@@ -687,6 +690,7 @@ class ClientController extends Controller
 
         if ($reabonnement){
             $message_con ='';
+//            $storeCaisse = (new CaisseController)->creditCaisse($reabonnement->id,'REABONNEMENT',$request->montant_versement * -1);
                 $message = $data->nom_client." Mis à jour de la formule réussi ! Formule: " .$request->formule . ", expire le: ".$data->date_reabonnement .".";
                 $envoi = (new MessageController)->prepareMessage($data_message,'REABONNEMENT' );
 //                if ($envoi == 0) {
@@ -879,7 +883,7 @@ class ClientController extends Controller
     }
 
     public function nouveauClient(){
-        $envoi = (new MessageController)->sendMessage("237679353205","" );
+//        $envoi = (new MessageController)->sendMessage("237679353205","" );
 
         $userid= Auth::user()->id;
         $data = Decodeur::join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
@@ -939,6 +943,9 @@ class ClientController extends Controller
     public function deleteReabonne( Request $request){
         $id = $request->id;
         $delete = Reabonnement::where('id_reabonnement',$id)->delete();
+        $storeCaisse = (new CaisseController)->removerFromCaisse($id,'REABONNEMENT');
+//        $storeCaisse = (new CaisseController)->creditCaisse($reabonnement->id,'REABONNEMENT',$data->duree *  $formul[0]->prix_formule);
+
         return Response()->json($delete);
     }
 

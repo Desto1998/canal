@@ -20,8 +20,10 @@ class PDFController extends Controller
     public function createPDF($data, $action)
     {
         $ImagePath = $_SERVER["DOCUMENT_ROOT"] . '/public/images/logo/logo_getel.png';
+        $ImagePath = $_SERVER["DOCUMENT_ROOT"] . '/images/logo/logo_getel.png';
 
         $ImagePath1 = $_SERVER["DOCUMENT_ROOT"] . '/public/images/logo/logo_canal.png';
+        $ImagePath1 = $_SERVER["DOCUMENT_ROOT"] . '/images/logo/logo_canal.png';
 
         $this->fpdf = new Fpdf;
         //Header

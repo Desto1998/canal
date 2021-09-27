@@ -21,6 +21,16 @@ create table versements(
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+drop table if exists versement_achats;
+create table versement_achats(
+    id_achat int primary key AUTO_INCREMENT,
+    montant_achat float not null,
+    description_achat varchar(255) null ,
+    id_user int not null,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 drop table if exists fournisseurs;
 create table fournisseurs(
     id_fournisseur int primary key AUTO_INCREMENT,
@@ -61,3 +71,11 @@ create table client_messages(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER  table caisses add column raison varchar(100) null ;
+
+ALTER  table caisses add column id_abonnement int null ;
+ALTER  table caisses add column id_reabonnement int null ;
+ALTER  table caisses add column id_upgrade int null ;
+ALTER  table caisses add column id_achat int null ;
+ALTER  table caisses add column id_materiel int null ;
+ALTER  table caisses add column id_decodeur int null ;
+ALTER  table caisses add column id_versement int null ;

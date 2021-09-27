@@ -38,6 +38,7 @@ class VersementController extends Controller
                 'description'=> $request->descriptioon
         ]);
         if ($data){
+            $editCaisse = (new CaisseController)->updateInCaisse($request->id_versement,'VERSEMENT',$request->montant_versement);
             session()->flash('message', "Enregistré avec succès.");
             return  redirect()->back()->with('info', "Enregistré avec succès.");
         }else{
@@ -55,11 +56,14 @@ class VersementController extends Controller
             'description'=>$request->description,
             'id_user'=>$userid,
         ]);
+
         if ($data){
+
+            $storeCaisse = (new CaisseController)->creditCaisse($data->id,'VERSEMENT',$request->montant_versement * -1);
             session()->flash('message', "Enregistré avec succès.");
             return  redirect()->back()->with('info', "Enregistré avec succès.");
         }else{
-            return  redirect()->back()->with('info', "Echec lors de l'enregistrement.");
+            return  redirect()->back()->with('danger', "Echec lors de l'enregistrement.");
         }
 
     }
@@ -68,6 +72,7 @@ class VersementController extends Controller
         $data = Versement::where('id_versement',$id)->delete();
         $userid= Auth::user()->id;
         if ($data){
+            $storeCaisse = (new CaisseController)->removerFromCaisse($id,'VERSEMENT');
             session()->flash('message', "Supprimé avec succès.");
             return  redirect()->back()->with('info', "Supprimé avec succès.");
         }else{
