@@ -1,8 +1,21 @@
 <x-app-layout>
     <x-slot name="slot">
-        <div class="row">
-            <label class="text-uppercase h6 ml-6"> Paramétres de la caisse </label>
-            <label class="align-content-center text-center pull-right h6 ml-6"> Total caisse: <span class="text-info">{{ $totalcaisse }}</span> </label>
+        <div class="row col-md-12">
+            <div class="col-md-6">
+                <label class="text-uppercase h6 ml-6"> Paramétres de la caisse </label>
+                <label class="align-content-center text-center pull-right h6 ml-6"> Total caisse: <span class="text-info">{{ $totalcaisse }}</span> </label>
+            </div>
+
+            <div class="float-right mb-4 pull-right">
+                <form action="{{ route('caisse.sort') }}" method="post">
+                    @csrf
+                    <div class="row">
+                        <input type="date" name="date1" class="form-control col-md-5">
+                        <input type="date" name="date2" class="form-control col-md-5">
+                        <button type="submit" class="btn btn-primary float-right"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
         </div>
     {{--        <a href="{{ route('test.message') }}" > Testmessage</a>--}}
     {{--        <div class="card shadow mb-4 col-xs-12 col-md-8 border-bottom-primary">--}}

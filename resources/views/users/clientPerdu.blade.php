@@ -83,7 +83,7 @@
                             <th>Dernière formule</th>
                             <th>Durée</th>
                             <th>Date d'expiration</th>
-                            <th>Montant de la formule(FCFA)</th>
+{{--                            <th>Montant de la formule(FCFA)</th>--}}
                             <th>Montant total</th>
                             <th> Relancer</th>
                         </tr>
@@ -107,8 +107,8 @@
                                 <td>{{ $client->nom_formule }}</td>
                                 <td>{{ $client->duree }} mois</td>
                                 <td>{{ $client->date_reabonnement }} </td>
-                                <td>{{ $client->prix_formule }}</td>
-                                <td>{{ ($client->prix_formule * $client->duree) + $client->prix_decodeur }}</td>
+{{--                                <td>{{ $client->prix_formule }}</td>--}}
+                                <td>{{ ($client->prix_formule * $client->duree)}}</td>
                                 <td>
                                     <a type="button" class="btn btn-info" title="Envoyer un message"  href="#" data-toggle="modal" data-target="#messageModal{{ $client->id_client }}">
                                         <i class="fas fa-fw fa-envelope"></i>
