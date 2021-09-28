@@ -34,13 +34,14 @@ Route::get('compte/blocke', function () {
     return view('layouts.compte-block');
 })->name('compte/blocke');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/', function () {
-    return redirect()->route('home');
-})->name('dashboard');
+
 
 Route::prefix('dashboard')->group(function () {
     //PDF
 //    Route::view('/', 'dashboard');
+    Route::middleware(['auth:sanctum', 'verified'])->get('/', function () {
+        return redirect()->route('home');
+    })->name('dashboard');
     Route::group(['middleware' => 'auth'], function () {
         Route::get('pdf', [PDFController::class, 'createPDF']);
 //        Route::get('/', function () {

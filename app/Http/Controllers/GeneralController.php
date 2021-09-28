@@ -12,7 +12,7 @@ use App\Models\Client;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Supporzt\Facades\Http;
 //use GuzzleHttp\Client;
 class GeneralController extends Controller
 {
@@ -84,7 +84,7 @@ class GeneralController extends Controller
     }
 
     public function nouveauClient(){
-        $envoi = (new MessageController)->sendMessage("237679353205","" );
+//        $envoi = (new MessageController)->sendMessage("237679353205","" );
 
         $userid= Auth::user()->id;
         $data = Decodeur::join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
@@ -124,7 +124,7 @@ class GeneralController extends Controller
 
     public function rechercherGlobal(Request  $request){
         if (empty($request->research)){
-            return redirect()->back()->with('warning','Mauvaise valeur de saisie');
+            return redirect()->back()->with('warning','Mauvaise valeur de saisie.');
 
         }
         $rechercher = strtotime($request->research);

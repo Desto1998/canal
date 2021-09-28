@@ -11,7 +11,7 @@
             </div>
             <div class="modal-body">{{ Auth::user()->name }} Etes-vous sur de vouloir vous déconnectez ?</div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
                 <a class="btn btn-primary" href="{{ route('logout') }}">Déconnexion</a>
             </div>
         </div>
