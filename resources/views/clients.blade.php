@@ -91,14 +91,20 @@
                         <input type="checkbox" style="border-radius: 3px" name="tel[]" value="{{ $client->telephone_client }}" class="selectid" id="select{{ $client->telephone_client }}" >
                     </td>
                     <td>{{ $key+1 }}</td>
-                    <td><strong>{{ $client->prenom_client }}</strong></td>
-                    <td><strong>{{ $client->nom_client }}</strong></td>
-                    <td><strong>{{ $client->telephone_client }}</strong></td>
-                    <td><strong>{{ $client->num_abonne }}</strong></td>
+                    <td>{{ $client->prenom_client }}</td>
+                    <td>{{ $client->nom_client }}</td>
+                    <td>{{ $client->telephone_client }}</td>
+                    <td>
+                            @foreach( $decodeurs as $k => $item)
+                                @if( $item->id_client === $client->id_client)
+                                    <h6 style="font-size: 11px!important;" class="bg-gradient-info p-1 w-16 text-white text-center">{{ $item->num_abonne }}</h6>
+                                @endif
+                            @endforeach
+                        </td>
                     <td>
                         @foreach( $decodeurs as $k => $item)
                             @if( $item->id_client === $client->id_client)
-                                <h6 style="font-size: 10px!important;" class="bg-gradient-info p-1 text-white">{{ $item->num_decodeur }}</h6>
+                                <h6 style="font-size: 11px!important;" class="bg-gradient-info p-1 w-100 text-white text-center">{{ $item->num_decodeur }}</h6>
                             @endif
                         @endforeach
                     </td>
@@ -149,15 +155,52 @@
                                     @csrf
                                     <input type="hidden" name="id_client" value="{{ $client->id_client }}">
                                     <div class="form-group">
-                                        Numero décodeur<br><input type="number" class="form-control"  maxlength="14" minlength="14" placeholder="numero decodeur" onblur="controlNumero(this)" class="form-control  @error('num_decodeur') is-invalid @enderror" name="num_decodeur" id="num_decodeur1"  required>
+                                        <label> Numéro d'abonné</label>
+                                        <input type="text" name="num_abonne" minlength="8" maxlength="8" class="form-control">
+                                    </div>
+                                    <div class="form-group align-content-center justify-content-center text-center">
+                                        <label><input type="radio" required name="operation" value="1" class="operation">&nbsp; Abonnement</label>
+                                        <label class="ml-4"><input required type="radio" value="0" name="operation" class="operation">&nbsp; Réabonnement</label>
+                                    </div>
+                                    <div class="selectdecodeur" id="selectdecodeur">
+                                        <div class="form-group">
+                                            Numero décodeur<br>
+                                            @if(isset($decodeur))
+
+                                                <select class="form-control" required="Sélectionnez un decodeur SVP."
+                                                        name="num_decodeurs" id="num_decodeurs">
+                                                    <option disabled selected hidden>Sélectionner un decodeur</option>
+                                                    @foreach($decodeur as $key =>$deco)
+                                                        @php
+                                                            $comp = 0;
+                                                        @endphp
+                                                        @foreach($clientdecodeur as $k =>$clientdeco)
+                                                            @if($deco->id_decodeur == $clientdeco->id_decodeur)
+
+                                                                @php
+                                                                    $comp++;
+                                                                @endphp
+                                                            @endif
+                                                        @endforeach
+                                                        @if($comp==0)
+                                                            <option
+                                                                value="{{$deco->num_decodeur}}">{{$deco->num_decodeur}}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+
+                                            @else
+                                                <span class="text-danger">Aucun décodeur n'est disponible veiller enregistrer un décodeur.</span>
+                                            @endif
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group hidden enternum" id="enternum">
+                                        Numero décodeur<br><input type="text" class="form-control"  maxlength="14" minlength="10" placeholder="numero decodeur" onblur="controlNumero(this)" class="form-control  @error('num_decodeur') is-invalid @enderror" name="num_decodeur" id="num_decodeur1" >
                                         <span class="text-danger hidden ereur-numerodd " style=""> Mauvaise saisie Longeur minimale 14</span>
                                         @error('num_decodeur')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
-                                    </div>
-                                    <div class="form-group">
-                                        <label > Prix du décodeur </label>
-                                        <input type="number" name="prix_decodeur" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         Formule: <select  name="formule" required>
@@ -177,6 +220,10 @@
                                             <option value=9> 9 mois </option>
                                             <option value=12> 12 mois </option>
                                         </select>
+                                    </div>
+                                    <div class="form-group align-content-center justify-content-center text-center">
+                                        <label><input type="radio" required name="type" value="1">&nbsp; Payé content</label>
+                                        <label class="ml-4"><input required type="radio" value="0" name="type">&nbsp;A crédit</label>
                                     </div>
                                     <div class="form-group">
                                         Date abonnement<br><input class="form-control" name="date_abonnement" type="date" required>
@@ -262,6 +309,21 @@
 </x-app-layout>
 <script>
 
+    $('input[name="operation"]').change(function (){
+        var operation = $('input[name="operation"]:checked').val();
+        if (operation==1){
+            $('#selectdecodeur').removeClass('hidden');
+            $('#enternum').addClass('hidden');
+            $('#enternumprise').addClass('hidden');
+        }else {
+            $('#selectdecodeur').addClass('hidden');
+            $('#enternum').removeClass('hidden');
+            // $('#enternumprise').removeClass('hidden');
+        }
+        // alert(operation);
+    });
+
+    $('ope')
     function showSMSArea(id)
     {
         $('.messagearea').addClass('hidden');

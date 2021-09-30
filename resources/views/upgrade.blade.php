@@ -13,7 +13,7 @@
                         <input type="hidden" name="id_reabonnement" value="{{ $reabonnement[0]->id_reabonnement }}">
                         <input type="hidden" name="id_decodeur" value="{{ $reabonnement[0]->id_decodeur }}">
                         <input type="hidden" name="id_formule" value="{{ $reabonnement[0]->id_formule }}">
-                        <input type="hidden" name="montant" value="{{ $formule[0]->montant }}">
+                        <input type="hidden" name="montant" value="{{ $formule[0]->prix_formule }}">
                         <input type="hidden" name="num_decodeur" value="{{ $decodeur[0]->num_decodeur }}">
                         <input type="hidden" name="date_reabonnement" value="{{ $decodeur[0]->date_reabonnement }}">
 {{--                        <input type="hidden" name="id_client" value="{{ $reabonnement[0]->id_client }}">--}}

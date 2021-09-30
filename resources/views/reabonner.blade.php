@@ -61,12 +61,13 @@
                                           <input class="form-control" type="text" placeholder="Adresse" name="adresse_client" required>
                                       </div>
                                   </div>
-                                  <div class="col-md-6">
+                                  <div class="col-md-6 enterdecodeur" id="enterdecodeur">
                                       <div class="form-group">
                                           Numero décodeur<br>
                                           <input type="number" class="form-control" maxlength="20" minlength="10" type="text"  placeholder="numero du decodeur" name="num_decodeur" id="num_decodeur" required>
                                       </div>
                                   </div>
+
                               </div>
                               <div class="row">
                                   <div class="col-md-6">
@@ -95,6 +96,11 @@
                                           </select>
                                       </div>
                                   </div>
+                              </div>
+                              <div class="form-group align-content-center">
+                                  <label><input type="radio" required name="type" value="1">&nbsp;Payé content</label>
+                                  <label class="ml-4"><input required type="radio" value="0" name="type">&nbsp; A
+                                      crédit</label>
                               </div>
                               <div class="form-group">
                                   Date abonnement<br><input class="form-control" name="date_abonnement" type="date" required>

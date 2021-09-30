@@ -3,13 +3,13 @@
     <x-slot name="slot">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h4 class="m-2 font-weight-bold text-primary">Nouvel abonnement&nbsp;<a href="{{ route('add.client')}}"
-                                                                                        data-toggle="modal"
-                                                                                        data-target="#clientModal"
-                                                                                        type="button"
-                                                                                        class="btn btn-primary bg-gradient-primary"
-                                                                                        style="border-radius: 0px;"><i
-                            class="fas fa-fw fa-plus"></i></a></h4>
+                <h4 class="m-2 font-weight-bold text-primary">Nouvel abonnement&nbsp;
+                    <a href="{{ route('add.client')}}"
+                       data-toggle="modal"  data-target="#clientModal" type="button"
+                       class="btn btn-primary bg-gradient-primary" style="border-radius: 0px;">
+                        <i class="fas fa-fw fa-plus"></i>
+                    </a>
+                </h4>
                 <label class="mr-5"><a class="btn btn-primary" href="{{route('user.abonnement.jour')}}"> Abonnements du
                         jour</a></label>
                 <label class="ml-4"><a class="btn btn-success" href="{{route('user.abonnement')}}"> Tous mes
@@ -101,11 +101,6 @@
                                                         @endif
                                                     @endforeach
                                                 </select>
-                                                {{--                            <input type="number" class="form-control" maxlength="14" minlength="14" type="number" onblur="controlNumero(this)" placeholder="Numero decodeur" name="num_decodeur" id="num_decodeur" required>--}}
-                                                {{--                            <span class="text-danger hidden ereur-numerod " style=""> Mauvaise saisie Longeur requise 14</span>--}}
-                                                {{--                            @error('num_decodeur')--}}
-                                                {{--                            <div class="invalid-feedback">{{ $message }}</div>--}}
-                                                {{--                            @enderror--}}
 
                                             @else
                                                 <span class="text-danger">Aucun décodeur n'est disponible veiller enregistrer un décodeur.</span>
@@ -165,39 +160,108 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                         <tr>
-
-                            <th>Prénom</th>
-                            <th>Nom</th>
-                            <th>Numéro de téléphone</th>
-                            <th>Numero d'abonné</th>
+                            <th>#</th>
+                            <th>Nom et Prénom</th>
+                            <th>Téléphone</th>
+                            <th>Num abonné</th>
+                            <th>Num Décodeur</th>
+                            <th>Formule</th>
+                            <th>Date reabo</th>
+                            <th>Durée</th>
+                            <th>Date échéance</th>
+                            <th>Montant</th>
+                            <th>Par</th>
+                            <th>Type</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($allClients as $key => $client)
+                        @php
+                            $compt = 1;
+                            $chiffre = 0;
+                            $credit = 0;
+                            $paye = 0;
+                        @endphp
+                        @foreach($data as $key => $value)
+
                             <tr>
+                                <td>{{$key+1}}</td>
+                                <td>{{ $value->nom_client }} {{$value->prenom_client }}</td>
+                                <td>{{ $value->telephone_client }}</td>
+                                <td>{{ $value->num_abonne }}</td>
+                                <td>{{ $value->num_decodeur }}</td>
+                                <td>{{ $value->nom_formule }}</td>
+                                <td>{{ $value->date_debut }}</td>
+                                <td>{{ $value->duree }} mois</td>
+                                <td>{{ $value->date_echeance }}</td>
+                                <td>{{ ($value->prix_formule * $value->duree)+$value->prix_decodeur }}</td>
+                                <td>
+                                    @foreach($users as $u=>$user)
+                                        @if($user->id === $value->id_user)
+                                            {{ $user->name }}
+                                        @endif
+                                    @endforeach
+                                </td>
+                                <td>
+                                    @if($value->type_abonement ===0)
+                                        <span class="bg-gradient-danger text-white p-1">Crédit</span>
+                                        @php
+                                            $credit += ($value->prix_formule * $value->duree) ;
+                                        @endphp
+                                    @else
+                                        <span class="bg-gradient-success text-white p-1">Payé</span>
+                                        @php
+                                            $paye += ($value->prix_formule * $value->duree) ;
+                                        @endphp
+                                    @endif
+                                </td>
+                                @php
+                                    // $new_time = date("$value->created_at", strtotime('+24 hours'));
+                                     // $new_time = date("2021-09-09 01:00:00", strtotime('+24 hours'));
+                                        $canDelete =0;
 
-                                <td><strong>{{ $client->prenom_client }}</strong></td>
-                                <td><strong>{{ $client->nom_client }}</strong></td>
-                                <td><strong>{{ $client->telephone_client }}</strong></td>
-                                <td><strong>{{ $client->num_abonne }}</strong></td>
+                                         foreach ($reabonnement as $r =>$item){
+                                             if ($item->id_abonnement==$value->id_abonnement){
+                                                  $created = new DateTime($value->created_at);
+                                                $created =  date("Y-m-d H:i:s", strtotime($item->created_at));
+
+                                                $date = new DateTime($created);
+                                             $date->add(new DateInterval('P1D'));
+                                            $datenow =  date('Y-m-d H:i:s');
+                                         //$date->format('');
+                                            $date =  date("Y-m-d H:i:s", strtotime($date->format('Y-m-d H:i:s')));
+                                            // dd($date);
+                                                if ($datenow <= $date){
+                                                     $canDelete = 1;
+                                                 }else{
+                                                     $canDelete = 0;
+                                                 }
+                                             }
+                                         }
+
+                                @endphp
                                 <td class="text-center d-flex">
-
-{{--                                    <a type="button" class="btn btn-primary bg-gradient-primary dropdown no-arrow"--}}
-{{--                                       data-toggle="dropdown">--}}
-{{--                                        ... <span class="caret"></span></a>--}}
-
-                                    <a class="btn btn-info" href="{{ route('clients.show', $client->id_client) }}"
-                                       title="Details sur le client"><i class="fas fa-fw fa-list-alt"></i> </a>
-
-                                    <a type="button" class="btn btn-warning ml-1" title="Modifier les infos du client"
-                                       href="{{route('edit.client',$client->id_client)}}">
+                                    {{--                                    <div class="row">--}}
+                                    <button {{ $canDelete == 1? '' : "disabled" }} id="supprimer" title="Supprimer"
+                                            href="javascript:void(0);"
+                                            class="btn btn-danger btn-supp"
+                                            onclick="deleteFunc({{ $value->id_abonnement }},{{ $value->id_client }})">
+                                        <i class="fas fa-fw fa-trash"></i>
+                                    </button>
+                                    <a id="upgrade" title="Upgrade l'abonnement"
+                                            href="{{ route('abonnement.upgrade',[ $value->id_client,$value->id_abonnement]) }}"
+                                            class="btn btn-warning btn-supp ml-1">
                                         <i class="fas fa-fw fa-edit"></i>
                                     </a>
-
-
+                                    <a target="_blank" title="Imprimer la facture" href="{{ route('printpdf', $value->id_abonnement ) }}" class="btn btn-info ml-1">
+                                        <i class="fas fa-fw fa-print"></i>
+                                    </a>
                                 </td>
                             </tr>
+                            @php
+                                $chiffre += ($value->prix_formule * $value->duree) ;
+                                    $compt ++;
+                            @endphp
                         @endforeach
 
                         </tbody>
@@ -208,6 +272,34 @@
     </x-slot>
 </x-app-layout>
 <script>
+    function deleteFunc(id, id_client) {
+        // $('#success').addClass('hidden');
+        // $('#error').addClass('hidden');
+        if (confirm("Supprimer cet abonnement?") == true) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "{{ route('abonnement.delete') }}",
+                data: {id: id_client, id_abonnement: id},
+                dataType: 'json',
+                success: function (res) {
+                    if (res) {
+                        alert("Supprimé avec succès!");
+                        window.location.reload(200);
+
+                    } else {
+                        alert("Une erreur s'est produite!");
+                    }
+
+                }
+            });
+        }
+    }
+
     function controlNumero1() {
 
 

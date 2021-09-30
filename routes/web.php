@@ -4,6 +4,7 @@ use App\Http\Controllers\CaisseController;
 use App\Http\Controllers\FactureController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SortController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VersementController;
 use Illuminate\Support\Facades\Auth;
@@ -57,6 +58,7 @@ Route::prefix('dashboard')->group(function () {
         Route::get('show/{id_client}', [ClientController::class, 'show'])->name('clients.show');
         Route::post('abonner/delete', [ClientController::class, 'deleteAbonne'])->name('abonnement.delete');
 
+
         //Reabonnement
         Route::get('reabonner', [ClientController::class, 'review'])->name('review.reabonner');
         Route::post('reabonner/add', [ClientController::class, 'reabonneAdd'])->name('store.client.reabonnement');
@@ -65,12 +67,15 @@ Route::prefix('dashboard')->group(function () {
         Route::post('reabonner/recover', [ClientController::class, 'recoverReabonne'])->name('reabonnement.recover');
         Route::post('updateR/{id_client}', [ClientController::class, 'updateR'])->name('updateR.client');
         Route::get('reabonnement/all', [ClientController::class, 'allReabonnement'])->name('user.reabonnement.all');
+        Route::post('reabonnement/sortby', [SortController::class, 'sortReabonnement'])->name('reabonnement.sort');
 
 
         //Modifier
         Route::get('upgrader', [ClientController::class, 'viewModif'])->name('upgrader');
         Route::get('upgrade_client/{id_client}/{id_reabonnement?}', [ClientController::class, 'up_client'])->name('up.client');
-        Route::post('upgradeClient/{id_client}', [ClientController::class, 'upgradeClient'])->name('upgrade.client');
+        Route::post('upgradeClient/{id_client}', [ClientController::class, 'upgradeReabonnement'])->name('upgrade.client');
+        Route::get('abonner/upgrade/{id_client}/{id_abonnement}', [ClientController::class, 'upAbonnement'])->name('abonnement.upgrade');
+        Route::post('abonner/upgrade/save', [ClientController::class, 'upgradeAbonnement'])->name('abonnement.upgrade.save');
 
         Route::get('modif_client/{id_client}', [ClientController::class, 'edit_client'])->name('edit.client');
         Route::post('updateM', [ClientController::class, 'updateM'])->name('updateM.client');

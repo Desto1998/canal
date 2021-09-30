@@ -15,6 +15,8 @@ class Reabonnement extends Model
         'id_formule',
         'type_reabonement',
         'date_reabonnement',
+        'statut_reabo',
+        'date_echeance',
         'duree',
         'id_user',
     ];

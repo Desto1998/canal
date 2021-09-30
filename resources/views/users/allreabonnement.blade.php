@@ -11,23 +11,45 @@
                         reabonnements</a></label>
                 <label class="ml-6"><a class="btn btn-danger" href="{{route('user.reabonnement.credit')}}">
                         Reabonnements à crédit</a></label>
+                <div class="float-right mb-1 pull-right col-md-12">
+                    <form action="{{ route('reabonnement.sort') }}" method="post">
+                        @csrf
+                        <div class="row pull-right float-right col-md-12">
+                            <select class="form-control col-md-2" name="byUser">
+                                <option value="ALL">Tous les statuts</option>
+                                <option value="BYME">Reabonné par moi</option>
+                                <option value="BYORTHERS">Reabonné par autre</option>
+                            </select>
+                            <select class="form-control col-md-2" name="byDate">
+                                <option value="CREATE">Date creation</option>
+                                <option value="START">Date reabo</option>
+                                <option value="STOP">Date échéance</option>
+                            </select>
+                            <input type="date" name="date1" class="form-control col-md-3">
+                            <input type="date" name="date2" class="form-control col-md-3">
+                            <button type="submit" class="btn btn-primary float-right"><i class="fas fa-search"></i></button>
+                        </div>
+                    </form>
+                </div>
             </div>
             @include('layouts/flash-message')
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
+                    <table class="table table-bordered text-center" style="font-size: 12px" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                         <tr>
                             <th>#</th>
                             <th>Nom et Prénom</th>
-                            <th>Numéro de téléphone</th>
-                            <th>Numéro client</th>
-                            <th>Numéro Décodeur</th>
+                            <th>Téléphone</th>
+                            <th>Num abonné</th>
+                            <th>Num Décodeur</th>
                             <th>Formule</th>
+                            <th>Date reabo</th>
                             <th>Durée</th>
-                            <th>Montant formule</th>
-                            <th>Montant total</th>
+                            <th>Date échéance</th>
+                            <th>Montant</th>
+                            <th>Par</th>
                             <th>Type</th>
                             <th>Action</th>
                         </tr>
@@ -42,15 +64,23 @@
                         @foreach($data as $key => $value)
 
                             <tr>
-                                <td>{{$compt}}</td>
-                                <td><strong>{{ $value->nom_client }} {{$value->prenom_client }}</strong></td>
-                                <td><strong>{{ $value->telephone_client }}</strong></td>
+                                <td>{{$key+1}}</td>
+                                <td>{{ $value->nom_client }} {{$value->prenom_client }}</td>
+                                <td>{{ $value->telephone_client }}</td>
                                 <td>{{ $value->num_abonne }}</td>
                                 <td>{{ $value->num_decodeur }}</td>
                                 <td>{{ $value->nom_formule }}</td>
+                                <td>{{ $value->date_reabonnement }}</td>
                                 <td>{{ $value->duree }} mois</td>
-                                <td>{{ $value->prix_formule }}</td>
+                                <td>{{ $value->date_echeance }}</td>
                                 <td>{{ ($value->prix_formule * $value->duree) }}</td>
+                                <td>
+                                    @foreach($users as $u=>$user)
+                                        @if($user->id === $value->id_user)
+                                            {{ $user->name }}
+                                        @endif
+                                    @endforeach
+                                </td>
                                 <td>
                                     @if($value->type_reabonement ===0)
                                         <span class="bg-gradient-danger text-white p-1">Crédit</span>

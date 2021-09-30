@@ -79,7 +79,7 @@ class UserController extends Controller
 
 
         if (count($verifyEmail) == 0){
-            dd($verifyEmail);exit();
+
             $user = User::Create(
                 [
                     'name' => $request->name,
