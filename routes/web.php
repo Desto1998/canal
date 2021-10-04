@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\AbonnementController;
 use App\Http\Controllers\CaisseController;
 use App\Http\Controllers\FactureController;
 use App\Http\Controllers\GeneralController;
+use App\Http\Controllers\ReabonnementController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SortController;
+use App\Http\Controllers\UpgradeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VersementController;
 use Illuminate\Support\Facades\Auth;
@@ -56,26 +59,31 @@ Route::prefix('dashboard')->group(function () {
         Route::post('store', [ClientController::class, 'store'])->name('store.client');
         Route::get('abonner', [ClientController::class, 'view'])->name('view.abonner');
         Route::get('show/{id_client}', [ClientController::class, 'show'])->name('clients.show');
-        Route::post('abonner/delete', [ClientController::class, 'deleteAbonne'])->name('abonnement.delete');
+        Route::post('abonner/delete', [AbonnementController::class, 'deleteAbonne'])->name('abonnement.delete');
+        Route::get('abonner/sortBy', [SortController::class, 'sortAbonnement'])->name('abonnement.sort');
 
 
         //Reabonnement
-        Route::get('reabonner', [ClientController::class, 'review'])->name('review.reabonner');
-        Route::post('reabonner/add', [ClientController::class, 'reabonneAdd'])->name('store.client.reabonnement');
-        Route::get('new_reabonner/{id_client}', [ClientController::class, 'reabonne'])->name('reabonne.client');
-        Route::post('reabonner/delete', [ClientController::class, 'deleteReabonne'])->name('reabonnement.delete');
-        Route::post('reabonner/recover', [ClientController::class, 'recoverReabonne'])->name('reabonnement.recover');
-        Route::post('updateR/{id_client}', [ClientController::class, 'updateR'])->name('updateR.client');
-        Route::get('reabonnement/all', [ClientController::class, 'allReabonnement'])->name('user.reabonnement.all');
+        Route::get('reabonner', [ReabonnementController::class, 'review'])->name('review.reabonner');
+        Route::post('reabonner/add', [ReabonnementController::class, 'reabonneAdd'])->name('store.client.reabonnement');
+        Route::get('new_reabonner/{id_client}', [ReabonnementController::class, 'reabonne'])->name('reabonne.client');
+        Route::post('reabonner/delete', [ReabonnementController::class, 'deleteReabonne'])->name('reabonnement.delete');
+        Route::post('reabonner/recover', [ReabonnementController::class, 'recoverReabonne'])->name('reabonnement.recover');
+        Route::post('updateR/{id_client}', [ReabonnementController::class, 'updateR'])->name('updateR.client');
+        Route::get('reabonnement/all', [ReabonnementController::class, 'allReabonnement'])->name('user.reabonnement.all');
         Route::post('reabonnement/sortby', [SortController::class, 'sortReabonnement'])->name('reabonnement.sort');
 
 
         //Modifier
-        Route::get('upgrader', [ClientController::class, 'viewModif'])->name('upgrader');
-        Route::get('upgrade_client/{id_client}/{id_reabonnement?}', [ClientController::class, 'up_client'])->name('up.client');
-        Route::post('upgradeClient/{id_client}', [ClientController::class, 'upgradeReabonnement'])->name('upgrade.client');
-        Route::get('abonner/upgrade/{id_client}/{id_abonnement}', [ClientController::class, 'upAbonnement'])->name('abonnement.upgrade');
-        Route::post('abonner/upgrade/save', [ClientController::class, 'upgradeAbonnement'])->name('abonnement.upgrade.save');
+        Route::get('upgrader', [UpgradeController::class, 'viewModif'])->name('upgrader');
+        Route::get('upgrader/all', [UpgradeController::class, 'allUpgrades'])->name('upgrader.all');
+        Route::get('upgrade_client/{id_client}/{id_reabonnement?}', [ReabonnementController::class, 'up_client'])->name('up.client');
+        Route::post('upgradeClient/{id_client}', [ReabonnementController::class, 'upgradeReabonnement'])->name('upgrade.client');
+        Route::post('upgradeClient/recover', [UpgradeController::class, 'recoverUpgrade'])->name('upgrade.recover');
+        Route::get('abonner/upgrade/{id_client}/{id_abonnement}', [AbonnementController::class, 'upAbonnement'])->name('abonnement.upgrade');
+        Route::post('upgrade/delete', [UpgradeController::class, 'deleteUpgrade'])->name('upgrade.delete');
+        Route::post('abonner/upgrade/save', [AbonnementController::class, 'upgradeAbonnement'])->name('abonnement.upgrade.save');
+        Route::post('abonner/delete', [AbonnementController::class, 'deleteAbonne'])->name('abonnement.delete');
 
         Route::get('modif_client/{id_client}', [ClientController::class, 'edit_client'])->name('edit.client');
         Route::post('updateM', [ClientController::class, 'updateM'])->name('updateM.client');
@@ -99,7 +107,7 @@ Route::prefix('dashboard')->group(function () {
         Route::post('storeDec', [MaterielController::class, 'storeDec'])->name('store.decodeur');
 
         Route::get('/messagerie', function () {
-            return view('messagerie');
+            return view('message.messagerie');
         })->name('messagerie');
 
         Route::get('send-sms-notification', [MessageController::class, 'sendSmsNotificaition']);
@@ -123,14 +131,14 @@ Route::prefix('dashboard')->group(function () {
         Route::post('caisse/store/achat', [CaisseController::class, 'addVersementAchat'])->name('caisse.store.achat');
         Route::post('caisse/update/achat', [CaisseController::class, 'EditVersementAchat'])->name('achat.update');
         Route::get('caisse/delete/achat/{id_achat}', [CaisseController::class, 'deleteVersementAchat'])->name('achat.delete');
-        Route::post('caisse/sort', [CaisseController::class, 'sortBy'])->name('caisse.sort');
+        Route::post('caisse/sort', [SortController::class, 'sortByCaisse'])->name('caisse.sort');
 
 
-        Route::get('user/abonnement', [ClientController::class, 'mesAbonnements'])->name('user.abonnement');
-        Route::get('user/abonnement/jour', [ClientController::class, 'mesAbonnementsjour'])->name('user.abonnement.jour');
-        Route::get('user/reabonnement', [ClientController::class, 'mesReabonnements'])->name('user.reabonnement');
-        Route::get('user/reabonnement/jour', [ClientController::class, 'mesReabonnementsAjour'])->name('user.reabonnement.jour');
-        Route::get('user/reabonnement/credit', [ClientController::class, 'creditReabonnement'])->name('user.reabonnement.credit');
+        Route::get('user/abonnement', [AbonnementController::class, 'mesAbonnements'])->name('user.abonnement');
+        Route::get('user/abonnement/jour', [AbonnementController::class, 'mesAbonnementsjour'])->name('user.abonnement.jour');
+        Route::get('user/reabonnement', [ReabonnementController::class, 'mesReabonnements'])->name('user.reabonnement');
+        Route::get('user/reabonnement/jour', [ReabonnementController::class, 'mesReabonnementsAjour'])->name('user.reabonnement.jour');
+        Route::get('user/reabonnement/credit', [ReabonnementController::class, 'creditReabonnement'])->name('user.reabonnement.credit');
 
 
         Route::get('users/lient/perdu', [ClientController::class, 'clientPerdu'])->name('user.client.perdu');

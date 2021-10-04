@@ -33,14 +33,14 @@
                                   </div>
                                   <div class="col-md-6">
                                       <div class="form-group">
-                                          Prenom client<br><input class="form-control" type="text" placeholder="Prenom" name="prenom_client" required>
+                                          Prenom client<br><input class="form-control" type="text" placeholder="Prenom" name="prenom_client">
                                       </div>
                                   </div>
                               </div>
                               <div class="row">
                                   <div class="col-md-6">
                                       <div class="form-group">
-                                          Numero d'abonné<br><input type="number" class="form-control" maxlength="15" minlength="8" type="text" onblur="controlNumero1(this)" placeholder="numero abonne" name="num_abonne" id="num_abonne" required>
+                                          Numero d'abonné<br><input type="text" class="form-control" maxlength="15" minlength="8" type="text" onblur="controlNumero1(this)" placeholder="numero abonne" name="num_abonne" id="num_abonne" required>
                                           <span class="text-danger hidden ereur-numeroa " style=""> Mauvaise saisie Longeur requise 8</span>
                                           @error('num_decodeur')
                                           <div class="invalid-feedback">{{ $message }}</div>
@@ -64,7 +64,7 @@
                                   <div class="col-md-6 enterdecodeur" id="enterdecodeur">
                                       <div class="form-group">
                                           Numero décodeur<br>
-                                          <input type="number" class="form-control" maxlength="20" minlength="10" type="text"  placeholder="numero du decodeur" name="num_decodeur" id="num_decodeur" required>
+                                          <input type="text" class="form-control" maxlength="20" minlength="10" type="text"  placeholder="numero du decodeur" name="num_decodeur" id="num_decodeur" required>
                                       </div>
                                   </div>
 
@@ -132,10 +132,16 @@
                 @foreach($allClients as $key => $client)
                 <tr>
                     <td>{{ $key+1 }}</td>
-                    <td><strong>{{ $client->prenom_client }}</strong></td>
-                    <td><strong>{{ $client->nom_client }}</strong></td>
-                    <td><strong>{{ $client->telephone_client }}</strong></td>
-                    <td><strong>{{ $client->num_abonne }}</strong></td>
+                    <td>{{ $client->prenom_client }}</td>
+                    <td>{{ $client->nom_client }}</td>
+                    <td>{{ $client->telephone_client }}</td>
+                    <td>
+                        @foreach($clientdecodeur as $d =>$item)
+                            @if($item->id_client===$client->id_client)
+                                <span class="bg-info p-1 text-center m-1 text-white" >{{ $item->num_abonne }} </span>
+                            @endif
+                        @endforeach
+                    </td>
                     <td class="text-center">
                       <a type="button" class="btn btn-warning" title="Réabonner"  href="{{route('reabonne.client',$client->id_client)}}">
                         <i class="fas fa-fw fa-plus"></i>

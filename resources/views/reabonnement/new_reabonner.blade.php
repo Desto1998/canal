@@ -9,7 +9,7 @@
                    href="{{route('review.reabonner')}}"> <i class="fas fa-flip-horizontal fa-fw fa-share"></i> Retour
                 </a>
                 <div class="card-body">
-                    @include('layouts/flash-message')
+                    @include('layouts.flash-message')
 
 
                     <form role="form" method="post" action="{{route('updateR.client',$datas->id_client)}}">

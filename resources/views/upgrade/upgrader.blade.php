@@ -2,17 +2,12 @@
     <x-slot name="slot">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="mb-1 text-danger"> Reabonnements à crédit</h6>
-                <label class=""><a class="btn btn-primary" href="{{route('user.reabonnement.jour')}}"> Reabonnements
-                        du jour</a></label>
-                <label class="ml-6"><a class="btn btn-success" href="{{route('user.reabonnement')}}"> Tous mes
-                        reabonnements</a></label>
-                <label class="ml-6"><a class="btn btn-info" href="{{route('user.reabonnement.all')}}"> Tous les
-                        reabonnements</a></label>
-                <label class="ml-6"><a class="btn btn-danger" href="{{route('user.reabonnement.credit')}}">
-                        Reabonnements à crédit</a></label>
+                <h6 class="text-info">Upgrade un reabonnement</h6>
+                <div class="row">
+                    <a href="{{ route('upgrader.all') }}" class="btn btn-success">Tous les upgrades</a>
+                </div>
             </div>
-            @include('layouts/flash-message')
+            @include('layouts.flash-message')
 
             <div class="card-body">
                 <div class="table-responsive">
@@ -26,9 +21,7 @@
                             <th>Numéro Décodeur</th>
                             <th>Formule</th>
                             <th>Durée</th>
-                            <th>Montant formule</th>
-
-                            <th>Montant total</th>
+                            <th width="150px">Expire le</th>
                             <th>Type</th>
                             <th>Action</th>
                         </tr>
@@ -43,15 +36,14 @@
                         @foreach($data as $key => $value)
 
                             <tr>
-                                <td>{{$compt}}</td>
-                                <td><strong>{{ $value->nom_client }} {{$value->prenom_client }}</strong></td>
-                                <td><strong>{{ $value->telephone_client }}</strong></td>
+                                <td>{{$key+1}}</td>
+                                <td>{{ $value->nom_client }} {{$value->prenom_client }}</td>
+                                <td>{{ $value->telephone_client }}</td>
                                 <td>{{ $value->num_abonne }}</td>
                                 <td>{{ $value->num_decodeur }}</td>
                                 <td>{{ $value->nom_formule }}</td>
                                 <td>{{ $value->duree }} mois</td>
-                                <td>{{ $value->prix_formule }}</td>
-                                <td>{{ ($value->prix_formule * $value->duree) }}</td>
+                                <td width="150px">{{ $value->date_reabonnement }}</td>
                                 <td>
                                     @if($value->type_reabonement ===0)
                                         <span class="bg-gradient-danger text-white p-1">Crédit</span>
@@ -65,48 +57,19 @@
                                         @endphp
                                     @endif
                                 </td>
-                                @php
-                                    // $new_time = date("$value->created_at", strtotime('+24 hours'));
-                                     // $new_time = date("2021-09-09 01:00:00", strtotime('+24 hours'));
-                                        $canDelete =0;
-
-                                         foreach ($reabonnement as $r =>$item){
-                                             if ($item->id_reabonnement==$value->id_reabonnement){
-                                                  $created = new DateTime($value->created_at);
-                                                $created =  date("Y-m-d H:i:s", strtotime($item->created_at));
-
-                                                $date = new DateTime($created);
-                                             $date->add(new DateInterval('P1D'));
-                                            $datenow =  date('Y-m-d H:i:s');
-                                         //$date->format('');
-                                            $date =  date("Y-m-d H:i:s", strtotime($date->format('Y-m-d H:i:s')));
-                                            // dd($date);
-                                                if ($datenow <= $date){
-                                                     $canDelete = 1;
-                                                 }else{
-                                                     $canDelete = 0;
-                                                 }
-                                             }
-                                         }
-
-                                @endphp
                                 <td class="text-center d-flex">
                                     {{--                                    <div class="row">--}}
-                                    <button {{ $canDelete == 1? '' : "disabled" }} id="supprimer" title="Supprimer"
-                                            href="javascript:void(0);"
-                                            class="btn btn-danger btn-supp"
-                                            onclick="deleteFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
-                                        <i class="fas fa-fw fa-trash"></i>
-                                    </button>
+                                    <a id="upgrade" title="Upgrage"
+                                            href="{{ route('up.client',[$value->id_client,$value->id_reabonnement]) }}"
+                                            class="btn btn-warning btn-supp">
+                                        <i class="fas fa-fw fa-edit"></i>
+                                    </a>
                                     <button {{ $value->type_reabonement == 0? '' : "disabled" }} id="Recouvrement" title="Recouvrir le crédit"
                                             href="javascript:void(0);"
                                             class="btn btn-success btn-supp ml-1"
                                             onclick="recouvrirFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
                                         <i class="fas fa-fw fa-check"></i>
                                     </button>
-                                    <a target="_blank" title="Imprimer la facture" href="{{ route('printpdf', $value->id_reabonnement ) }}" class="btn btn-info ml-1">
-                                        <i class="fas fa-fw fa-print"></i>
-                                    </a>
                                     {{--                                    </div>--}}
 
 
@@ -120,18 +83,7 @@
 
                         </tbody>
                     </table>
-
                 </div>
-                <div class="mt-6">
-                    <h4>Total Crédit : <span class="text-danger">{{$credit}} FCFA</span></h4>
-                </div>
-{{--                <div class="mt-6">--}}
-{{--                    <h4>Total payé : <span class="text-success">{{$paye}} FCFA</span></h4>--}}
-{{--                </div>--}}
-{{--                <div class="mt-6">--}}
-{{--                    <h4>Total Général : <span class="text-info">{{$chiffre}} FCFA</span></h4>--}}
-{{--                </div>--}}
-
             </div>
         </div>
 

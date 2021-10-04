@@ -2,12 +2,24 @@
     <x-slot name="slot">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h4 class="text-primary"> Clients nouveaux</h4>
-                <label class=""><a class="btn btn-success" href="{{route('user.client.nouveau')}}"> Client nouveau</a></label>
-                <label class="ml-4"><a class="btn btn-warning"  href="{{route('user.client.terme')}}"> Bientot a terme</a></label>
-                <label class="ml-4"><a class="btn btn-danger"  href="{{route('user.client.perdu')}}"> Clients échus</a></label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="text-primary">Clients bientàt à terme</h4>
+                        <label class=""><a class="btn btn-success" href="{{route('user.client.nouveau')}}"> Client nouveau</a></label>
+                        <label class="ml-4"><a class="btn btn-warning"  href="{{route('user.client.terme')}}"> Bientot a terme</a></label>
+                        <label class="ml-4">
+                            <a class="btn btn-danger"  href="{{route('user.client.perdu')}}">
+                                Clients échus
+                            </a>
+                        </label>
+                    </div>
+                    <div class="col-md-4">
+{{--                        <label class="ml-4"><a class="btn btn-primary"  href="#"><i class="fas fa-fw fa-envelope" id="sentoall" title="Envoyer un sms  à toute la liste"></i></a></label>--}}
+
+                    </div>
+                </div>
             </div>
-            @include('layouts/flash-message')
+            @include('layouts.flash-message')
 
             <div class="modal fade" id="sendtoallModal" tabindex="-1" role="dialog"
                  aria-labelledby="sendtoallModal"
@@ -69,6 +81,12 @@
                     </a>
                 </label>
                 <div class="table-responsive">
+                    <div class="form-group">
+{{--                        <label>--}}
+{{--                            <input type="checkbox" name="selectall" class="form-control" id="selectall">--}}
+{{--                            Tout cocher--}}
+{{--                        </label>--}}
+                    </div>
                     <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                         <tr>
@@ -83,42 +101,31 @@
                             <th>Formule actuelle</th>
                             <th>Durée</th>
                             <th>Date d'expiration</th>
-                            <th>Montant de la formule(FCFA)</th>
-                            <th>Montant total</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @php
-                            $compt = 1;
-                            $chiffre = 0;
-                        @endphp
+
                         @foreach($data as $key => $client)
 
                             <tr>
                                 <td>
                                     <input type="checkbox" style="border-radius: 3px" name="tel[]" value="{{ $client->telephone_client }}" class="selectid" id="select{{ $client->telephone_client }}" >
                                 </td>
-                                <td>{{$compt}}</td>
+                                <td>{{ $key+1 }}</td>
                                 <td><strong>{{ $client->nom_client }} {{$client->prenom_client }}</strong></td>
                                 <td><strong>{{ $client->telephone_client }}</strong></td>
                                 <td>{{ $client->num_abonne }}</td>
                                 <td>{{ $client->num_decodeur }}</td>
-                                <td>{{ $client->nom_formule }}</td>
+                                <td>{{ $client->nom_formule }} ( {{ $client->prix_formule  }} )</td>
                                 <td>{{ $client->duree }} mois</td>
                                 <td>{{ $client->date_reabonnement }} </td>
-                                <td>{{ $client->prix_formule }}</td>
-                                <td>{{ ($client->prix_formule * $client->duree)  }}</td>
                                 <td>
                                     <a type="button" class="btn btn-info" title="Envoyer un message"  href="#" data-toggle="modal" data-target="#messageModal{{ $client->id_client }}">
                                         <i class="fas fa-fw fa-envelope"></i>
                                     </a>
                                 </td>
                             </tr>
-                            @php
-                                $chiffre += ($client->prix_formule * $client->duree) ;
-                                    $compt ++;
-                            @endphp
                             <div class="modal fade justify-center justify-content-center" id="messageModal{{ $client->id_client }}" tabindex="-1" role="dialog"
                                  aria-labelledby="exampleModalLabel{{ $client->id_client }}"
                                  aria-hidden="true">
@@ -176,20 +183,12 @@
                                     </div>
                                 </div>
                             </div>
-
                         @endforeach
-
                         </tbody>
                     </table>
-
-                </div>
-                <div class="mt-6">
-                    <h2>Total général : <span class="text-info">{{$chiffre}} FCFA</span></h2>
                 </div>
             </div>
         </div>
-
-
         </div>
     </x-slot>
 </x-app-layout>

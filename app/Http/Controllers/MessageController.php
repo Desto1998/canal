@@ -314,7 +314,7 @@ class MessageController extends Controller
     {
         $messages = Message_Envoye::OrderBy('id_message_envoye','DESC')->get();
         $users = User::all();
-        return view('historiques',compact('messages','users'));
+        return view('message.historiques',compact('messages','users'));
     }
 
 

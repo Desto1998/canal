@@ -232,7 +232,7 @@ class CaisseController extends Controller
                 case 'ABONNEMENT':
                     $caisse =Caisse::where('id_abonnement',$id)->delete();
                 break;
-                case 'UPGRADE':
+                case  'UPGRADE':
                     $caisse =Caisse::where('id_upgrade',$id)->delete();
                 break;
                 case 'DECODEUR':
@@ -264,109 +264,5 @@ class CaisseController extends Controller
         return $diference;
 
     }
-    public function sortBy(Request $request){
-//        dd($request);
-        if (isset( $request->date1 ) && isset($request->date2) ){
 
-            $totalcaisse = Caisse::where('created_at','>=',$request->date1)
-                ->where('created_at','<=',$request->date2)
-                ->sum("montant")
-            ;
-
-            $versements = Versement::where('created_at','>=',$request->date1)
-                ->where('created_at','<=',$request->date2)
-                ->OrderBy('id_versement','DESC')
-                ->get()
-            ;
-            $achats = Versement_achats::where('created_at','>=',$request->date1)
-                ->where('created_at','<=',$request->date2)
-                ->OrderBy('id_achat','DESC')
-                ->get()
-            ;
-            $Caisse = Caisse::join('users','users.id','caisses.id_user')
-                ->where('caisses.date_ajout','>=',$request->date1)
-                ->where('caisses.date_ajout','<=',$request->date2)
-                ->OrderBy('id_caisse','DESC')
-                ->get();
-
-            $totalVersement = Versement::where('created_at','>=',$request->date1)
-                ->where('created_at','<=',$request->date2)
-                ->sum("montant_versement")
-            ;
-
-            $dejaUTilise = Formule::join('reabonnements','formules.id_formule','reabonnements.id_formule')
-                ->where('reabonnements.created_at','>=',$request->date1)
-                ->where('reabonnements.created_at','<=',$request->date2)
-                ->sum(\DB::raw('formules.prix_formule * reabonnements.duree'))
-            ;
-            $resteVersement = $totalVersement - $dejaUTilise;
-            $users = Versement::join('users','users.id','versements.id_user')->get();
-            return view('caisse',compact('Caisse','users','totalVersement','resteVersement','dejaUTilise',
-                'totalcaisse','versements','achats'));
-        }
-
-        if (isset( $request->date1 )){
-            $totalcaisse = Caisse::where('created_at','>=',$request->date1)
-                ->sum("montant")
-            ;
-
-            $versements = Versement::where('created_at','>=',$request->date1)
-                ->OrderBy('id_versement','DESC')
-                ->get()
-            ;
-            $achats = Versement_achats::where('created_at','>=',$request->date1)
-                ->OrderBy('id_achat','DESC')
-                ->get()
-            ;
-            $Caisse = Caisse::join('users','users.id','caisses.id_user')
-                ->where('caisses.date_ajout','>=',$request->date1)
-                ->OrderBy('id_caisse','DESC')
-                ->get();
-
-            $totalVersement = Versement::where('created_at','>=',$request->date1)
-                ->sum("montant_versement")
-            ;
-
-            $dejaUTilise = Formule::join('reabonnements','formules.id_formule','reabonnements.id_formule')
-                ->where('reabonnements.created_at','>=',$request->date1)
-                ->sum(\DB::raw('formules.prix_formule * reabonnements.duree'))
-            ;
-            $resteVersement = $totalVersement - $dejaUTilise;
-            $users = Versement::join('users','users.id','versements.id_user')->get();
-            return view('caisse',compact('Caisse','users','totalVersement','resteVersement','dejaUTilise',
-                'totalcaisse','versements','achats'));
-        }
-
-        if (isset( $request->date2 )){
-            $totalcaisse = Caisse::where('created_at','<=',$request->date2)
-                ->sum("montant")
-            ;
-
-            $versements = Versement::where('created_at','<=',$request->date2)
-                ->OrderBy('id_versement','DESC')
-                ->get()
-            ;
-            $achats = Versement_achats::where('created_at','<=',$request->date2)
-                ->OrderBy('id_achat','DESC')
-                ->get()
-            ;
-            $Caisse = Caisse::join('users','users.id','caisses.id_user')
-                ->where('caisses.date_ajout','<=',$request->date2)
-                ->OrderBy('id_caisse','DESC')
-                ->get();
-
-            $totalVersement = Versement::where('created_at','<=',$request->date2)
-                ->sum("montant_versement")
-            ;
-
-            $dejaUTilise = Formule::join('reabonnements','formules.id_formule','reabonnements.id_formule')
-                ->where('reabonnements.created_at','<=',$request->date2)
-                ->sum(\DB::raw('formules.prix_formule * reabonnements.duree'))
-            ;
-            $resteVersement = $totalVersement - $dejaUTilise;
-            $users = Versement::join('users','users.id','versements.id_user')->get();
-            return view('caisse',compact('Caisse','users','totalVersement','resteVersement','dejaUTilise',
-                'totalcaisse','versements','achats'));
-        }
-    }
 }

@@ -58,7 +58,7 @@
                       <label class="ml-4"><input required type="radio" value="0" name="type">&nbsp; A crédit</label>
                     </div>
                       <div class="form-group">
-                      Date reabonnement<br><input class="form-control"  placeholder="{{ $datas->data_reabonnement }}" value="{{ $decos[0]->date_reabonnement }}" name="date_reabonnement" type="date" readonly required>
+                      Date reabonnement<br><input class="form-control" value="{{ $reabonnement[0]->date_echeance }}"   name="date_reabonnement" type="date" readonly required>
                     </div>
                       <hr>
 

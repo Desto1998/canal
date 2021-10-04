@@ -48,9 +48,10 @@
 
                         </div>
                         <div class="col-md-6 mt-2">
-                            <span class="">Numéro d'abonné:</span> <span
-                                class="mr-2 text-black-50 font-semibold">{{ $client[0]->num_abonne }}</span>
-
+                            <span class="">Numéro d'abonné( {{ count($decodeurs) }} ):</span>
+                            @foreach($decodeurs as $k => $item)
+                                    <span class="mr-2 text-black-50 m-2 font-semibold"> {{ $item->num_abonne }} </span>
+                            @endforeach
                         </div>
                         <div class="col-md-6 mt-2">
                             <span class="mr-2">Date d'abonnement:</span> <span
@@ -77,7 +78,7 @@
 
                 </div>
             </div>
-            @include('layouts/flash-message')
+            @include('layouts.flash-message')
 
             <div class="card-body">
                 <div class="table-responsive">
