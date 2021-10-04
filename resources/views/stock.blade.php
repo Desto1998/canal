@@ -30,14 +30,14 @@
                     <tbody>
                         @foreach($allDecodeurs as $key => $dec)
                         <tr>
-                            <td><strong>{{ $dec->num_decodeur }}</strong></td>
-                            <td><strong>{{ $dec->prix_decodeur }}</strong></td>
-                            <td align="right">
-                            <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="">
-                              <i class="fas fa-fw fa-edit"></i> Modifier
+                            <td>{{ $dec->num_decodeur }}</td>
+                            <td>{{ $dec->prix_decodeur }}</td>
+                            <td align="center">
+                            <a type="button" class="btn btn-warning" title="Modifier" href="">
+                              <i class="fas fa-fw fa-edit"></i>
                             </a>
-                            <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="">
-                              <i class="fas fa-fw fa-edit"></i> supprimer
+                            <a type="button" class="btn btn-danger" title="Supprimer" href="">
+                              <i class="fas fa-fw fa-trash"></i>
                             </a>
                             </td>
                         </tr>
@@ -66,14 +66,14 @@
                     <tbody>
                         @foreach($allMateriels as $key => $mat)
                         <tr>
-                            <td><strong>{{ $mat->nom_materiel }}</strong></td>
-                            <td><strong>{{ $mat->prix_materiel }}</strong></td>
+                            <td>{{ $mat->nom_materiel }}</td>
+                            <td>{{ $mat->prix_materiel }}</td>
                             <td align="right">
-                            <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="">
-                              <i class="fas fa-fw fa-edit"></i> Modifier
+                            <a type="button" class="btn btn-warning" title="Modifier" href="">
+                              <i class="fas fa-fw fa-edit"></i>
                             </a>
-                            <a type="button" class="btn btn-warning bg-gradient-warning btn-block" style="border-radius: 0px;" href="">
-                              <i class="fas fa-fw fa-edit"></i> Supprimer
+                            <a type="button" class="btn btn-danger" title="Supprimer"  href="">
+                              <i class="fas fa-fw fa-edit"></i>
                             </a>
                             </td>
                         </tr>

@@ -78,7 +78,11 @@
         <div class="alert  alert-danger alert-block text-center" id="error">
             <button type="button" class="close" data-dismiss="alert">×</button>
             <strong style="font-size: 20px">Désolé vous ne pouvez acceder à ce compte, <br>il est blocké contactez l'adminitrateur pour
-                l'aide.</strong>
+                l'aide.</strong><br><br>
+            <span class="warning">L'application est en maintenance veillez patienter un peu. j'en ai pour 2h max. DESTO</span>
+            <p>
+                J'ai blocké vos compte pour le faire. Super ADMIN.
+            </p>
         </div>
 
     </div>

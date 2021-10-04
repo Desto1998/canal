@@ -5,7 +5,7 @@
             <div class="card-header py-3">
                 <h6 class="m-2 font-weight-bold text-primary">Liste des messages envoyés&nbsp;</h6>
             </div>
-            @include('layouts/flash-message')
+            @include('layouts.flash-message')
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" >

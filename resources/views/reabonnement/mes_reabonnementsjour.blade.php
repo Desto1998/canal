@@ -12,7 +12,7 @@
                 <label class="ml-6"><a class="btn btn-danger" href="{{route('user.reabonnement.credit')}}">
                         Reabonnements à crédit</a></label>
             </div>
-            @include('layouts/flash-message')
+            @include('layouts.flash-message')
 
             <div class="card-body">
                 <div class="table-responsive">

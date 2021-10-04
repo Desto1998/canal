@@ -5,7 +5,7 @@
             <div class="card-header py-3">
                 <h4 class="m-2 font-weight-bold text-primary">Nouvel abonnement&nbsp;
                     <a href="{{ route('add.client')}}"
-                       data-toggle="modal"  data-target="#clientModal" type="button"
+                       data-toggle="modal" data-target="#clientModal" type="button"
                        class="btn btn-primary bg-gradient-primary" style="border-radius: 0px;">
                         <i class="fas fa-fw fa-plus"></i>
                     </a>
@@ -14,8 +14,29 @@
                         jour</a></label>
                 <label class="ml-4"><a class="btn btn-success" href="{{route('user.abonnement')}}"> Tous mes
                         abonnements</a></label>
+                <div class="float-right mb-1 pull-right col-md-12">
+                    <form action="{{ route('abonnement.sort') }}" method="get">
+                        @csrf
+                        <div class="row pull-right float-right col-md-12">
+                            <select class="form-control col-md-2" name="byUser">
+                                <option value="ALL">Tous les statuts</option>
+                                <option value="BYME">Reabonné par moi</option>
+                                <option value="BYORTHERS">Reabonné par autre</option>
+                            </select>
+                            <select class="form-control col-md-2" name="byDate">
+                                <option value="CREATE">Date creation</option>
+                                <option value="START">Date reabo</option>
+                                <option value="STOP">Date échéance</option>
+                            </select>
+                            <input type="date" name="date1" class="form-control col-md-3">
+                            <input type="date" name="date2" class="form-control col-md-3">
+                            <button type="submit" class="btn btn-primary float-right"><i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            @include('layouts/flash-message')
+            @include('layouts.flash-message')
 
 
             <div class="modal fade " id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -41,14 +62,14 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             Prenom client<br><input class="form-control" type="text"
-                                                                    placeholder="Prenom" name="prenom_client" required>
+                                                                    placeholder="Prenom" name="prenom_client">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            Numero d'abonné<br><input type="number" class="form-control" maxlength="8"
+                                            Numero d'abonné<br><input type="text" class="form-control" maxlength="8"
                                                                       minlength="8" type="text"
                                                                       onblur="controlNumero1(this)"
                                                                       placeholder="numero abonne" name="num_abonne"
@@ -84,21 +105,9 @@
                                                         name="num_decodeur" id="num_decodeur">
                                                     <option disabled selected hidden>Sélectionner un decodeur</option>
                                                     @foreach($decodeur as $key =>$deco)
-                                                        @php
-                                                            $comp = 0;
-                                                        @endphp
-                                                        @foreach($clientdecodeur as $k =>$clientdeco)
-                                                            @if($deco->id_decodeur == $clientdeco->id_decodeur)
 
-                                                                @php
-                                                                    $comp++;
-                                                                @endphp
-                                                            @endif
-                                                        @endforeach
-                                                        @if($comp==0)
-                                                            <option
-                                                                value="{{$deco->num_decodeur}}">{{$deco->num_decodeur}}</option>
-                                                        @endif
+                                                        <option
+                                                            value="{{$deco->num_decodeur}}">{{$deco->num_decodeur}}</option>
                                                     @endforeach
                                                 </select>
 
@@ -249,11 +258,12 @@
                                         <i class="fas fa-fw fa-trash"></i>
                                     </button>
                                     <a id="upgrade" title="Upgrade l'abonnement"
-                                            href="{{ route('abonnement.upgrade',[ $value->id_client,$value->id_abonnement]) }}"
-                                            class="btn btn-warning btn-supp ml-1">
+                                       href="{{ route('abonnement.upgrade',[ $value->id_client,$value->id_abonnement]) }}"
+                                       class="btn btn-warning btn-supp ml-1">
                                         <i class="fas fa-fw fa-edit"></i>
                                     </a>
-                                    <a target="_blank" title="Imprimer la facture" href="{{ route('printpdf', $value->id_abonnement ) }}" class="btn btn-info ml-1">
+                                    <a target="_blank" title="Imprimer la facture"
+                                       href="{{ route('printpdf', $value->id_abonnement ) }}" class="btn btn-info ml-1">
                                         <i class="fas fa-fw fa-print"></i>
                                     </a>
                                 </td>
