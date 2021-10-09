@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Abonnement;
 use App\Models\Caisse;
 use App\Models\ClientDecodeur;
 use App\Models\Decodeur;
@@ -9,10 +10,16 @@ use App\Models\Formule;
 use App\Models\Materiel;
 use App\Models\Reabonnement;
 use App\Models\Client;
+use App\Models\Type_operation;
+use App\Models\Upgrade;
 use App\Models\User;
+use App\Models\Versement;
+use App\Models\Versement_achats;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Supporzt\Facades\Http;
+use PDF;
+
 //use GuzzleHttp\Client;
 class GeneralController extends Controller
 {
@@ -130,7 +137,7 @@ class GeneralController extends Controller
         $rechercher = strtotime($request->research);
         $research = Client::where('nom_client','LIKE', "%{$request->research}%")
             ->orWhere('telephone_client', 'LIKE', "%{$request->research}")
-            ->orWhere('num_abonne','=', $request->research)
+//            ->orWhere('num_abonne','=', $request->research)
             ->get();
         if (count($research)===0){
             return redirect()->back()->with('warning','Auccun résultat trouvé pour: <<'.$request->research.'>>');
@@ -147,4 +154,538 @@ class GeneralController extends Controller
         }
 
     }
+    public function getUsers()
+    {
+        $userid = Auth::user()->id;
+        $users =User::where('id','!=',$userid)->get();
+//        dd($users);
+        return view('raport.form',compact('users'));
+    }
+    public function makeReport(Request $request)
+    {
+        $request->validate([
+            'action'=>'required',
+            'date1'=>'required',
+            'date2'=>'required',
+        ]);
+        if (isset($request->action) && isset($request->date1) && isset($request->date2))
+        {
+
+
+            if ($request->action==="ALL")
+            {
+                $users = User::all();
+                $allReabonnement=Reabonnement::join('formules','formules.id_formule','reabonnements.id_formule')->get();
+                $allAbonnement = Abonnement::join('formules','formules.id_formule','abonnements.id_formule')->get();
+                $allUpgrade = Upgrade::all();
+
+                $decodeur = Decodeur::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $decodeurs = Decodeur::join('client_decodeurs', 'client_decodeurs.id_decodeur', 'decodeurs.id_decodeur')
+                    ->get()
+                ;
+                $clientdecodeur = ClientDecodeur::all();
+                $id_decodeur = [];
+                foreach ($clientdecodeur as $key=> $value){
+                    $id_decodeur[$key]=$value->id_decodeur;
+                }
+//        dd($id_decodeur);
+
+                $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur',$id_decodeur)
+                    ->get()
+                ;
+                $reabonnement = Reabonnement::join('formules','formules.id_formule','reabonnements.id_formule')
+                    ->where('reabonnements.created_at','>=',$request->date1)
+                    ->where('reabonnements.created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $abonnement = Abonnement::join('formules','formules.id_formule','abonnements.id_formule')
+                    ->where('abonnements.created_at','>=',$request->date1)
+                    ->where('abonnements.created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $upgrade = Upgrade::where('date_upgrade','>=',$request->date1)
+                    ->where('date_upgrade','<=',$request->date2)
+                    ->get()
+                ;
+                $recouvrement = Type_operation::where('date_ajout','>=',$request->date1)
+                    ->where('date_ajout','<=',$request->date2)
+                    ->get()
+                ;
+                $versement = Versement::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $versement = Versement::all();
+                $caisse = Caisse::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $caisse = Caisse::all();
+
+                $achatkit = Versement_achats::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $TDATES = [];
+                $TID = [];
+                foreach ($abonnement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->date));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+
+                }
+                foreach ($reabonnement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->date));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+                }
+                foreach ($upgrade as $key=>$value){
+
+                    $date = $value->date_upgrade;
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+                }
+                foreach ($versement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+                }
+                foreach ($recouvrement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+                }
+                foreach ($decodeur as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+                }
+
+//                foreach ($users as $key=>$value){
+//
+//                }
+
+                return view('raport.index',compact('request','users','TID','achatkit','TDATES','decodeur','reabonnement','abonnement',
+                    'upgrade','recouvrement','versement','caisse','allReabonnement','allAbonnement','allUpgrade'));
+            }else{
+                $userid = $request->action;
+                $user=User::find($userid);
+                $decodeur = Decodeur::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->where('id_user',$userid)
+                    ->get()
+                ;
+                $decodeurs = Decodeur::join('client_decodeurs', 'client_decodeurs.id_decodeur', 'decodeurs.id_decodeur')
+                    ->get()
+                ;
+                $clientdecodeur = ClientDecodeur::all();
+                $id_decodeur = [];
+                foreach ($clientdecodeur as $key=> $value){
+                    $id_decodeur[$key]=$value->id_decodeur;
+                }
+//        dd($id_decodeur);
+
+                $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur',$id_decodeur)
+                    ->get()
+                ;
+                $reabonnement = Reabonnement::join('formules','formules.id_formule','reabonnements.id_formule')
+                    ->where('reabonnements.created_at','>=',$request->date1)
+                    ->where('reabonnements.created_at','<=',$request->date2)
+                    ->select('reabonnements.*','reabonnements.created_at as date','formules.*')
+                    ->where('reabonnements.id_user',$userid)
+                    ->get()
+                ;
+                $abonnement = Abonnement::join('formules','formules.id_formule','abonnements.id_formule')
+                    ->join('decodeurs','decodeurs.id_decodeur','abonnements.id_decodeur')
+                    ->where('abonnements.created_at','>=',$request->date1)
+                    ->where('abonnements.created_at','<=',$request->date2)
+                    ->select('abonnements.*','abonnements.created_at as date','formules.*','decodeurs.*')
+                    ->where('abonnements.id_user',$userid)
+                    ->get()
+                ;
+                $upgrade = Upgrade::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->where('id_user',$userid)
+                    ->get()
+                ;
+                $recouvrement = Type_operation::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->where('id_user',$userid)
+                    ->get()
+                ;
+                $versement = Versement::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->where('id_user',$userid)
+                    ->get()
+                ;
+                $caisse = Caisse::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->where('id_user',$userid)
+                    ->get()
+                ;
+                $achatkit = Versement_achats::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->where('id_user',$userid)
+                    ->get()
+                ;
+                $TDATES = [];
+                foreach ($abonnement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->date));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+                foreach ($reabonnement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->date));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+                foreach ($upgrade as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+                foreach ($versement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+                foreach ($recouvrement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+                foreach ($decodeur as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+                foreach ($achatkit as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+                return view('raport.forOne',compact('request','user','achatkit','decodeur','reabonnement','abonnement','upgrade','recouvrement','versement','caisse','TDATES'));
+
+            }
+            return 0;
+        }else{
+            return redirect()->back()->with('danger', 'Erreur! Mauvaise valeur entrée');
+        }
+
+    }
+
+    public function print(Request $request)
+    {
+        $request->validate([
+            'action'=>'required',
+            'date1'=>'required',
+            'date2'=>'required',
+        ]);
+        if (isset($request->action) && isset($request->date1) && isset($request->date2))
+        {
+
+            if ($request->action==="ALL")
+            {
+                $users = User::all();
+                $allReabonnement=Reabonnement::join('formules','formules.id_formule','reabonnements.id_formule')->get();
+                $allAbonnement = Abonnement::join('formules','formules.id_formule','abonnements.id_formule')->get();
+                $allUpgrade = Upgrade::all();
+
+                $decodeur = Decodeur::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $decodeurs = Decodeur::join('client_decodeurs', 'client_decodeurs.id_decodeur', 'decodeurs.id_decodeur')
+                    ->get()
+                ;
+                $clientdecodeur = ClientDecodeur::all();
+                $id_decodeur = [];
+                foreach ($clientdecodeur as $key=> $value){
+                    $id_decodeur[$key]=$value->id_decodeur;
+                }
+//        dd($id_decodeur);
+
+                $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur',$id_decodeur)
+                    ->get()
+                ;
+                $reabonnement = Reabonnement::join('formules','formules.id_formule','reabonnements.id_formule')
+                    ->where('reabonnements.created_at','>=',$request->date1)
+                    ->where('reabonnements.created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $abonnement = Abonnement::join('formules','formules.id_formule','abonnements.id_formule')
+                    ->where('abonnements.created_at','>=',$request->date1)
+                    ->where('abonnements.created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $upgrade = Upgrade::where('date_upgrade','>=',$request->date1)
+                    ->where('date_upgrade','<=',$request->date2)
+                    ->get()
+                ;
+                $recouvrement = Type_operation::where('date_ajout','>=',$request->date1)
+                    ->where('date_ajout','<=',$request->date2)
+                    ->get()
+                ;
+                $versement = Versement::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $versement = Versement::all();
+                $caisse = Caisse::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $caisse = Caisse::all();
+
+                $achatkit = Versement_achats::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $TDATES = [];
+                $TID = [];
+                foreach ($abonnement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->date));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+
+                }
+                foreach ($reabonnement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->date));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+                }
+                foreach ($upgrade as $key=>$value){
+
+                    $date = $value->date_upgrade;
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+                }
+                foreach ($versement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+                }
+                foreach ($recouvrement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+                }
+                foreach ($decodeur as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+                }
+
+//              PDF::loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false)->save('myfile.pdf')
+                $pdf =  PDF::loadView('raport.printmany', compact('request','users','TID','achatkit','TDATES','decodeur','reabonnement','abonnement',
+                    'upgrade','recouvrement','versement','caisse','allReabonnement','allAbonnement','allUpgrade'))
+                    ->setPaper('a4', 'landscape')->setWarnings(false)
+//                   ->save('rapport_'.$user->name.'_'.'de_'.$request->date1.'au'.$request->date2.'fait_le'.date('Y-m-d').'.pdf')
+                ;
+                return $pdf->download('rapport_'.'de_'.$request->date1.'au'.$request->date2.'fait_le'.date('Y-m-d').'.pdf');
+//                return view('raport.printone',compact('user','achatkit','decodeur','reabonnement','abonnement','upgrade','recouvrement','versement','caisse','TDATES'));
+
+//                return view('raport.printmany',compact('request','users','TID','achatkit','TDATES','decodeur','reabonnement','abonnement',
+//                    'upgrade','recouvrement','versement','caisse','allReabonnement','allAbonnement','allUpgrade'));
+            }else{
+                $userid = $request->action;
+                $user=User::find($userid);
+                $decodeur = Decodeur::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->where('id_user',$userid)
+                    ->get()
+                ;
+                $decodeurs = Decodeur::join('client_decodeurs', 'client_decodeurs.id_decodeur', 'decodeurs.id_decodeur')
+                    ->get()
+                ;
+                $clientdecodeur = ClientDecodeur::all();
+                $id_decodeur = [];
+                foreach ($clientdecodeur as $key=> $value){
+                    $id_decodeur[$key]=$value->id_decodeur;
+                }
+//        dd($id_decodeur);
+
+                $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur',$id_decodeur)
+                    ->get()
+                ;
+                $reabonnement = Reabonnement::join('formules','formules.id_formule','reabonnements.id_formule')
+                    ->where('reabonnements.created_at','>=',$request->date1)
+                    ->where('reabonnements.created_at','<=',$request->date2)
+                    ->select('reabonnements.*','reabonnements.created_at as date','formules.*')
+                    ->where('reabonnements.id_user',$userid)
+                    ->get()
+                ;
+                $abonnement = Abonnement::join('formules','formules.id_formule','abonnements.id_formule')
+                    ->join('decodeurs','decodeurs.id_decodeur','abonnements.id_decodeur')
+                    ->where('abonnements.created_at','>=',$request->date1)
+                    ->where('abonnements.created_at','<=',$request->date2)
+                    ->select('abonnements.*','abonnements.created_at as date','formules.*','decodeurs.*')
+                    ->where('abonnements.id_user',$userid)
+                    ->get()
+                ;
+                $upgrade = Upgrade::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->where('id_user',$userid)
+                    ->get()
+                ;
+                $recouvrement = Type_operation::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->where('id_user',$userid)
+                    ->get()
+                ;
+                $versement = Versement::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->where('id_user',$userid)
+                    ->get()
+                ;
+                $caisse = Caisse::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->where('id_user',$userid)
+                    ->get()
+                ;
+                $achatkit = Versement_achats::where('created_at','>=',$request->date1)
+                    ->where('created_at','<=',$request->date2)
+                    ->where('id_user',$userid)
+                    ->get()
+                ;
+                $TDATES = [];
+                foreach ($abonnement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->date));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+                foreach ($reabonnement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->date));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+                foreach ($upgrade as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+                foreach ($versement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+                foreach ($recouvrement as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+                foreach ($decodeur as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+                foreach ($achatkit as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
+//                PDF::loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false)->save('myfile.pdf')
+                $pdf =  PDF::loadView('raport.printone', compact('user','achatkit','decodeur','reabonnement','abonnement','upgrade','recouvrement','versement','caisse','TDATES'))
+                    ->setPaper('a4', 'landscape')->setWarnings(false)
+//                   ->save('rapport_'.$user->name.'_'.'de_'.$request->date1.'au'.$request->date2.'fait_le'.date('Y-m-d').'.pdf')
+                ;
+                return $pdf->download('rapport_'.$user->name.'_'.'de_'.$request->date1.'au'.$request->date2.'fait_le'.date('Y-m-d').'.pdf');
+//                return view('raport.printone',compact('user','achatkit','decodeur','reabonnement','abonnement','upgrade','recouvrement','versement','caisse','TDATES'));
+
+            }
+        }else{
+            return redirect()->back()->with('danger', 'Erreur! Mauvaise valeur entrée');
+        }
+
+    }
 }
+//set_time_limit(300);

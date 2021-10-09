@@ -6,6 +6,7 @@ use App\Models\Abonnement;
 use App\Models\Decodeur;
 use App\Models\Formule;
 use App\Models\Reabonnement;
+use App\Models\Type_operation;
 use App\Models\Upgrade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,33 +41,54 @@ class UpgradeController extends Controller
         $reabonnement = Reabonnement::all();
         return view("upgrade.upgrader", compact('data', 'reabonnement', 'clientdecodeur'));
     }
-    public function allUpgrades(){
-        $data= Upgrade::join('users', 'upgrades.id_user', 'users.id')
+
+    public function allUpgrades()
+    {
+        $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
 //            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
-            ->OrderBy('id_upgrade','DESC')
-            ->get()
-        ;
+            ->OrderBy('id_upgrade', 'DESC')
+            ->get();
         $formules = Formule::all();
-        $reabonnements= Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+        $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
             ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
-            ->get()
-        ;
-        $abonnements= Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
-            ->get()
-        ;
+            ->get();
+        $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+            ->get();
         $messages = (new MessageController)->getStandart();
-        return view('upgrade.upgrade-all', compact('data','formules','reabonnements','abonnements','messages'));
+        return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
     }
-    public function deleteUpgrade(Request $request){
-        $delete = Upgrade::where('id_upgrade',$request->id)->delete();
-        $romeveFromcaisse = (new CaisseController)->removerFromCaisse($request->id,'UPGRADE');
+
+    public function deleteUpgrade(Request $request)
+    {
+        $delete = Upgrade::where('id_upgrade', $request->id)->delete();
+        $romeveFromcaisse = (new CaisseController)->removerFromCaisse($request->id, 'UPGRADE');
         Response()->json($delete);
     }
 
 
-    public function recoverUpgrade(Request $request){
+    public function recoverUpgrade(Request $request)
+    {
         $id = $request->id;
-        $upgrade = Upgrade::where('id_upgrade', $id)->update(['type_upgrade' => 1]);
+        $userid = Auth::user()->id;
+        $up = Upgrade::where('id_upgrade', $id)->get();
+        $montant = 0;
+        if ($up) {
+            $montant = $up[0]->montant_upgrade;
+        }
+        $save = Type_operation::create([
+            'id_reabonnement' => 0,
+            'id_abonnement' => 0,
+            'id_upgrade' => $id,
+            'date_ajout' => date('Y-m-d'),
+            'id_user' => $userid,
+            'montant' => $montant,
+            'type' => 1,
+            'operation' => 'UPGRADE',
+        ]);
+        if ($save) {
+            $upgrade = Upgrade::where('id_upgrade', $id)->update(['type_upgrade' => 1]);
+        }
+        $upgrade = 'desto';
         return Response()->json($upgrade);
     }
 }

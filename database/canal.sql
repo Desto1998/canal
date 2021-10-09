@@ -122,6 +122,7 @@ create table type_operations
     `id_abonnement`  int(11)  NULL,
     `id_upgrade`  int(11)  NULL,
     `date_ajout`  date ,
+    `montant`  float ,
     `id_user`           int(11) NOT NULL,
     created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at          DATETIME  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

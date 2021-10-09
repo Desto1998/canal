@@ -214,7 +214,11 @@
                     <span>Paramètres</span></a>
             </li>
         @endif
-
+        <li class="nav-item">
+            <a class="nav-link {{ ($route=='stock')?'active':'' }}" href="{{ route('rapport.form') }}">
+                <i class="fas fa-fw fa-file-pdf"></i>
+                <span>Rapport</span></a>
+        </li>
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
 

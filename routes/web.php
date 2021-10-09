@@ -164,8 +164,23 @@ Route::prefix('dashboard')->group(function () {
         Route::post('send/message/manual', [MessageController::class, 'sendManual'])->name('send.message.manual');
         Route::post('send/message/toselected', [MessageController::class, 'sendSMSToSelected'])->name('send.message.to.selected');
 
+
         //Historiques des messages
         Route::get('messages/historiques', [MessageController::class, 'listSend'])->name('historiques');
+
+        //Route generer les raports
+        Route::get('messages/historiques', [MessageController::class, 'listSend'])->name('historiques');
+        Route::get('messages/historiques', [MessageController::class, 'listSend'])->name('historiques');
+
+//        Route::get('rapport/form', function () {
+//            return view('raport.form');
+//        })->name('rapport.form');
+
+        Route::get('rapport/form', [GeneralController::class, 'getUsers'])->name('rapport.form');
+        Route::get('rapport/generate', [GeneralController::class, 'makeReport'])->name('report.make');
+        Route::get('rapport/print', [GeneralController::class, 'print'])->name('report.print');
+
+
     });
     Route::get('canal/doc', function () {
         return view('layouts.doc');

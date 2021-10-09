@@ -141,17 +141,17 @@ class PDFController extends Controller
 
         $this->fpdf->SetFont("Arial", '', 10);
         $this->fpdf->Cell(140, 5, 'Noms et signature du vendeur', 0, 0);
-        $this->fpdf->Cell(50, 5, "Noms et signature du client", 0, 1,'R');
+        $this->fpdf->Cell(50, 5, "Noms et signature du client", 0, 1,'C');
         $this->fpdf->Cell(109, 5, '', 0, 1);
         $this->fpdf->Cell(179, 5, '', 0, 1);
 //        $this->fpdf->Cell(159, 5, '', 0, 1);
-        $this->fpdf->Cell(150, 5, 'GETEL SARL', 0, 0);
-        $this->fpdf->Cell(67, 5, strtoupper($data->nom_client) . " " . ucfirst(strtolower($data->prenom_client)), 0, 1);
+        $this->fpdf->Cell(130, 5, 'GETEL SARL', 0, 0);
+        $this->fpdf->Cell(87, 5, strtoupper($data->nom_client) . " " . ucfirst(strtolower($data->prenom_client)), 0, 1,'C');
 
         $this->fpdf->Cell(179, 5, '', 0, 1);
         $this->fpdf->SetFont("Times", '', 9);
         $this->fpdf->Cell(115, 5, 'Important : Notre service apres vente reste a votre disposition.', 0, 1);
-        $this->fpdf->Cell(155, 5, "En cas de probleme contacter nous au telephone: 694662294 ou email: info@getelcameroun.com", 0, 1);
+        $this->fpdf->Cell(155, 5, "En cas de probleme contacter nous au telephone: 694 662 294 ou email: contact@getel.cm", 0, 1);
         $this->fpdf->Output();
         exit;
     }

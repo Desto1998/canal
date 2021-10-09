@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\ClientDecodeur;
 use App\Models\Decodeur;
 use App\Models\Formule;
+use App\Models\Type_operation;
 use App\Models\Upgrade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -121,6 +122,7 @@ class AbonnementController extends Controller
 //            ->join('decodeurs', 'decodeurs.id_decodeur', 'decodeurs.id_decodeur')
 //            ->where('abonnements.created_at','LIKE', "{$date}%")
             ->where('abonnements.id_user', $userid)
+            ->OrderBy('id_abonnement','DESC')
             ->get();
         return view("abonnement.mes_abonnements", compact('data'));
     }
@@ -142,6 +144,7 @@ class AbonnementController extends Controller
 //            ->join('decodeurs', 'decodeurs.id_decodeur', 'decodeurs.id_decodeur')
             ->where('abonnements.created_at','LIKE', "{$date}%")
             ->where('abonnements.id_user', $userid)
+            ->OrderBy('id_abonnement','DESC')
             ->get();
         //     dd($data);exit();
         return view("abonnement.abonnementsjours", compact('data'));
@@ -180,6 +183,36 @@ class AbonnementController extends Controller
         $delete = Abonnement::where('id_abonnement',$request->id)->delete();
         $romeveFromcaisse = (new CaisseController)->removerFromCaisse($request->id,'ABONNEMENT');
         Response()->json($delete);
+    }
+
+    public function recoverReabonne(Request $request)
+    {
+        $id = $request->id;
+        $userid = Auth::user()->id;
+        $abo = Abonnement::where('id_abonnement',$id)->get();
+        $montant = 0;
+        if ($abo){
+            $formul = Formule::where('id_formule',$abo[0]->id_abonnement)->get();
+            if ($formul){
+                $montant = $formul[0]->prix_formule*$abo[0]->duree;
+            }
+        }
+        $save = Type_operation::create([
+            'id_reabonnement'=>0,
+            'id_abonnement'=>$id,
+            'id_upgrade'=>0,
+            'date_ajout'=>date('Y-m-d'),
+            'id_user'=>$userid,
+            'montant'=>$montant,
+            'type'=>1,
+            'operation'=>'ABONNEMENT',
+        ]);
+        if ($save){
+            $recover = Abonnement::where('id_abonnement', $id)->update(['type_abonnement' => 1]);
+
+        }
+
+        return Response()->json($recover);
     }
     //
 }

@@ -15,6 +15,7 @@ class Type_operation extends Model
         'id_abonnement',
         'id_upgrade',
         'date_ajout',
+        'montant',
         'id_user',
     ];
 }

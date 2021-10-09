@@ -7,6 +7,7 @@ use App\Models\ClientDecodeur;
 use App\Models\Decodeur;
 use App\Models\Formule;
 use App\Models\Reabonnement;
+use App\Models\Type_operation;
 use App\Models\Upgrade;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -480,8 +481,31 @@ class ReabonnementController extends Controller
     public function recoverReabonne(Request $request)
     {
         $id = $request->id;
-        $delete = Reabonnement::where('id_reabonnement', $id)->update(['type_reabonement' => 1]);
-        return Response()->json($delete);
+        $userid = Auth::user()->id;
+        $reabo = Reabonnement::where('id_reabonnement',$id)->get();
+        $montant = 0;
+        if ($reabo){
+            $formul = Formule::where('id_formule',$reabo[0]->id_reabonnement)->get();
+            if ($formul){
+                $montant = $formul[0]->prix_formule*$reabo[0]->duree;
+            }
+        }
+        $save = Type_operation::create([
+        'id_reabonnement'=>$id,
+        'id_abonnement'=>0,
+        'id_upgrade'=>0,
+        'date_ajout'=>date('Y-m-d'),
+        'id_user'=>$userid,
+        'montant'=>$montant,
+        'type'=>1,
+        'operation'=>'REABONNEMENT',
+    ]);
+        if ($save){
+            $recover = Reabonnement::where('id_reabonnement', $id)->update(['type_reabonement' => 1]);
+
+        }
+
+        return Response()->json($recover);
     }
 
     public function up_client($id_client, $id_reabonnement)

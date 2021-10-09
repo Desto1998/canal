@@ -5,7 +5,6 @@
                 <h6 class="text-info">Liste des upgrades</h6>
             </div>
             @include('layouts.flash-message')
-
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
@@ -67,9 +66,9 @@
                                 <td>{{ $value->montant_upgrade }}</td>
                                 <td>
                                     @if($value->type_upgrade==1)
-                                        <span class="text-info">Payé </span>
+                                        <span class="bg-success p-1 text-white">Payé </span>
                                     @else
-                                        <span class="text-danger">A crédit </span>
+                                        <span class="bg-danger p-1 text-white">A crédit </span>
                                     @endif
                                 </td>
                                 <td>{{ $value->date_upgrade }}</td>
@@ -98,7 +97,9 @@
                 </div>
             </div>
         </div>
-
+<form>
+    @csrf
+</form>
     </x-slot>
 </x-app-layout>
 <script>
@@ -131,9 +132,7 @@
     }
 
     function recouvrirFunc(id) {
-        // $('#success').addClass('hidden');
-        // $('#error').addClass('hidden');
-        if (confirm("Recouvrir ce Réabonnement?") == true) {
+        if (confirm("Recouvrir cet upgrade?") === true) {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -146,7 +145,8 @@
                 dataType: 'json',
                 success: function (res) {
                     if (res) {
-                        alert("Effectué avec succès!");
+                        alert(res);
+                        // alert("Effectué avec succès!");
                         window.location.reload( 100);
 
                     } else {
@@ -155,6 +155,7 @@
 
                 }
             });
+
         }
     }
 </script>
