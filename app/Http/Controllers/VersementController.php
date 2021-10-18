@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Caisse;
 use App\Models\Formule;
+use App\Models\Upgrade;
 use App\Models\Versement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -86,8 +87,12 @@ class VersementController extends Controller
         return $totat;
     }
     public function dejaUtilise(){
-        $reste= Formule::join('reabonnements','formules.id_formule','reabonnements.id_formule')
+        $Treabo= Formule::join('reabonnements','formules.id_formule','reabonnements.id_formule')
             ->sum(\DB::raw('formules.prix_formule * reabonnements.duree'));
+        $Tabo=Formule::join('abonnements','formules.id_formule','abonnements.id_formule')
+            ->sum(\DB::raw('formules.prix_formule * abonnements.duree'));
+        $Tupgrades = Upgrade::sum(\DB::raw('montant_upgrade'));
+        $reste = $Treabo+$Tabo+$Tupgrades;
         return $reste;
 
     }

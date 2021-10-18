@@ -34,7 +34,7 @@ class UpgradeController extends Controller
             ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
             ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
             ->join('client_decodeurs', 'reabonnements.id_decodeur', 'client_decodeurs.id_decodeur')
-            ->where('client_decodeurs.date_reabonnement', '>=', date('Y-m-d'))
+            ->where('reabonnements.date_echeance', '>=', date('Y-m-d'))
 //            ->where('clients.id_user', $userid)
             ->OrderBy('reabonnements.id_reabonnement', 'DESC')
             ->get();
@@ -68,10 +68,11 @@ class UpgradeController extends Controller
 
     public function recoverUpgrade(Request $request)
     {
-        $id = $request->id;
+        $id = $request->id_upgrade;
         $userid = Auth::user()->id;
         $up = Upgrade::where('id_upgrade', $id)->get();
         $montant = 0;
+        $upgrade='';
         if ($up) {
             $montant = $up[0]->montant_upgrade;
         }
@@ -88,7 +89,7 @@ class UpgradeController extends Controller
         if ($save) {
             $upgrade = Upgrade::where('id_upgrade', $id)->update(['type_upgrade' => 1]);
         }
-        $upgrade = 'desto';
+
         return Response()->json($upgrade);
     }
 }

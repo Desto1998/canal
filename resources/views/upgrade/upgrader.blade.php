@@ -58,21 +58,17 @@
                                     @endif
                                 </td>
                                 <td class="text-center d-flex">
-                                    {{--                                    <div class="row">--}}
-                                    <a id="upgrade" title="Upgrage"
+                                    <a id="upgrade" title="Upgrade ce reabonnement"
                                             href="{{ route('up.client',[$value->id_client,$value->id_reabonnement]) }}"
                                             class="btn btn-warning btn-supp">
                                         <i class="fas fa-fw fa-edit"></i>
                                     </a>
-                                    <button {{ $value->type_reabonement == 0? '' : "disabled" }} id="Recouvrement" title="Recouvrir le crédit"
+                                    <a {{ $value->type_reabonement == 0? '' : "disabled" }} id="Recouvrement" title="Recouvrir le crédit"
                                             href="javascript:void(0);"
                                             class="btn btn-success btn-supp ml-1"
                                             onclick="recouvrirFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
                                         <i class="fas fa-fw fa-check"></i>
-                                    </button>
-                                    {{--                                    </div>--}}
-
-
+                                    </a>
                                 </td>
                             </tr>
                             @php
@@ -85,9 +81,6 @@
                     </table>
                 </div>
             </div>
-        </div>
-
-
         </div>
     </x-slot>
 </x-app-layout>

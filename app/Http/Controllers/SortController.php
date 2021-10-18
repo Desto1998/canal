@@ -7,6 +7,7 @@ use App\Models\Caisse;
 use App\Models\Decodeur;
 use App\Models\Formule;
 use App\Models\Reabonnement;
+use App\Models\Upgrade;
 use App\Models\User;
 use App\Models\Versement;
 use App\Models\Versement_achats;
@@ -16,111 +17,98 @@ use Illuminate\Support\Facades\Auth;
 class SortController extends Controller
 {
     //sort caisse
-    public function sortByCaisse(Request $request){
+    public function sortByCaisse(Request $request)
+    {
 //        dd($request);
-        if (isset( $request->date1 ) && isset($request->date2) ){
+        if (isset($request->date1) && isset($request->date2)) {
 
-            $totalcaisse = Caisse::where('created_at','>=',$request->date1)
-                ->where('created_at','<=',$request->date2)
-                ->sum("montant")
-            ;
+            $totalcaisse = Caisse::where('created_at', '>=', $request->date1)
+                ->where('created_at', '<=', $request->date2)
+                ->sum("montant");
 
-            $versements = Versement::where('created_at','>=',$request->date1)
-                ->where('created_at','<=',$request->date2)
-                ->OrderBy('id_versement','DESC')
-                ->get()
-            ;
-            $achats = Versement_achats::where('created_at','>=',$request->date1)
-                ->where('created_at','<=',$request->date2)
-                ->OrderBy('id_achat','DESC')
-                ->get()
-            ;
-            $Caisse = Caisse::join('users','users.id','caisses.id_user')
-                ->where('caisses.date_ajout','>=',$request->date1)
-                ->where('caisses.date_ajout','<=',$request->date2)
-                ->OrderBy('id_caisse','DESC')
+            $versements = Versement::where('created_at', '>=', $request->date1)
+                ->where('created_at', '<=', $request->date2)
+                ->OrderBy('id_versement', 'DESC')
+                ->get();
+            $achats = Versement_achats::where('created_at', '>=', $request->date1)
+                ->where('created_at', '<=', $request->date2)
+                ->OrderBy('id_achat', 'DESC')
+                ->get();
+            $Caisse = Caisse::join('users', 'users.id', 'caisses.id_user')
+                ->where('caisses.date_ajout', '>=', $request->date1)
+                ->where('caisses.date_ajout', '<=', $request->date2)
+                ->OrderBy('id_caisse', 'DESC')
                 ->get();
 
-            $totalVersement = Versement::where('created_at','>=',$request->date1)
-                ->where('created_at','<=',$request->date2)
-                ->sum("montant_versement")
-            ;
+            $totalVersement = Versement::where('created_at', '>=', $request->date1)
+                ->where('created_at', '<=', $request->date2)
+                ->sum("montant_versement");
 
-            $dejaUTilise = Formule::join('reabonnements','formules.id_formule','reabonnements.id_formule')
-                ->where('reabonnements.created_at','>=',$request->date1)
-                ->where('reabonnements.created_at','<=',$request->date2)
-                ->sum(\DB::raw('formules.prix_formule * reabonnements.duree'))
-            ;
+            $dejaUTilise = Formule::join('reabonnements', 'formules.id_formule', 'reabonnements.id_formule')
+                ->where('reabonnements.created_at', '>=', $request->date1)
+                ->where('reabonnements.created_at', '<=', $request->date2)
+                ->sum(\DB::raw('formules.prix_formule * reabonnements.duree'));
             $resteVersement = $totalVersement - $dejaUTilise;
-            $users = Versement::join('users','users.id','versements.id_user')->get();
-            return view('caisse',compact('Caisse','users','totalVersement','resteVersement','dejaUTilise',
-                'totalcaisse','versements','achats'));
+            $users = Versement::join('users', 'users.id', 'versements.id_user')->get();
+            return view('caisse', compact('Caisse', 'users', 'totalVersement', 'resteVersement', 'dejaUTilise',
+                'totalcaisse', 'versements', 'achats'));
         }
 
-        if (isset( $request->date1 )){
-            $totalcaisse = Caisse::where('created_at','>=',$request->date1)
-                ->sum("montant")
-            ;
+        if (isset($request->date1)) {
+            $totalcaisse = Caisse::where('created_at', '>=', $request->date1)
+                ->sum("montant");
 
-            $versements = Versement::where('created_at','>=',$request->date1)
-                ->OrderBy('id_versement','DESC')
-                ->get()
-            ;
-            $achats = Versement_achats::where('created_at','>=',$request->date1)
-                ->OrderBy('id_achat','DESC')
-                ->get()
-            ;
-            $Caisse = Caisse::join('users','users.id','caisses.id_user')
-                ->where('caisses.date_ajout','>=',$request->date1)
-                ->OrderBy('id_caisse','DESC')
+            $versements = Versement::where('created_at', '>=', $request->date1)
+                ->OrderBy('id_versement', 'DESC')
+                ->get();
+            $achats = Versement_achats::where('created_at', '>=', $request->date1)
+                ->OrderBy('id_achat', 'DESC')
+                ->get();
+            $Caisse = Caisse::join('users', 'users.id', 'caisses.id_user')
+                ->where('caisses.date_ajout', '>=', $request->date1)
+                ->OrderBy('id_caisse', 'DESC')
                 ->get();
 
-            $totalVersement = Versement::where('created_at','>=',$request->date1)
-                ->sum("montant_versement")
-            ;
+            $totalVersement = Versement::where('created_at', '>=', $request->date1)
+                ->sum("montant_versement");
 
-            $dejaUTilise = Formule::join('reabonnements','formules.id_formule','reabonnements.id_formule')
-                ->where('reabonnements.created_at','>=',$request->date1)
-                ->sum(\DB::raw('formules.prix_formule * reabonnements.duree'))
-            ;
+            $dejaUTilise = Formule::join('reabonnements', 'formules.id_formule', 'reabonnements.id_formule')
+                ->where('reabonnements.created_at', '>=', $request->date1)
+                ->sum(\DB::raw('formules.prix_formule * reabonnements.duree'));
             $resteVersement = $totalVersement - $dejaUTilise;
-            $users = Versement::join('users','users.id','versements.id_user')->get();
-            return view('caisse',compact('Caisse','users','totalVersement','resteVersement','dejaUTilise',
-                'totalcaisse','versements','achats'));
+            $users = Versement::join('users', 'users.id', 'versements.id_user')->get();
+            return view('caisse', compact('Caisse', 'users', 'totalVersement', 'resteVersement', 'dejaUTilise',
+                'totalcaisse', 'versements', 'achats'));
         }
 
-        if (isset( $request->date2 )){
-            $totalcaisse = Caisse::where('created_at','<=',$request->date2)
-                ->sum("montant")
-            ;
+        if (isset($request->date2)) {
+            $totalcaisse = Caisse::where('created_at', '<=', $request->date2)
+                ->sum("montant");
 
-            $versements = Versement::where('created_at','<=',$request->date2)
-                ->OrderBy('id_versement','DESC')
-                ->get()
-            ;
-            $achats = Versement_achats::where('created_at','<=',$request->date2)
-                ->OrderBy('id_achat','DESC')
-                ->get()
-            ;
-            $Caisse = Caisse::join('users','users.id','caisses.id_user')
-                ->where('caisses.date_ajout','<=',$request->date2)
-                ->OrderBy('id_caisse','DESC')
+            $versements = Versement::where('created_at', '<=', $request->date2)
+                ->OrderBy('id_versement', 'DESC')
+                ->get();
+            $achats = Versement_achats::where('created_at', '<=', $request->date2)
+                ->OrderBy('id_achat', 'DESC')
+                ->get();
+            $Caisse = Caisse::join('users', 'users.id', 'caisses.id_user')
+                ->where('caisses.date_ajout', '<=', $request->date2)
+                ->OrderBy('id_caisse', 'DESC')
                 ->get();
 
-            $totalVersement = Versement::where('created_at','<=',$request->date2)
-                ->sum("montant_versement")
-            ;
+            $totalVersement = Versement::where('created_at', '<=', $request->date2)
+                ->sum("montant_versement");
 
-            $dejaUTilise = Formule::join('reabonnements','formules.id_formule','reabonnements.id_formule')
-                ->where('reabonnements.created_at','<=',$request->date2)
-                ->sum(\DB::raw('formules.prix_formule * reabonnements.duree'))
-            ;
+            $dejaUTilise = Formule::join('reabonnements', 'formules.id_formule', 'reabonnements.id_formule')
+                ->where('reabonnements.created_at', '<=', $request->date2)
+                ->sum(\DB::raw('formules.prix_formule * reabonnements.duree'));
             $resteVersement = $totalVersement - $dejaUTilise;
-            $users = Versement::join('users','users.id','versements.id_user')->get();
-            return view('caisse',compact('Caisse','users','totalVersement','resteVersement','dejaUTilise',
-                'totalcaisse','versements','achats'));
+            $users = Versement::join('users', 'users.id', 'versements.id_user')->get();
+            return view('caisse', compact('Caisse', 'users', 'totalVersement', 'resteVersement', 'dejaUTilise',
+                'totalcaisse', 'versements', 'achats'));
         }
     }
+
     //
     public function sortReabonnement(Request $request)
     {
@@ -135,13 +123,11 @@ class SortController extends Controller
                         ->where('reabonnements.created_at', '>=', $request->date1)
                         ->where('reabonnements.created_at', '<=', $request->date2)
                         ->OrderBy('reabonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->where('reabonnements.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -154,13 +140,11 @@ class SortController extends Controller
                         ->where('reabonnements.date_reabonnement', '>=', $request->date1)
                         ->where('reabonnements.date_reabonnement', '<=', $request->date2)
                         ->OrderBy('reabonnements.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->where('reabonnements.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -172,13 +156,11 @@ class SortController extends Controller
                         ->where('client_decodeurs.date_reabonnement', '>=', $request->date1)
                         ->where('client_decodeurs.date_reabonnement', '<=', $request->date2)
                         ->OrderBy('client_decodeurs.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->where('reabonnements.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
             }
@@ -192,13 +174,11 @@ class SortController extends Controller
                         ->where('reabonnements.created_at', '<=', $request->date2)
                         ->where('reabonnements.id_user', $userid)
                         ->OrderBy('reabonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->where('reabonnements.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -212,13 +192,11 @@ class SortController extends Controller
                         ->where('reabonnements.date_reabonnement', '<=', $request->date2)
                         ->where('reabonnements.id_user', $userid)
                         ->OrderBy('reabonnements.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->where('reabonnements.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -231,13 +209,11 @@ class SortController extends Controller
                         ->where('client_decodeurs.date_reabonnement', '<=', $request->date2)
                         ->where('reabonnements.id_user', $userid)
                         ->OrderBy('client_decodeurs.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->where('reabonnements.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -248,15 +224,13 @@ class SortController extends Controller
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('reabonnements.created_at', '>=', $request->date1)
                         ->where('reabonnements.created_at', '<=', $request->date2)
-                        ->where('reabonnements.id_user','!=', $userid)
+                        ->where('reabonnements.id_user', '!=', $userid)
                         ->OrderBy('reabonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->where('reabonnements.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -268,15 +242,13 @@ class SortController extends Controller
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('reabonnements.date_reabonnement', '>=', $request->date1)
                         ->where('reabonnements.date_reabonnement', '<=', $request->date2)
-                        ->where('reabonnements.id_user','!=', $userid)
+                        ->where('reabonnements.id_user', '!=', $userid)
                         ->OrderBy('reabonnements.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->where('reabonnements.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -287,15 +259,13 @@ class SortController extends Controller
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('client_decodeurs.date_reabonnement', '>=', $request->date1)
                         ->where('client_decodeurs.date_reabonnement', '<=', $request->date2)
-                        ->where('reabonnements.id_user','!=', $userid)
+                        ->where('reabonnements.id_user', '!=', $userid)
                         ->OrderBy('client_decodeurs.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->where('reabonnements.created_at', '<=', $request->date2)()
-                    ;
+                        ->where('reabonnements.created_at', '<=', $request->date2)();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -311,13 +281,11 @@ class SortController extends Controller
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('reabonnements.created_at', '>=', $request->date1)
                         ->OrderBy('reabonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -329,13 +297,11 @@ class SortController extends Controller
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('reabonnements.date_reabonnement', '>=', $request->date1)
                         ->OrderBy('reabonnements.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -346,13 +312,11 @@ class SortController extends Controller
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('client_decodeurs.date_reabonnement', '>=', $request->date1)
                         ->OrderBy('client_decodeurs.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
             }
@@ -366,13 +330,11 @@ class SortController extends Controller
                         ->where('reabonnements.created_at', '>=', $request->date1)
                         ->where('reabonnements.id_user', $userid)
                         ->OrderBy('reabonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -385,13 +347,11 @@ class SortController extends Controller
                         ->where('reabonnements.date_reabonnement', '>=', $request->date1)
                         ->where('reabonnements.id_user', $userid)
                         ->OrderBy('reabonnements.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->where('reabonnements.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -403,13 +363,11 @@ class SortController extends Controller
                         ->where('client_decodeurs.date_reabonnement', '>=', $request->date1)
                         ->where('reabonnements.id_user', $userid)
                         ->OrderBy('client_decodeurs.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -420,15 +378,13 @@ class SortController extends Controller
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('reabonnements.created_at', '>=', $request->date1)
-                        ->where('reabonnements.id_user','!=', $userid)
+                        ->where('reabonnements.id_user', '!=', $userid)
                         ->OrderBy('reabonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -439,15 +395,13 @@ class SortController extends Controller
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('reabonnements.date_reabonnement', '>=', $request->date1)
-                        ->where('reabonnements.id_user','!=', $userid)
+                        ->where('reabonnements.id_user', '!=', $userid)
                         ->OrderBy('reabonnements.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -457,15 +411,13 @@ class SortController extends Controller
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('client_decodeurs.date_reabonnement', '>=', $request->date1)
-                        ->where('reabonnements.id_user','!=', $userid)
+                        ->where('reabonnements.id_user', '!=', $userid)
                         ->OrderBy('client_decodeurs.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -483,13 +435,11 @@ class SortController extends Controller
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('reabonnements.created_at', '<=', $request->date2)
                         ->OrderBy('reabonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 // Date reabo
@@ -501,13 +451,11 @@ class SortController extends Controller
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('reabonnements.date_reabonnement', '<=', $request->date2)
                         ->OrderBy('reabonnements.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 // date echeance
@@ -519,13 +467,11 @@ class SortController extends Controller
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('client_decodeurs.date_reabonnement', '<=', $request->date2)
                         ->OrderBy('client_decodeurs.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
             }
@@ -539,13 +485,11 @@ class SortController extends Controller
                         ->where('reabonnements.created_at', '<=', $request->date2)
                         ->where('reabonnements.id_user', $userid)
                         ->OrderBy('reabonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -558,13 +502,11 @@ class SortController extends Controller
                         ->where('reabonnements.date_reabonnement', '<=', $request->date2)
                         ->where('reabonnements.id_user', $userid)
                         ->OrderBy('reabonnements.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
-                       ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -576,13 +518,11 @@ class SortController extends Controller
                         ->where('client_decodeurs.date_reabonnement', '<=', $request->date2)
                         ->where('reabonnements.id_user', $userid)
                         ->OrderBy('client_decodeurs.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
             // par les autres OTHERS
@@ -593,15 +533,13 @@ class SortController extends Controller
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('reabonnements.created_at', '<=', $request->date2)
-                        ->where('reabonnements.id_user','!=', $userid)
+                        ->where('reabonnements.id_user', '!=', $userid)
                         ->OrderBy('reabonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -612,15 +550,13 @@ class SortController extends Controller
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('reabonnements.date_reabonnement', '<=', $request->date2)
-                        ->where('reabonnements.id_user','!=', $userid)
+                        ->where('reabonnements.id_user', '!=', $userid)
                         ->OrderBy('reabonnements.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -630,15 +566,13 @@ class SortController extends Controller
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('client_decodeurs.date_reabonnement', '<=', $request->date2)
-                        ->where('reabonnements.id_user','!=', $userid)
+                        ->where('reabonnements.id_user', '!=', $userid)
                         ->OrderBy('client_decodeurs.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
+                        ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -652,11 +586,10 @@ class SortController extends Controller
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->OrderBy('reabonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -667,11 +600,10 @@ class SortController extends Controller
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->OrderBy('reabonnements.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -681,11 +613,10 @@ class SortController extends Controller
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->OrderBy('client_decodeurs.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
             }
@@ -698,11 +629,10 @@ class SortController extends Controller
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('reabonnements.id_user', $userid)
                         ->OrderBy('reabonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -714,8 +644,7 @@ class SortController extends Controller
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('reabonnements.id_user', $userid)
                         ->OrderBy('reabonnements.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::all();
                     return view("users.allreabonnement", compact('data', 'reabonnement'));
 
@@ -728,11 +657,10 @@ class SortController extends Controller
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->where('reabonnements.id_user', $userid)
                         ->OrderBy('client_decodeurs.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -742,13 +670,12 @@ class SortController extends Controller
                         ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
-                        ->where('reabonnements.id_user','!=', $userid)
+                        ->where('reabonnements.id_user', '!=', $userid)
                         ->OrderBy('reabonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -758,13 +685,12 @@ class SortController extends Controller
                         ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
-                        ->where('reabonnements.id_user','!=', $userid)
+                        ->where('reabonnements.id_user', '!=', $userid)
                         ->OrderBy('reabonnements.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -773,13 +699,12 @@ class SortController extends Controller
                         ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
                         ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
-                        ->where('reabonnements.id_user','!=', $userid)
+                        ->where('reabonnements.id_user', '!=', $userid)
                         ->OrderBy('client_decodeurs.date_reabonnement', 'ASC')
-                        ->get()
-                    ;
+                        ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data','users','reabonnement'));
+                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -790,11 +715,10 @@ class SortController extends Controller
             ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
             ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
             ->OrderBy('reabonnements.id_reabonnement', 'DESC')
-            ->get()
-        ;
+            ->get();
         $reabonnement = Reabonnement::all();
         $users = User::all();
-        return view("users.allreabonnement", compact('data','users','reabonnement'));
+        return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
 
     }
 
@@ -807,8 +731,7 @@ class SortController extends Controller
                 if ($request->byDate === 'CREATE') {
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
                         ->where('client_decodeurs.created_at', '>=', $request->date1)
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -819,22 +742,19 @@ class SortController extends Controller
                         ->where('abonnements.created_at', '>=', $request->date1)
                         ->where('abonnements.created_at', '<=', $request->date2)
                         ->OrderBy('abonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->where('abonnements.created_at', '<=', $request->date2)->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->where('abonnements.created_at', '<=', $request->date2)->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
 
                 if ($request->byDate === 'START') {
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
                         ->where('client_decodeurs.created_at', '>=', $request->date1)
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -845,22 +765,19 @@ class SortController extends Controller
                         ->where('abonnements.created_at', '>=', $request->date1)
                         ->where('abonnements.created_at', '<=', $request->date2)
                         ->OrderBy('abonnements.date_reabonnement', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->where('abonnements.created_at', '<=', $request->date2)->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->where('abonnements.created_at', '<=', $request->date2)->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
                 if ($request->byDate === 'STOP') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
                         ->where('client_decodeurs.created_at', '>=', $request->date1)
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -871,14 +788,12 @@ class SortController extends Controller
                         ->where('abonnements.created_at', '>=', $request->date1)
                         ->where('abonnements.created_at', '<=', $request->date2)
                         ->OrderBy('abonnements.date_echeance', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->where('abonnements.created_at', '<=', $request->date2)->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->where('abonnements.created_at', '<=', $request->date2)->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -889,8 +804,7 @@ class SortController extends Controller
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
                         ->where('client_decodeurs.created_at', '>=', $request->date1)
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -902,14 +816,12 @@ class SortController extends Controller
                         ->where('abonnements.created_at', '<=', $request->date2)
                         ->where('abonnements.id_user', $userid)
                         ->OrderBy('abonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->where('abonnements.created_at', '<=', $request->date2)->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->where('abonnements.created_at', '<=', $request->date2)->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
 
@@ -917,8 +829,7 @@ class SortController extends Controller
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
                         ->where('client_decodeurs.created_at', '>=', $request->date1)
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -930,22 +841,19 @@ class SortController extends Controller
                         ->where('abonnements.created_at', '<=', $request->date2)
                         ->where('abonnements.id_user', $userid)
                         ->OrderBy('abonnements.date_reabonnement', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->where('abonnements.created_at', '<=', $request->date2)->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->where('abonnements.created_at', '<=', $request->date2)->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
                 if ($request->byDate === 'STOP') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
                         ->where('client_decodeurs.created_at', '>=', $request->date1)
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -957,14 +865,12 @@ class SortController extends Controller
                         ->where('abonnements.created_at', '<=', $request->date2)
                         ->where('abonnements.id_user', $userid)
                         ->OrderBy('abonnements.date_echeance', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->where('abonnements.created_at', '<=', $request->date2)->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->where('abonnements.created_at', '<=', $request->date2)->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
             }
@@ -974,8 +880,7 @@ class SortController extends Controller
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
                         ->where('client_decodeurs.created_at', '>=', $request->date1)
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -985,16 +890,14 @@ class SortController extends Controller
                         )
                         ->where('abonnements.created_at', '>=', $request->date1)
                         ->where('abonnements.created_at', '<=', $request->date2)
-                        ->where('abonnements.id_user','!=', $userid)
+                        ->where('abonnements.id_user', '!=', $userid)
                         ->OrderBy('abonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->where('abonnements.created_at', '<=', $request->date2)->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->where('abonnements.created_at', '<=', $request->date2)->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
 
@@ -1002,8 +905,7 @@ class SortController extends Controller
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
                         ->where('client_decodeurs.created_at', '>=', $request->date1)
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1013,16 +915,14 @@ class SortController extends Controller
                         )
                         ->where('abonnements.created_at', '>=', $request->date1)
                         ->where('abonnements.created_at', '<=', $request->date2)
-                        ->where('abonnements.id_user','!=', $userid)
+                        ->where('abonnements.id_user', '!=', $userid)
                         ->OrderBy('abonnements.date_reabonnement', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->where('abonnements.created_at', '<=', $request->date2)->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->where('abonnements.created_at', '<=', $request->date2)->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -1030,8 +930,7 @@ class SortController extends Controller
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
                         ->where('client_decodeurs.created_at', '>=', $request->date1)
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1041,16 +940,14 @@ class SortController extends Controller
                         )
                         ->where('abonnements.created_at', '>=', $request->date1)
                         ->where('abonnements.created_at', '<=', $request->date2)
-                        ->where('abonnements.id_user','!=', $userid)
+                        ->where('abonnements.id_user', '!=', $userid)
                         ->OrderBy('abonnements.date_echeance', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->where('abonnements.created_at', '<=', $request->date2)->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->where('abonnements.created_at', '<=', $request->date2)->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
             }
@@ -1063,8 +960,7 @@ class SortController extends Controller
                 if ($request->byDate === 'CREATE') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1074,14 +970,12 @@ class SortController extends Controller
                         )
                         ->where('abonnements.created_at', '>=', $request->date1)
                         ->OrderBy('abonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -1089,8 +983,7 @@ class SortController extends Controller
                 if ($request->byDate === 'START') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1100,22 +993,19 @@ class SortController extends Controller
                         )
                         ->where('abonnements.created_at', '>=', $request->date1)
                         ->OrderBy('abonnements.date_reabonnement', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
                 if ($request->byDate === 'STOP') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1125,14 +1015,12 @@ class SortController extends Controller
                         )
                         ->where('abonnements.created_at', '>=', $request->date1)
                         ->OrderBy('abonnements.date_echeance', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -1141,8 +1029,7 @@ class SortController extends Controller
             if ($request->byUser === 'BYME') {
                 if ($request->byDate === 'CREATE') {
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1153,14 +1040,12 @@ class SortController extends Controller
                         ->where('abonnements.created_at', '>=', $request->date1)
                         ->where('abonnements.id_user', $userid)
                         ->OrderBy('abonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -1168,8 +1053,7 @@ class SortController extends Controller
                 if ($request->byDate === 'START') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1180,21 +1064,18 @@ class SortController extends Controller
                         ->where('abonnements.created_at', '>=', $request->date1)
                         ->where('abonnements.id_user', $userid)
                         ->OrderBy('abonnements.date_reabonnement', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
                 if ($request->byDate === 'STOP') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1205,14 +1086,12 @@ class SortController extends Controller
                         ->where('abonnements.created_at', '>=', $request->date1)
                         ->where('abonnements.id_user', $userid)
                         ->OrderBy('abonnements.date_echeance', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -1221,8 +1100,7 @@ class SortController extends Controller
             if ($request->byUser === 'BYORTHERS') {
                 if ($request->byDate === 'CREATE') {
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1231,16 +1109,14 @@ class SortController extends Controller
                             'decodeurs.prix_decodeur', 'abonnements.*', 'formules.*', 'clients.*', 'client_decodeurs.num_abonne'
                         )
                         ->where('abonnements.created_at', '>=', $request->date1)
-                        ->where('abonnements.id_user','!=', $userid)
+                        ->where('abonnements.id_user', '!=', $userid)
                         ->OrderBy('abonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -1248,8 +1124,7 @@ class SortController extends Controller
                 if ($request->byDate === 'START') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1258,23 +1133,20 @@ class SortController extends Controller
                             'decodeurs.prix_decodeur', 'abonnements.*', 'formules.*', 'clients.*', 'client_decodeurs.num_abonne'
                         )
                         ->where('abonnements.created_at', '>=', $request->date1)
-                        ->where('abonnements.id_user','!=', $userid)
+                        ->where('abonnements.id_user', '!=', $userid)
                         ->OrderBy('abonnements.date_reabonnement', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
                 if ($request->byDate === 'STOP') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '>=', $request->date1)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1283,16 +1155,14 @@ class SortController extends Controller
                             'decodeurs.prix_decodeur', 'abonnements.*', 'formules.*', 'clients.*', 'client_decodeurs.num_abonne'
                         )
                         ->where('abonnements.created_at', '>=', $request->date1)
-                        ->where('abonnements.id_user','!=', $userid)
+                        ->where('abonnements.id_user', '!=', $userid)
                         ->OrderBy('abonnements.date_echeance', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date1)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
             }
@@ -1306,8 +1176,7 @@ class SortController extends Controller
                 if ($request->byDate === 'CREATE') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1317,14 +1186,12 @@ class SortController extends Controller
                         )
                         ->where('abonnements.created_at', '<=', $request->date2)
                         ->OrderBy('abonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -1332,8 +1199,7 @@ class SortController extends Controller
                 if ($request->byDate === 'START') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1343,22 +1209,19 @@ class SortController extends Controller
                         )
                         ->where('abonnements.created_at', '<=', $request->date2)
                         ->OrderBy('abonnements.date_reabonnement', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '>=', $request->date2)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
                 if ($request->byDate === 'STOP') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1368,14 +1231,12 @@ class SortController extends Controller
                         )
                         ->where('abonnements.created_at', '<=', $request->date2)
                         ->OrderBy('abonnements.date_echeance', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -1384,8 +1245,7 @@ class SortController extends Controller
             if ($request->byUser === 'BYME') {
                 if ($request->byDate === 'CREATE') {
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1396,14 +1256,12 @@ class SortController extends Controller
                         ->where('abonnements.created_at', '<=', $request->date2)
                         ->where('abonnements.id_user', $userid)
                         ->OrderBy('abonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -1411,8 +1269,7 @@ class SortController extends Controller
                 if ($request->byDate === 'START') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1423,21 +1280,18 @@ class SortController extends Controller
                         ->where('abonnements.created_at', '<=', $request->date2)
                         ->where('abonnements.id_user', $userid)
                         ->OrderBy('abonnements.date_reabonnement', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
                 if ($request->byDate === 'STOP') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1448,14 +1302,12 @@ class SortController extends Controller
                         ->where('abonnements.created_at', '<=', $request->date2)
                         ->where('abonnements.id_user', $userid)
                         ->OrderBy('abonnements.date_echeance', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -1464,8 +1316,7 @@ class SortController extends Controller
             if ($request->byUser === 'BYORTHERS') {
                 if ($request->byDate === 'CREATE') {
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1474,16 +1325,14 @@ class SortController extends Controller
                             'decodeurs.prix_decodeur', 'abonnements.*', 'formules.*', 'clients.*', 'client_decodeurs.num_abonne'
                         )
                         ->where('abonnements.created_at', '<=', $request->date2)
-                        ->where('abonnements.id_user','!=', $userid)
+                        ->where('abonnements.id_user', '!=', $userid)
                         ->OrderBy('abonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -1491,8 +1340,7 @@ class SortController extends Controller
                 if ($request->byDate === 'START') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1501,23 +1349,20 @@ class SortController extends Controller
                             'decodeurs.prix_decodeur', 'abonnements.*', 'formules.*', 'clients.*', 'client_decodeurs.num_abonne'
                         )
                         ->where('abonnements.created_at', '<=', $request->date2)
-                        ->where('abonnements.id_user','!=', $userid)
+                        ->where('abonnements.id_user', '!=', $userid)
                         ->OrderBy('abonnements.date_reabonnement', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
                 if ($request->byDate === 'STOP') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get()
-                    ;
+                        ->where('client_decodeurs.created_at', '<=', $request->date2)->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1526,16 +1371,14 @@ class SortController extends Controller
                             'decodeurs.prix_decodeur', 'abonnements.*', 'formules.*', 'clients.*', 'client_decodeurs.num_abonne'
                         )
                         ->where('abonnements.created_at', '<=', $request->date2)
-                        ->where('abonnements.id_user','!=', $userid)
+                        ->where('abonnements.id_user', '!=', $userid)
                         ->OrderBy('abonnements.date_echeance', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::where('abonnements.created_at', '<=', $request->date2)
-                        ->get()
-                    ;
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                        ->get();
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
             }
@@ -1547,8 +1390,7 @@ class SortController extends Controller
             if ($request->byUser === 'ALL') {
                 if ($request->byDate === 'CREATE') {
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->get()
-                    ;
+                        ->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1557,21 +1399,19 @@ class SortController extends Controller
                             'decodeurs.prix_decodeur', 'abonnements.*', 'formules.*', 'clients.*', 'client_decodeurs.num_abonne'
                         )
                         ->OrderBy('abonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::all();
 
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
 
                 if ($request->byDate === 'START') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->get()
-                    ;
+                        ->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1580,20 +1420,18 @@ class SortController extends Controller
                             'decodeurs.prix_decodeur', 'abonnements.*', 'formules.*', 'clients.*', 'client_decodeurs.num_abonne'
                         )
                         ->OrderBy('abonnements.date_reabonnement', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::all();
 
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
                 if ($request->byDate === 'STOP') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->get()
-                    ;
+                        ->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1602,13 +1440,12 @@ class SortController extends Controller
                             'decodeurs.prix_decodeur', 'abonnements.*', 'formules.*', 'clients.*', 'client_decodeurs.num_abonne'
                         )
                         ->OrderBy('abonnements.date_echeance', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::all();
 
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -1617,8 +1454,7 @@ class SortController extends Controller
             if ($request->byUser === 'BYME') {
                 if ($request->byDate === 'CREATE') {
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->get()
-                    ;
+                        ->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1628,21 +1464,19 @@ class SortController extends Controller
                         )
                         ->where('abonnements.id_user', $userid)
                         ->OrderBy('abonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::all();
 
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
 
                 if ($request->byDate === 'START') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->get()
-                    ;
+                        ->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1652,21 +1486,19 @@ class SortController extends Controller
                         )
                         ->where('abonnements.id_user', $userid)
                         ->OrderBy('abonnements.date_reabonnement', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::all();
 
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
                 if ($request->byDate === 'STOP') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->get()
-                    ;
+                        ->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1676,13 +1508,12 @@ class SortController extends Controller
                         )
                         ->where('abonnements.id_user', $userid)
                         ->OrderBy('abonnements.date_echeance', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::all();
 
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
                 }
             }
@@ -1690,8 +1521,7 @@ class SortController extends Controller
             if ($request->byUser === 'BYORTHERS') {
                 if ($request->byDate === 'CREATE') {
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->get()
-                    ;
+                        ->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1699,15 +1529,14 @@ class SortController extends Controller
                         ->select('abonnements.date_reabonnement as date_debut', 'decodeurs.num_decodeur',
                             'decodeurs.prix_decodeur', 'abonnements.*', 'formules.*', 'clients.*', 'client_decodeurs.num_abonne'
                         )
-                        ->where('abonnements.id_user','!=', $userid)
+                        ->where('abonnements.id_user', '!=', $userid)
                         ->OrderBy('abonnements.created_at', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::all();
 
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
@@ -1715,8 +1544,7 @@ class SortController extends Controller
                 if ($request->byDate === 'START') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->get()
-                    ;
+                        ->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1724,23 +1552,21 @@ class SortController extends Controller
                         ->select('abonnements.date_reabonnement as date_debut', 'decodeurs.num_decodeur',
                             'decodeurs.prix_decodeur', 'abonnements.*', 'formules.*', 'clients.*', 'client_decodeurs.num_abonne'
                         )
-                        ->where('abonnements.id_user','!=', $userid)
+                        ->where('abonnements.id_user', '!=', $userid)
                         ->OrderBy('abonnements.date_reabonnement', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::all();
 
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
 
 
                 }
                 if ($request->byDate === 'STOP') {
 
                     $clientdecodeur = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-                        ->get()
-                    ;
+                        ->get();
                     $data = Abonnement::join('clients', 'abonnements.id_client', 'clients.id_client')
                         ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
                         ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -1748,15 +1574,14 @@ class SortController extends Controller
                         ->select('abonnements.date_reabonnement as date_debut', 'decodeurs.num_decodeur',
                             'decodeurs.prix_decodeur', 'abonnements.*', 'formules.*', 'clients.*', 'client_decodeurs.num_abonne'
                         )
-                        ->where('abonnements.id_user','!=', $userid)
+                        ->where('abonnements.id_user', '!=', $userid)
                         ->OrderBy('abonnements.date_echeance', 'DESC')
-                        ->get()
-                    ;
+                        ->get();
                     $decodeur = Decodeur::all();
                     $users = User::all();
                     $reabonnement = Abonnement::all();
 
-                    return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+                    return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
                 }
             }
 
@@ -1778,7 +1603,280 @@ class SortController extends Controller
         $decodeur = Decodeur::all();
         $users = User::all();
         $reabonnement = Abonnement::all();
-        return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+        return view("abonnement.abonner", compact('decodeur', 'data', 'users', 'reabonnement', 'clientdecodeur'));
+
+
+    }
+
+    public function sortUpgrades(Request $request)
+    {
+//        return $request;
+        $userid = Auth::user()->id;
+        if (isset($request->byUser)  && isset($request->date1) && isset($request->date2)) {
+            if ($request->byUser === 'ALL') {
+                $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+//            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
+                    ->where('upgrades.created_at', '>=', $request->date1)
+                    ->where('upgrades.created_at', '<=', $request->date2)
+                    ->OrderBy('upgrades.created_at', 'DESC')
+                    ->get();
+                $formules = Formule::all();
+                $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+                    ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+                    ->get();
+                $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+                    ->get();
+                $messages = (new MessageController)->getStandart();
+                return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
+
+
+            }
+
+            if ($request->byUser === 'BYME') {
+                $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+//            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
+                    ->where('upgrades.created_at', '>=', $request->date1)
+                    ->where('upgrades.created_at', '<=', $request->date2)
+                    ->where('upgrades.id_user', $userid)
+                    ->OrderBy('upgrades.created_at', 'DESC')
+                    ->get();
+                $formules = Formule::all();
+                $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+                    ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+                    ->get();
+                $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+                    ->get();
+                $messages = (new MessageController)->getStandart();
+                return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
+
+
+            }
+
+            if ($request->byUser === 'BYORTHERS') {
+                $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+//            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
+                    ->where('upgrades.created_at', '>=', $request->date1)
+                    ->where('upgrades.created_at', '<=', $request->date2)
+                    ->where('upgrades.id_user', '!=', $userid)
+                    ->OrderBy('upgrades.created_at', 'DESC')
+                    ->get();
+                $formules = Formule::all();
+                $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+                    ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+                    ->get();
+                $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+                    ->get();
+                $messages = (new MessageController)->getStandart();
+                return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
+
+
+            }
+
+        }
+
+
+        if (isset($request->byUser)  && isset($request->date1)) {
+            if ($request->byUser === 'ALL') {
+                $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+//            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
+                    ->where('upgrades.created_at', '>=', $request->date1)
+                    ->OrderBy('upgrades.created_at', 'DESC')
+                    ->get();
+                $formules = Formule::all();
+                $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+                    ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+                    ->get();
+                $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+                    ->get();
+                $messages = (new MessageController)->getStandart();
+                return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
+
+            }
+
+            //Par moi BYME
+            if ($request->byUser === 'BYME') {
+
+                $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+//            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
+                    ->where('upgrades.created_at', '>=', $request->date1)
+                    ->where('upgrades.id_user', '!=', $userid)
+                    ->OrderBy('upgrades.created_at', 'DESC')
+                    ->get();
+                $formules = Formule::all();
+                $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+                    ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+                    ->get();
+                $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+                    ->get();
+                $messages = (new MessageController)->getStandart();
+                return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
+
+
+            }
+
+            if ($request->byUser === 'BYORTHERS') {
+                $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+//            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
+                    ->where('upgrades.created_at', '>=', $request->date1)
+                    ->where('upgrades.id_user', '!=', $userid)
+                    ->OrderBy('upgrades.created_at', 'DESC')
+                    ->get();
+                $formules = Formule::all();
+                $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+                    ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+                    ->get();
+                $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+                    ->get();
+                $messages = (new MessageController)->getStandart();
+                return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
+
+
+            }
+
+        }
+
+
+        if (isset($request->byUser)  && isset($request->date2)) {
+            // tous les staatuts
+            if ($request->byUser === 'ALL') {
+                    $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+//            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
+                        ->where('upgrades.created_at', '<=', $request->date2)
+                        ->OrderBy('upgrades.created_at', 'DESC')
+                        ->get()
+                    ;
+                    $formules = Formule::all();
+                    $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+                        ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+                        ->get()
+                    ;
+                    $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+                        ->get()
+                    ;
+                    $messages = (new MessageController)->getStandart();
+                    return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
+
+
+
+            }
+            //Par moi BYME
+            if ($request->byUser === 'BYME') {
+                $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+//            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
+                    ->where('upgrades.created_at', '<=', $request->date2)
+                    ->where('upgrades.id_user', '!=', $userid)
+                    ->OrderBy('upgrades.created_at', 'DESC')
+                    ->get()
+                ;
+                $formules = Formule::all();
+                $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+                    ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+                    ->get()
+                ;
+                $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+                    ->get()
+                ;
+                $messages = (new MessageController)->getStandart();
+                return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
+
+            }
+
+            if ($request->byUser === 'BYORTHERS') {
+                $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+//            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
+                    ->where('upgrades.created_at', '<=', $request->date2)
+                    ->where('upgrades.id_user', '!=', $userid)
+                    ->OrderBy('upgrades.created_at', 'DESC')
+                    ->get()
+                ;
+                $formules = Formule::all();
+                $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+                    ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+                    ->get()
+                ;
+                $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+                    ->get()
+                ;
+                $messages = (new MessageController)->getStandart();
+                return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
+
+
+            }
+
+        }
+
+        if (isset($request->byUser)) {
+            if ($request->byUser === 'ALL') {
+                $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+//            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
+                    ->OrderBy('upgrades.created_at', 'DESC')
+                    ->get();
+                $formules = Formule::all();
+                $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+                    ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+                    ->get();
+                $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+                    ->get();
+                $messages = (new MessageController)->getStandart();
+                return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
+
+
+            }
+
+            if ($request->byUser === 'BYME') {
+                $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+//            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
+                    ->where('upgrades.id_user', '=', $userid)
+                    ->OrderBy('upgrades.created_at', 'DESC')
+                    ->get();
+                $formules = Formule::all();
+                $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+                    ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+                    ->get();
+                $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+                    ->get();
+                $messages = (new MessageController)->getStandart();
+                return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
+
+
+
+            }
+
+            if ($request->byUser === 'BYORTHERS') {
+                $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+//            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
+                    ->where('upgrades.id_user', '!=', $userid)
+                    ->OrderBy('upgrades.created_at', 'DESC')
+                    ->get()
+                ;
+                $formules = Formule::all();
+                $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+                    ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+                    ->get()
+                ;
+                $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+                    ->get()
+                ;
+                $messages = (new MessageController)->getStandart();
+                return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
+
+
+            }
+
+        }
+
+        $data = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+//            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
+            ->OrderBy('upgrades.id_upgrades', 'DESC')
+            ->get();
+        $formules = Formule::all();
+        $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+            ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+            ->get();
+        $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+            ->get();
+        $messages = (new MessageController)->getStandart();
+        return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
 
 
     }

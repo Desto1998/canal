@@ -79,7 +79,8 @@ Route::prefix('dashboard')->group(function () {
         Route::get('upgrader/all', [UpgradeController::class, 'allUpgrades'])->name('upgrader.all');
         Route::get('upgrade_client/{id_client}/{id_reabonnement?}', [ReabonnementController::class, 'up_client'])->name('up.client');
         Route::post('upgradeClient/{id_client}', [ReabonnementController::class, 'upgradeReabonnement'])->name('upgrade.client');
-        Route::post('upgradeClient/recover', [UpgradeController::class, 'recoverUpgrade'])->name('upgrade.recover');
+        Route::post('recover_upgrade', [UpgradeController::class, 'recoverUpgrade'])->name('upgrade.recover');
+        Route::get('upgrades/sortBy', [SortController::class, 'sortUpgrades'])->name('upgrade.sort');
         Route::get('abonner/upgrade/{id_client}/{id_abonnement}', [AbonnementController::class, 'upAbonnement'])->name('abonnement.upgrade');
         Route::post('upgrade/delete', [UpgradeController::class, 'deleteUpgrade'])->name('upgrade.delete');
         Route::post('abonner/upgrade/save', [AbonnementController::class, 'upgradeAbonnement'])->name('abonnement.upgrade.save');

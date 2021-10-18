@@ -3,6 +3,27 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="text-info">Liste des upgrades</h6>
+                <div class="float-right mb-1 pull-right col-md-12">
+                    <form action="{{ route('upgrade.sort') }}" method="get">
+                        @csrf
+                        <div class="row pull-right float-right col-md-12">
+                            <select class="form-control col-md-2" name="byUser">
+                                <option value="ALL">Tous les statuts</option>
+                                <option value="BYME">Reabonné par moi</option>
+                                <option value="BYORTHERS">Reabonné par autre</option>
+                            </select>
+                            {{--                            <select class="form-control col-md-2" name="byDate">--}}
+                            {{--                                <option value="CREATE">Date creation</option>--}}
+                            {{--                                <option value="START">Date reabo</option>--}}
+                            {{--                                <option value="STOP">Date échéance</option>--}}
+                            {{--                            </select>--}}
+                            <input type="date" name="date1" class="form-control col-md-3">
+                            <input type="date" name="date2" class="form-control col-md-3">
+                            <button type="submit" class="btn btn-primary float-right"><i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
             @include('layouts.flash-message')
             <div class="card-body">
@@ -25,9 +46,26 @@
                         <tbody>
                         @foreach($data as $key => $value)
                             @php
-                           // dd($reabonnements,$abonnements,$data);
-                            $num_decodeur = '';
-                            $nom_client = '';
+                                // dd($reabonnements,$abonnements,$data);
+                                 $num_decodeur = '';
+                                 $nom_client = '';
+
+                                 $canDelete =0;
+
+                                 $created =  date("Y-m-d H:i:s", strtotime($value->created_at));
+
+                                 $date = new DateTime($created);
+                                 $date->add(new DateInterval('P1D'));
+                                 $datenow =  date('Y-m-d H:i:s');
+                                              //$date->format('');
+                                 $date =  date("Y-m-d H:i:s", strtotime($date->format('Y-m-d H:i:s')));
+                                                 // dd($date);
+                                 if ($datenow <= $date){
+                                    $canDelete = 1;
+                                 }else{
+                                    $canDelete = 0;
+                                 }
+
                             @endphp
                             @foreach($reabonnements as $k=>$item)
                                 @if($value->id_reabonnement==$item->id_reabonnement)
@@ -75,15 +113,15 @@
                                 <td>{{ $value->name }}</td>
                                 <td class="text-center d-flex">
                                     {{--                                    <div class="row">--}}
-                                    <a id="upgrade" title="Supprimer"
+                                    <a id="upgrade" disabled title="Supprimer" {{ $canDelete==1?'disabled':'' }}
                                        href="javascript:void(0);" onclick="deleteFunc({{$value->id_upgrade}})"
                                        class="btn btn-danger btn-supp">
                                         <i class="fas fa-fw fa-trash"></i>
                                     </a>
                                     @if($value->type_upgrade==0)
                                         <a title="Recouvrir le crédit" href="javascript:void(0);"
-                                                class="btn btn-success btn-supp ml-1"
-                                                onclick="recouvrirFunc({{$value->id_upgrade}})">
+                                           class="btn btn-success btn-supp ml-1"
+                                           onclick="recover({{$value->id_upgrade}})">
                                             <i class="fas fa-fw fa-check"></i>
                                         </a>
                                     @endif
@@ -97,9 +135,9 @@
                 </div>
             </div>
         </div>
-<form>
-    @csrf
-</form>
+        <form>
+            @csrf
+        </form>
     </x-slot>
 </x-app-layout>
 <script>
@@ -131,8 +169,9 @@
         }
     }
 
-    function recouvrirFunc(id) {
-        if (confirm("Recouvrir cet upgrade?") === true) {
+    function recover(id_upgrade) {
+
+        if (confirm("Recouvrir cette dette?") == true) {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -141,13 +180,12 @@
             $.ajax({
                 type: "POST",
                 url: "{{ route('upgrade.recover') }}",
-                data: {id: id},
+                data: {id_upgrade: id_upgrade},
                 dataType: 'json',
                 success: function (res) {
                     if (res) {
-                        alert(res);
-                        // alert("Effectué avec succès!");
-                        window.location.reload( 100);
+                        alert("Effectué avec succès!!");
+                        window.location.reload(200);
 
                     } else {
                         alert("Une erreur s'est produite!");
@@ -155,7 +193,7 @@
 
                 }
             });
-
         }
     }
+
 </script>

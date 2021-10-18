@@ -557,7 +557,7 @@ class GeneralController extends Controller
                     ->setPaper('a4', 'landscape')->setWarnings(false)
 //                   ->save('rapport_'.$user->name.'_'.'de_'.$request->date1.'au'.$request->date2.'fait_le'.date('Y-m-d').'.pdf')
                 ;
-                return $pdf->download('rapport_'.'de_'.$request->date1.'au'.$request->date2.'fait_le'.date('Y-m-d').'.pdf');
+                return $pdf->download('rapport_'.'du_'.$request->date1.'au'.$request->date2.'fait_le'.date('Y-m-d').'.pdf');
 //                return view('raport.printone',compact('user','achatkit','decodeur','reabonnement','abonnement','upgrade','recouvrement','versement','caisse','TDATES'));
 
 //                return view('raport.printmany',compact('request','users','TID','achatkit','TDATES','decodeur','reabonnement','abonnement',
