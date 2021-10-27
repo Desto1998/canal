@@ -255,9 +255,9 @@
                                     <div class="col-md-6">
                                         <h3>Total versement: <span class="text-secondary">{{ $totalVersement }} </span>
                                             FCFA</h3>
-                                        <h3 class="mt-4">Déja utilisé: <span
+                                        <h3 class="mt-4">Total des activations: <span
                                                 class="text-success">{{ $dejaUTilise }}</span> FCFA</h3>
-                                        <h3 class="mt-4"> Disponible : <span
+                                        <h3 class="mt-4"> Solde CGA : <span
                                                 class="text-warning">{{ $resteVersement }}</span> FCFA</h3>
 
                                     </div>

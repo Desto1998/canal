@@ -181,6 +181,9 @@ Route::prefix('dashboard')->group(function () {
         Route::get('rapport/generate', [GeneralController::class, 'makeReport'])->name('report.make');
         Route::get('rapport/print', [GeneralController::class, 'print'])->name('report.print');
 
+        // all today operations
+        Route::get('todays/all', [GeneralController::class, 'TodayOperations'])->name('today.all');
+
 
     });
     Route::get('canal/doc', function () {

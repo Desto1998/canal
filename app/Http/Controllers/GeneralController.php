@@ -687,5 +687,44 @@ class GeneralController extends Controller
         }
 
     }
+
+    public function TodayOperations()
+    {
+        $data = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
+            ->join('formules', 'client_decodeurs.id_formule', 'formules.id_formule')
+            ->join('clients', 'clients.id_client', 'client_decodeurs.id_client')
+            ->where('client_decodeurs.date_abonnement', date('Y-m-d'))
+            ->get()
+        ;
+        $date=date('Y-m-d');
+        $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+            ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
+            ->join('clients', 'abonnements.id_client', 'clients.id_client')
+            ->join('client_decodeurs', 'abonnements.id_decodeur', 'client_decodeurs.id_decodeur')
+            ->join('users', 'abonnements.id_user', 'users.id')
+            ->where('abonnements.created_at','LIKE', "{$date}%")
+            ->OrderBy('id_abonnement','DESC')
+            ->get()
+        ;
+        $reabonnements = Reabonnement::join('clients', 'reabonnements.id_client', 'clients.id_client')
+            ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
+            ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+            ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+            ->where('reabonnements.created_at', 'LIKE', "%{$date}%")
+            ->join('users', 'reabonnements.id_user', 'users.id')
+            ->OrderBy('reabonnements.id_reabonnement', 'DESC')
+            ->get()
+        ;
+        $upgrades = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+            ->join('formules', 'formules.id_formule', 'upgrades.id_oldformule')
+            ->where('upgrades.created_at', 'LIKE', "%{$date}%")
+            ->OrderBy('id_upgrade', 'DESC')
+            ->get()
+        ;
+        $formules = Formule::all();
+
+        return view("operation_jour", compact('data','abonnements','reabonnements','upgrades','formules'));
+    }
+
 }
 //set_time_limit(300);
