@@ -108,6 +108,7 @@ class GeneralController extends Controller
 //     $envoi = (new MessageController)->sendMessage($message,$request->telephone_client );
         $userid = Auth::user()->id;
         $date = date("Y-m-d");
+
         $data = Decodeur::join('client_decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
             ->join('formules','client_decodeurs.id_formule','formules.id_formule')
             ->join('clients','clients.id_client','client_decodeurs.id_client')
@@ -125,6 +126,7 @@ class GeneralController extends Controller
         $data = ClientDecodeur::join('clients','clients.id_client','client_decodeurs.id_client')
 //            ->join('clients','clients.id_client','client_decodeurs.id_client')
             ->where('client_decodeurs.date_reabonnement','<=',$date_reabonnement)
+            ->where('client_decodeurs.date_reabonnement','>=',date('Y-m-d'))
             ->get();
         return $data;
     }

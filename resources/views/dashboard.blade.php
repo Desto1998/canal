@@ -14,7 +14,7 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-0">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                            Clients
+                                            Parc Clients
                                         </div>
                                         <div class="h6 mb-0 font-weight-bold text-gray-800">
                                             {{ count($clients) }}
@@ -35,7 +35,7 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-0">
                                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                            Abonnés nouveaux
+                                            Entrée en parc
                                         </div>
                                         <div class="h6 mb-0 font-weight-bold text-gray-800">
                                             {{ count($clientnouveaux) }}
@@ -94,7 +94,6 @@
                     </a>
                 </div>
 
-
             </div>
             <div class="row">
 
@@ -121,100 +120,97 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card border-left-info shadow h-100 py-2 card-hover">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-0">
-                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Décodeurs
-                                        disponible
-                                    </div>
-                                    <div class="h6 mb-0 font-weight-bold text-gray-800">
+                {{--                <div class="col-md-3 mb-3">--}}
+                {{--                    <div class="card border-left-info shadow h-100 py-2 card-hover">--}}
+                {{--                        <div class="card-body">--}}
+                {{--                            <div class="row no-gutters align-items-center">--}}
+                {{--                                <div class="col mr-0">--}}
+                {{--                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Décodeurs--}}
+                {{--                                        disponible--}}
+                {{--                                    </div>--}}
+                {{--                                    <div class="h6 mb-0 font-weight-bold text-gray-800">--}}
 
-                                        {{ count($decodeurs) - count($decodeuroccupe) }}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-check fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card border-left-success shadow h-100 py-2 card-hover">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-0">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Décodeurs
-                                        occupés
-                                    </div>
-                                    <div class="h6 mb-0 font-weight-bold text-gray-800">
+                {{--                                        {{ count($decodeurs) - count($decodeuroccupe) }}--}}
+                {{--                                    </div>--}}
+                {{--                                </div>--}}
+                {{--                                <div class="col-auto">--}}
+                {{--                                    <i class="fas fa-check fa-2x text-gray-300"></i>--}}
+                {{--                                </div>--}}
+                {{--                            </div>--}}
+                {{--                        </div>--}}
+                {{--                    </div>--}}
+                {{--                </div>--}}
+                {{--                <div class="col-md-3 mb-3">--}}
+                {{--                    <div class="card border-left-success shadow h-100 py-2 card-hover">--}}
+                {{--                        <div class="card-body">--}}
+                {{--                            <div class="row no-gutters align-items-center">--}}
+                {{--                                <div class="col mr-0">--}}
+                {{--                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Décodeurs--}}
+                {{--                                        occupés--}}
+                {{--                                    </div>--}}
+                {{--                                    <div class="h6 mb-0 font-weight-bold text-gray-800">--}}
 
-                                        {{ count($decodeuroccupe) }}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-lock fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {{--                                        {{ count($decodeuroccupe) }}--}}
+                {{--                                    </div>--}}
+                {{--                                </div>--}}
+                {{--                                <div class="col-auto">--}}
+                {{--                                    <i class="fas fa-lock fa-2x text-gray-300"></i>--}}
+                {{--                                </div>--}}
+                {{--                            </div>--}}
+                {{--                        </div>--}}
+                {{--                    </div>--}}
+                {{--                </div>--}}
 
+                {{--            <div class="row">--}}
+                {{--                <div class="col-md-3 mb-3">--}}
+                {{--                    <a href="{{ route('settings') }}" class="text-info" >--}}
+                {{--                        <div class="card border-left-info shadow h-100 py-2 card-hover">--}}
+                {{--                            <div class="card-body">--}}
+                {{--                                <div class="row no-gutters align-items-center">--}}
+                {{--                                    <div class="col mr-0">--}}
+                {{--                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">--}}
+                {{--                                            Total Versement--}}
 
-            </div>
+                {{--                                        </div>--}}
+                {{--                                        <div class="h6 mb-0 font-weight-bold text-gray-800">--}}
+                {{--                                            {{ $totalVersement }}--}}
+                {{--                                        </div>--}}
+                {{--                                    </div>--}}
+                {{--                                    <div class="col-auto">--}}
+                {{--                                        <i class="fas fa-balance-scale fa-2x text-gray-300"></i>--}}
+                {{--                                    </div>--}}
+                {{--                                </div>--}}
+                {{--                            </div>--}}
+                {{--                        </div>--}}
+                {{--                    </a>--}}
+                {{--                </div>--}}
+                {{--                <div class="col-md-3 mb-3">--}}
+                {{--                    <div class="card border-left-success shadow h-100 py-2 card-hover card-hover">--}}
+                {{--                        <div class="card-body">--}}
+                {{--                            <div class="row no-gutters align-items-center">--}}
+                {{--                                <div class="col mr-0">--}}
+                {{--                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">--}}
+                {{--                                        CGA utilisé--}}
 
-            <div class="row">
-                <div class="col-md-3 mb-3">
-                    <a href="{{ route('settings') }}" class="text-info" >
-                        <div class="card border-left-info shadow h-100 py-2 card-hover">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-0">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Total Versement
-
-                                        </div>
-                                        <div class="h6 mb-0 font-weight-bold text-gray-800">
-                                            {{ $totalVersement }}
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-balance-scale fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card border-left-success shadow h-100 py-2 card-hover card-hover">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-0">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                        CGA utilisé
-
-                                    </div>
-                                    <div class="h6 mb-0 font-weight-bold text-gray-800">
-                                        {{ $consommeVersement }}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-money-bill-alt fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {{--                                    </div>--}}
+                {{--                                    <div class="h6 mb-0 font-weight-bold text-gray-800">--}}
+                {{--                                        {{ $consommeVersement }}--}}
+                {{--                                    </div>--}}
+                {{--                                </div>--}}
+                {{--                                <div class="col-auto">--}}
+                {{--                                    <i class="fas fa-money-bill-alt fa-2x text-gray-300"></i>--}}
+                {{--                                </div>--}}
+                {{--                            </div>--}}
+                {{--                        </div>--}}
+                {{--                    </div>--}}
+                {{--                </div>--}}
                 <div class="col-md-3 mb-3">
                     <div class="card border-left-danger shadow h-100 py-2 card-hover card-hover">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-0">
                                     <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                        CGA Restant
+                                        Solde CGA
 
                                     </div>
                                     <div class="h6 mb-0 font-weight-bold text-gray-800">
@@ -229,35 +225,13 @@
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
-                    <div class="card border-left-primary shadow h-100 py-2 card-hover card-hover">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-0">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        Solde SMS
-
-                                    </div>
-                                    <div class="h6 mb-0 font-weight-bold text-gray-800">
-                                        {{ $balance }}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-envelope fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3 mb-3">
-                    <a href="{{ route('caisse') }}" class="text-info" >
+                    <a href="{{ route('caisse') }}" class="text-info">
                         <div class="card border-left-info shadow h-100 py-2 card-hover">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-0">
                                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Total caisse
+                                            Solde caisse
 
                                         </div>
                                         <div class="h6 mb-0 font-weight-bold text-gray-800">
@@ -277,100 +251,16 @@
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-0">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1"> Cosommé
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Solde SMS
 
                                     </div>
                                     <div class="h6 mb-0 font-weight-bold text-gray-800">
-                                        {{ $totalVersement }}
+                                        {{ $balance }}
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-money-bill-alt fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card border-left-danger shadow h-100 py-2 card-hover card-hover">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-0">
-                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1"> Reste en
-                                        caisse
-
-                                    </div>
-                                    <div class="h6 mb-0 font-weight-bold text-gray-800">
-                                        {{ $consommeCaisse - $totalVersement }}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-money-check fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-
-                <div class="col-md-3 mb-3">
-                    <div class="card border-left-info shadow h-100 py-2 card-hover">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-0">
-                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Formules
-
-                                    </div>
-                                    <div class="h6 mb-0 font-weight-bold text-gray-800">
-                                        {{ count($allFormules) }}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-fax fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3 mb-3">
-                    <a href="{{ route('compte') }}" class="text-info">
-                        <div class="card border-left-info shadow h-100 py-2 card-hover">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-0">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Utilisateurs
-
-                                        </div>
-                                        <div class="h6 mb-0 font-weight-bold text-gray-800">
-                                            {{ count($users) }}
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-users fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-md-3 mb-3">
-                    <div class="card border-left-info shadow h-100 py-2 card-hover">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-0">
-                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Matériel
-
-                                    </div>
-                                    <div class="h6 mb-0 font-weight-bold text-gray-800">
-                                        {{ count($materiels) }}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-object-group fa-2x text-gray-300"></i>
+                                    <i class="fas fa-envelope fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
