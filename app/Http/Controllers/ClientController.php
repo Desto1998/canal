@@ -102,6 +102,9 @@ class ClientController extends Controller
         $request->validate([
             'nom_client'=>'required',
             'telephone_client'=>'required',
+            'id_client'=>'required',
+            'num_decodeur'=>'required',
+            'num_abonne'=>'required',
         ]);
         $client = Client::where('id_client', $request->id_client)
             ->update([
@@ -115,7 +118,12 @@ class ClientController extends Controller
                 $decodeur[$i] = Decodeur::where('id_decodeur', $request->id_decodeur[$i])
                     ->update([
                         'num_decodeur' => $request->num_decodeur[$i],
-                    ]);
+                    ])
+                ;
+                $clientdeco = ClientDecodeur::where('id_client',$request->id_client)
+                    ->where('id',$request->id[$i])
+                    ->update(['num_abonne'=>$request->num_abonne[$i]]);
+                ;
             }
         } else {
             return redirect()->back()->with('danger', "Echec lors de l'enregistrement! données du formulaire mal saisie.");

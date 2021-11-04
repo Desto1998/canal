@@ -214,7 +214,7 @@
                                 <td>{{ $Vkit }}</td>
                                 <td>{{ $ver }}</td>
                                 <td>{{ $Akit }}</td>
-                                <td>{{ $soldeCGA - $CGAutilise }}</td>
+                                <td>{{ $soldeCGA - $CGAutilise }} {{ $soldeCGA."-".$CGAutilise }} </td>
                                 <td>{{ $statutcaisse }}</td>
                                 {{--                                <td>{{ $TOTALJ }}</td>--}}
                             </tr>

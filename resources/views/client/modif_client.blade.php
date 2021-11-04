@@ -26,25 +26,24 @@
                     <div class="form-group">
                       Adresse client<br><input class="form-control" value="{{ $datas->adresse_client }}" name="adresse_client" required>
                     </div>
+                      <hr>
                       Décodeurs
                       @foreach( $decodeurs as $key =>$item)
-                          <input type="text"  maxlength="14" minlength="14" class="form-control" value="{{ $item->num_decodeur }}" name="num_decodeur[]" required>
-                          <input type="hidden"   value="{{ $item->id_decodeur }}" name="id_decodeur[]" required>
+                          <div class="form-group">
+                              <label>Déco N°{{ $key+1 }}</label>
+                              <input type="text"  maxlength="14" minlength="14" class="form-control" value="{{ $item->num_decodeur }}" name="num_decodeur[]" required>
+                              <input type="hidden"   value="{{ $item->id }}" name="id[]" required>
+                              <input type="hidden"   value="{{ $item->id_decodeur }}" name="id_decodeur[]" required>
+                          </div>
                       @endforeach
-{{--                    <div class="form-group">--}}
-{{--                      Formule: <select  name="formule" disabled>--}}
-{{--                        <option value="ACCESS" selected> ACCESS </option>--}}
-{{--                        <option value="ACCESS +"> ACCESS + </option>--}}
-{{--                        <option value="EVASION"> EVASION </option>--}}
-{{--                        <option value="EVASION +"> EVASION + </option>--}}
-{{--                        <option value="PRESTIGE"> PRESTIGE </option>--}}
-{{--                        <option value="ESSENTIEL +"> ESSENTIEL + </option>--}}
-{{--                        <option value="TOUT CANAL"> TOUT CANAL </option>--}}
-{{--                       </select>--}}
-{{--                    </div>--}}
-{{--                    <div class="form-group">--}}
-{{--                      Date reabonnement<br><input class="form-control" name="date_reabonnement" type="date" disabled>--}}
-{{--                    </div>--}}
+                      <hr>
+                      <label>Numéro d'abonné</label>
+                      @foreach( $decodeurs as $key =>$item)
+                          <div class="form-group">
+                              <label>Num abo N°{{ $key+1 }}</label>
+                              <input type="text"  maxlength="8" minlength="8" class="form-control" value="{{ $item->num_abonne }}" name="num_abonne[]" required>
+                          </div>
+                      @endforeach
                     <hr>
 
 

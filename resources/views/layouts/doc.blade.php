@@ -34,12 +34,53 @@
     {{--Datatables js--}}
     <script src="http://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 </head>
-<body>
+<body id="body">
 {{--<div class="container-fluid">--}}
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-3 text-white pt-4 h-100 bg-primary">
-                <h4>En cours ...</h4>
+                <h4><a href="#body" class="text-white">Table de matières</a></h4>
+                <p class="uppercase"><a>Abonnements</a></p>
+                <div class="ml-6">
+                    <p><a>Effectuer un abonnement</a></p>
+                </div>
+                <p class="uppercase"><a>Réabonnements</a></p>
+                <div class="ml-6">
+                    <p><a>Effectuer un abonnement</a></p>
+                </div>
+                <p class="uppercase"><a>Upgrade</a></p>
+                <div class="ml-6">
+                    <p><a>Effectuer un abonnement</a></p>
+                </div>
+                <p class="uppercase"><a>Materiels</a></p>
+                <div class="ml-6">
+                    <p><a>Effectuer un abonnement</a></p>
+                </div>
+                <p class="uppercase"><a>Gérer les clients</a></p>
+                <div class="ml-6">
+                    <p><a>Effectuer un abonnement</a></p>
+                </div>
+                <p class="uppercase"><a>Messages</a></p>
+                <div class="ml-6">
+                    <p><a>Effectuer un abonnement</a></p>
+                </div>
+                <p class="uppercase"><a>CGA</a></p>
+                <div class="ml-6">
+                    <p><a>Effectuer un abonnement</a></p>
+                </div>
+                <p class="uppercase"><a>Caisse</a></p>
+                <div class="ml-6">
+                    <p><a>Effectuer un abonnement</a></p>
+                </div>
+                <p class="uppercase"><a>Rapport</a></p>
+                <div class="ml-6">
+                    <p><a>Effectuer un abonnement</a></p>
+                </div>
+                <p class="uppercase"><a>Comptes</a></p>
+                <div class="ml-6">
+                    <p><a>Effectuer un abonnement</a></p>
+                </div>
+
             </div>
             <div class="col-md-8 p-4">
                 <h4>En cours ...</h4>

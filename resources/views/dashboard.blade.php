@@ -57,7 +57,7 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-0">
                                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            Abonnés bientot à terme
+                                            Abonnés Bientôt à terme
                                         </div>
                                         <div class="h6 mb-0 font-weight-bold text-gray-800">
                                             {{ count($bientotaterme) }}

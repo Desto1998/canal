@@ -9,8 +9,7 @@
                     </a>
                 </label>
                 <label class="ml-4">
-                    <a class="btn btn-warning" href="{{route('user.client.terme')}}"> Bientot a
-                        terme
+                    <a class="btn btn-warning" href="{{route('user.client.terme')}}"> Bientôt à terme
                     </a>
                 </label>
                 <label class="ml-4">
