@@ -97,9 +97,11 @@ class AbonnementController extends Controller
         $data_message->montant = $data->duree * $difference;
         $data_message->id_client = $id_client;
 
-        if ($upgrade) {
-            $storeCaisse = (new CaisseController)->creditCaisse($upgrade->id_upgrade, 'UPGRADE', $data_pdf->total);
+        if ($upgrade && $request->type == 1) {
+            $storeCaisse = (new CaisseController)->creditCaisse($upgrade->id, 'UPGRADE', $data_pdf->total);
 
+        }
+        if ($upgrade) {
             $message_con = '';
             $message = $data->nom_client . " Mis à jour de la formule réussi ! Formule: " . $request->formule . ", expire le: " . $data->date_reabonnement . ".";
             $envoi = (new MessageController)->prepareMessage($data_message, 'REABONNEMENT');
@@ -192,7 +194,7 @@ class AbonnementController extends Controller
         $abo = Abonnement::where('id_abonnement',$id)->get();
         $montant = 0;
         if ($abo){
-            $formul = Formule::where('id_formule',$abo[0]->id_abonnement)->get();
+            $formul = Formule::where('id_formule',$abo[0]->id_formule)->get();
             if ($formul){
                 $montant = $formul[0]->prix_formule*$abo[0]->duree;
             }
@@ -209,10 +211,12 @@ class AbonnementController extends Controller
         ]);
         if ($save){
             $recover = Abonnement::where('id_abonnement', $id)->update(['type_abonnement' => 1]);
-
+            $storeCaisse = (new CaisseController)->creditCaisse($save->id, 'ABONNEMENT', $montant);
         }
 
         return Response()->json($recover);
     }
+
+
     //
 }

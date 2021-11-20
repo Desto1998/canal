@@ -12,6 +12,6 @@ class Caisse extends Model
     protected $fillable = [
         'montant','raison','id_reabonnement','id_abonnement',
         "id_user","date_ajout",'id_versement','id_upgrade','id_achat',
-        'id_decodeur','id_materiel'
+        'id_decodeur','id_materiel','type'
     ];
 }

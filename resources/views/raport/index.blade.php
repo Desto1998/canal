@@ -19,7 +19,7 @@
                             <td colspan="9">
                                 <strong>
                                     <h3>
-                                        Rapport hedomadaires canal<span class="h2">+</span> GETEL SARL
+                                        Rapport canal <span class="h2">+</span> du {{ $request->date1 }} au {{ $request->date2 }} GETEL SARL
                                     </h3>
                                 </strong>
                             </td>
@@ -214,7 +214,7 @@
                                 <td>{{ $Vkit }}</td>
                                 <td>{{ $ver }}</td>
                                 <td>{{ $Akit }}</td>
-                                <td>{{ $soldeCGA - $CGAutilise }} {{ $soldeCGA."-".$CGAutilise }} </td>
+                                <td>{{ $soldeCGA - $CGAutilise }} </td>
                                 <td>{{ $statutcaisse }}</td>
                                 {{--                                <td>{{ $TOTALJ }}</td>--}}
                             </tr>

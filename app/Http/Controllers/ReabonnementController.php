@@ -169,7 +169,7 @@ class ReabonnementController extends Controller
                 'date_echeance' => $date_reabonnement,
                 'date_reabonnement' => $data->date_abonnement
             ]);
-            if ($reabonnement) {
+            if ($reabonnement && $request->type == 1) {
 
                 $storeCaisse = (new CaisseController)->creditCaisse($reabonnement->id_reabonnement, 'REABONNEMENT', $data_pdf->total);
 
@@ -280,17 +280,15 @@ class ReabonnementController extends Controller
         $data_message->montant = $data->duree * $formul[0]->prix_formule;
         $data_message->id_client = $id_client;
 //        DD($request); exit();
+        if ($reabonnement && $request->type == 1) {
+            $storeCaisse = (new CaisseController)->creditCaisse($reabonnement->id, 'REABONNEMENT', $data_pdf->total);
+        }
         if ($reabonnement) {
-
-            $storeCaisse = (new CaisseController)->creditCaisse($reabonnement->id_reabonnement, 'REABONNEMENT', $data_pdf->total);
-
-            $message_con = '';
-//            $storeCaisse = (new CaisseController)->creditCaisse($reabonnement->id, 'REABONNEMENT', $data->duree * $formul[0]->prix_formule);
-
             $message = $nom . " Votre réabonnement à été effectué avec success! Formule: " . $request->formule . ", expire le: " . $data->date_reabonnement . ".";
             $envoi = (new MessageController)->prepareMessage($data_message, 'REABONNEMENT');
 
         }
+
         //        $send = (new MessageController)->sendMessage('Test Message','679353205');
         $balance = (new MessageController)->getSMSBalance();
 //        $data->save();
@@ -373,14 +371,15 @@ class ReabonnementController extends Controller
         $data_message->id_client = $id_client;
 
         if ($upgrade) {
-            $storeCaisse = (new CaisseController)->creditCaisse($upgrade->id_upgrade, 'UPGRADE', $data_pdf->total);
-
             $message_con = '';
             $message = $data->nom_client . " Mis à jour de la formule réussi ! Formule: " . $request->formule . ", expire le: " . $data->date_reabonnement . ".";
             $envoi = (new MessageController)->prepareMessage($data_message, 'REABONNEMENT');
 
         }
+        if ($upgrade && $request->type == 1) {
+            $storeCaisse = (new CaisseController)->creditCaisse($upgrade->id, 'UPGRADE', $data_pdf->total);
 
+        }
         $balance = (new MessageController)->getSMSBalance();
         $pdf = (new PDFController)->createPDF($data_pdf, 'UPGRADE');
         session()->flash('message', "L'upgrate du client a reussi. Solde SMS: " . $balance);
@@ -485,7 +484,7 @@ class ReabonnementController extends Controller
         $reabo = Reabonnement::where('id_reabonnement',$id)->get();
         $montant = 0;
         if ($reabo){
-            $formul = Formule::where('id_formule',$reabo[0]->id_reabonnement)->get();
+            $formul = Formule::where('id_formule',$reabo[0]->id_formule)->get();
             if ($formul){
                 $montant = $formul[0]->prix_formule*$reabo[0]->duree;
             }
@@ -502,6 +501,7 @@ class ReabonnementController extends Controller
     ]);
         if ($save){
             $recover = Reabonnement::where('id_reabonnement', $id)->update(['type_reabonement' => 1]);
+            $storeCaisse = (new CaisseController)->creditCaisse($id, 'REABONNEMENT', $montant);
 
         }
 

@@ -61,6 +61,7 @@ Route::prefix('dashboard')->group(function () {
         Route::get('show/{id_client}', [ClientController::class, 'show'])->name('clients.show');
         Route::post('abonner/delete', [AbonnementController::class, 'deleteAbonne'])->name('abonnement.delete');
         Route::get('abonner/sortBy', [SortController::class, 'sortAbonnement'])->name('abonnement.sort');
+        Route::post('abonner/recover', [AbonnementController::class, 'recoverReabonne'])->name('abonnement.recover');
 
 
         //Reabonnement
@@ -131,6 +132,7 @@ Route::prefix('dashboard')->group(function () {
         Route::get('caisse/delete/{id}', [CaisseController::class, 'delete'])->name('caisse.delete');
         Route::post('caisse/store/achat', [CaisseController::class, 'addVersementAchat'])->name('caisse.store.achat');
         Route::post('caisse/update/achat', [CaisseController::class, 'EditVersementAchat'])->name('achat.update');
+        Route::post('caisse/recouvrement/store', [CaisseController::class, 'storeRecouvrement'])->name('caisse.store.recouvrement');
         Route::get('caisse/delete/achat/{id_achat}', [CaisseController::class, 'deleteVersementAchat'])->name('achat.delete');
         Route::post('caisse/sort', [SortController::class, 'sortByCaisse'])->name('caisse.sort');
 
@@ -183,6 +185,7 @@ Route::prefix('dashboard')->group(function () {
 
         // all today operations
         Route::get('todays/all', [GeneralController::class, 'TodayOperations'])->name('today.all');
+        Route::get('credit/all', [GeneralController::class, 'OperationsCredit'])->name('credit.all');
 
 
     });

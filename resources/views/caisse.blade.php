@@ -39,6 +39,8 @@
                             class="hidden-sm-up"></span> <span class="hidden-xs-down">Achat matériel</span></a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#versement" role="tab"><span
                             class="hidden-sm-up"></span> <span class="hidden-xs-down">Versements</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#recouvrement" role="tab"><span
+                            class="hidden-sm-up"></span> <span class="hidden-xs-down">Recouvrement</span></a></li>
             </ul>
             <!-- Tab panes -->
             <div class="tab-content tabcontent-border">
@@ -52,37 +54,7 @@
 {{--                                @include('layouts/flash-message')--}}
 
                                 <div class="card-body">
-{{--                                    <div class="row col-md-12 d-flex mb-6">--}}
-{{--                                        <div class="col-md-6">--}}
-{{--                                            <h3>Total en caisse: <span class="text-secondary">{{$totalcaisse}} </span> FCFA</h3>--}}
-{{--                                            <h3 class="mt-4">Déja  consommé: <span class="text-success">{{$dejeconsomme}}</span> FCFA</h3>--}}
-{{--                                            <h3 class="mt-4"> Reste en caisse: <span class="text-warning">{{$restecaisse}}</span> FCFA</h3>--}}
 
-{{--                                        </div>--}}
-{{--                                        <div class="col-md-6">--}}
-{{--                                            <h4>Réguler</h4> &nbsp;&nbsp;&nbsp;--}}
-{{--                                            <form action="{{isset($datas)?route('caisse.update'):route('caisse.ajouter')}}" method="post">--}}
-{{--                                                                        <div class="form-group">--}}
-{{--                                                @csrf--}}
-{{--                                                @isset($datas)--}}
-{{--                                                    <input type="hidden" name="id_caisse" value="{{isset($datas)?$datas[0]->id_caisse:''}}">--}}
-{{--                                                @endisset--}}
-{{--                                                <div class="row d-flex">--}}
-{{--                                                    <div class="col-md-8 ml-4">--}}
-{{--                                                        Montant <input type="number" name="montant" required="Le montant ne peut pas etre vide" class="form-control" value="{{isset($datas)?$datas[0]->montant:''}}">--}}
-
-{{--                                                    </div>--}}
-{{--                                                    <div class="col-md-8 ml-4 mt-4">--}}
-{{--                                                        <button type="submit" class="btn btn-primary">Enregistrer</button>--}}
-{{--                                                        <button type="reset" class="btn btn-light">Annuler</button>--}}
-
-{{--                                                    </div>--}}
-{{--                                                </div>--}}
-{{--                                                                        </div>--}}
-
-{{--                                            </form>--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
                                     <div class="table-responsive">
                                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                             <thead class="text-center">
@@ -91,7 +63,6 @@
                                             @endphp
                                             <tr>
                                                 <th>#</th>
-                                                <th>Utilisateur</th>
                                                 <th>Montant</th>
                                                 <th>Opération</th>
                                                 <th>Par</th>
@@ -103,7 +74,6 @@
                                             @foreach($Caisse as $key => $value)
                                                 <tr>
                                                     <td>{{$key+1}}</td>
-                                                    <td>{{$value->name}}</td>
                                                     <td>{{$value->montant}}</td>
                                                     <td>{{$value->raison}}</td>
                                                     <td>
@@ -369,6 +339,68 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Recouvrement tab -->
+                <div class="tab-pane p-20 pt-2" id="recouvrement" role="tabpanel">
+                    <div class="p-20">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-2 font-weight-bold text-primary">Liste des recouvrements
+                                    Canal</h6>
+                            </div>
+                            <div class="col-md-12 pull-right text-right">
+                                <a type="button" class="btn btn-primary pull-right -align-right" href="#"
+                                   data-toggle="modal"
+                                   data-target="#recouvrementModal"> <i
+                                        class="fas fa-plus"></i> Ajouter </a>
+                            </div>
+{{--                            @include('layouts/flash-message')--}}
+
+                            <div class="card-body">
+
+                                <div class="table-responsive col-md-12">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead class="text-center">
+                                        @php
+                                            $comp = 0;
+                                        @endphp
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Montant</th>
+                                            <th>Raison</th>
+                                            <th>Par</th>
+                                            <th>Date d'ajout</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="text-center">
+                                        @foreach($Recouvrements as $key => $value)
+                                            <tr>
+                                                <td>{{$key+1}}</td>
+                                                <td>{{$value->montant}}</td>
+                                                <td>{{$value->raison}}</td>
+                                                <td>
+                                                    @foreach($users as $k => $item)
+                                                        @if($value->id_user === $item->id)
+                                                            {{$item->name}}
+                                                        @endif
+                                                    @endforeach
+                                                </td>
+                                                <td>{{$value->date_ajout}}</td>
+                                                <td>
+                                                    {{--                                        <a  href="{{$value->id == Auth::user()->id? route('caisse.get',$value->id_caisse ):'#'}}"   class="btn btn-warning" type="Modifier"><i class="fa fa-edit"></i></a>--}}
+                                                    <a href="{{$value->id_user == Auth::user()->id? route('caisse.delete',$value->id_caisse ):'#'}}"  class="btn btn-danger" title="Supprimer"><i class="fa fa-trash"></i></a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -434,6 +466,41 @@
                                 <label>Description(facultatif)</label>
                                 <textarea class="form-control" name="description"
                                           placeholder="Description ..."></textarea>
+                            </div>
+                            <hr>
+                            <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer
+                            </button>
+                            <button type="reset" class="btn btn-danger"><i class="fa fa-times fa-fw"></i>Retour</button>
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal recouvrement -->
+        <div class="modal fade " id="recouvrementModal" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog " role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="recouvrementModaleModalLabel">Ajouter un recouvrement</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form" id="abonneForm" method="post"
+                              action="{{ route('caisse.store.recouvrement') }}">
+                            @csrf
+                            <div class="form-group">
+                                <label>Montant</label>
+                                <input class="form-control" type="number" min="0"
+                                       name="montant" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Raison</label>
+                                <input type="text" class="form-control" name="raison" required>
                             </div>
                             <hr>
                             <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer

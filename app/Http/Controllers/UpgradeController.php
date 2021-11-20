@@ -53,6 +53,7 @@ class UpgradeController extends Controller
             ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
             ->get();
         $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+            ->join('clients', 'clients.id_client', 'clients.id_client')
             ->get();
         $messages = (new MessageController)->getStandart();
         return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
@@ -88,6 +89,7 @@ class UpgradeController extends Controller
         ]);
         if ($save) {
             $upgrade = Upgrade::where('id_upgrade', $id)->update(['type_upgrade' => 1]);
+            $storeCaisse = (new CaisseController)->creditCaisse($id, 'UPGRADE', $montant);
         }
 
         return Response()->json($upgrade);

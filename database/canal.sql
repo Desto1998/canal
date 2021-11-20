@@ -157,3 +157,4 @@ ALTER table caisses
     add column id_decodeur int null;
 ALTER table caisses
     add column id_versement int null;
+ALTER TABLE `caisses` ADD `type` INT NOT NULL DEFAULT '0' AFTER `raison`;

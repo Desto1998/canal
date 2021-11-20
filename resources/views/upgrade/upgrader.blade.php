@@ -63,12 +63,12 @@
                                             class="btn btn-warning btn-supp">
                                         <i class="fas fa-fw fa-edit"></i>
                                     </a>
-                                    <a {{ $value->type_reabonement == 0? '' : "disabled" }} id="Recouvrement" title="Recouvrir le crédit"
-                                            href="javascript:void(0);"
-                                            class="btn btn-success btn-supp ml-1"
-                                            onclick="recouvrirFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">
-                                        <i class="fas fa-fw fa-check"></i>
-                                    </a>
+{{--                                    <a {{ $value->type_reabonement == 0? '' : "disabled" }} id="Recouvrement" title="Recouvrir le crédit"--}}
+{{--                                            href="javascript:void(0);"--}}
+{{--                                            class="btn btn-success btn-supp ml-1"--}}
+{{--                                            onclick="recouvrirFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">--}}
+{{--                                        <i class="fas fa-fw fa-check"></i>--}}
+{{--                                    </a>--}}
                                 </td>
                             </tr>
                             @php

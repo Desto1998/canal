@@ -3,9 +3,10 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h4 class="text-primary"> Clients échus</h4>
-                <label class=""><a class="btn btn-success" href="{{route('user.client.nouveau')}}"> Client nouveau</a></label>
+                <label class=""><a class="btn btn-success" href="{{route('user.client.nouveau')}}"> Parc courant</a></label>
                 <label class="ml-4"><a class="btn btn-warning"  href="{{route('user.client.terme')}}"> Bientôt à terme</a></label>
                 <label class="ml-4"><a class="btn btn-danger"  href="{{route('user.client.perdu')}}"> Clients échus</a></label>
+                <label class="ml-4"><a class="btn btn-primary"  href="{{route('clients')}}"> Tous les clients</a></label>
             </div>
             @include('layouts.flash-message')
 

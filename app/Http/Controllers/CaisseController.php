@@ -26,14 +26,17 @@ class CaisseController extends Controller
         $achats = Versement_achats::OrderBy('id_achat','DESC')
             ->get();
 //        dd($totalcaise);
-        $Caisse = Caisse::join('users','users.id','caisses.id_user')
-            ->OrderBy('id_caisse','DESC')
+        $Caisse = Caisse::OrderBy('id_caisse','DESC')
             ->get();
+        $Recouvrements= Caisse::where('type',1)
+            ->OrderBy('id_caisse','DESC')
+            ->get()
+        ;
         $totalVersement = (new VersementController)->totalVersement();
         $dejaUTilise = (new VersementController)->dejaUtilise();
         $resteVersement = (new VersementController)->resteVersement();
-        $users = Versement::join('users','users.id','versements.id_user')->get();
-        return view('caisse',compact('Caisse','users','totalVersement','resteVersement','dejaUTilise','totalcaisse','versements','achats'));
+        $users = User::all();
+        return view('caisse',compact('Caisse','Recouvrements','users','totalVersement','resteVersement','dejaUTilise','totalcaisse','versements','achats'));
     }
 
     public function get($id_caisse)
@@ -66,7 +69,8 @@ class CaisseController extends Controller
         $data = Caisse::create(['montant'=>$request->montant,
             'id_user'=>$userid,
             'raison'=>'Reguler',
-            'date_ajout'=>date("Y-m-d")
+            'date_ajout'=>date("Y-m-d"),
+            'type'=>0
         ]);
         session()->flash('message', "Enregistré avec succès.");
         return  redirect()->back()->with('info', "Enregistré avec succès.");
@@ -85,7 +89,8 @@ class CaisseController extends Controller
         $data = Caisse::create(['montant'=>$montant,
             'raison'=>$raison,
             'id_user'=>$userid,
-            'date_ajout'=>date("Y-m-d")
+            'date_ajout'=>date("Y-m-d"),
+            'type'=>0
         ]);
         return $data;
     }
@@ -152,19 +157,20 @@ class CaisseController extends Controller
             switch ($operation){
                 case 'ACHAT':
 //                    Caisse::create(['montant'=>$montant, 'raison'=>'Achat kits', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_achat'=>$id]);
-                    $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Achat kits', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_achat'=>$id]);
+                    $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Achat kits', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_achat'=>$id,'type'=>0]);
                     break;
                 case 'VERSEMENT':
-                    $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Versement', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_versement'=>$id]);
+                    $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Versement', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_versement'=>$id,'type'=>0]);
                     break;
                 case 'REABONNEMENT':
-                    $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Reabonnement', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_reabonnement'=>$id]);
+                    $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Reabonnement', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_reabonnement'=>$id,'type'=>0]);
+                    dd($caisse);
                     break;
                 case 'ABONNEMENT':
-                    $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Abonnement', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_abonnement'=>$id]);
+                    $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Abonnement', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_abonnement'=>$id,'type'=>0]);
                     break;
                 case 'UPGRADE':
-                    $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Upgrade', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_upgrade'=>$id]);
+                    $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Upgrade', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_upgrade'=>$id,'type'=>0]);
                     break;
                 case 'DECODEUR':
                     $caisse =Caisse::where('id_decodeur',$id)->update(['montant'=>($montant)]);
@@ -264,5 +270,18 @@ class CaisseController extends Controller
         return $diference;
 
     }
-
+    public function storeRecouvrement(Request $request){
+        $request->validate([
+            'montant' => 'required',
+            'raison' => 'required',
+        ]);
+        $userid= Auth::user()->id;
+        $data = Caisse::create(['montant'=>$request->montant,
+            'raison'=>$request->raison,
+            'id_user'=>$userid,
+            'date_ajout'=>date("Y-m-d"),
+            'type'=>1
+        ]);
+        return  redirect()->back()->with('info', "Enregistré avec succès.");
+    }
 }

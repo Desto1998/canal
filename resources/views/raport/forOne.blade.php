@@ -19,7 +19,7 @@
                             <td colspan="9">
                                 <strong>
                                     <h3>
-                                        Rapport hedomadaires canal<span class="h2">+</span> de: {{ $user->name }}
+                                        Rapport canal<span class="h2">+</span> GETEL SARL du {{ $request->date1 }} au {{ $request->date2 }} de: {{ $user->name }}
                                     </h3>
                                 </strong>
                             </td>

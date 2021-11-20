@@ -9,8 +9,8 @@
                         <div class="row pull-right float-right col-md-12">
                             <select class="form-control col-md-2" name="byUser">
                                 <option value="ALL">Tous les statuts</option>
-                                <option value="BYME">Reabonné par moi</option>
-                                <option value="BYORTHERS">Reabonné par autre</option>
+                                <option value="BYME">Effectué par moi</option>
+                                <option value="BYORTHERS">Effectué par autre</option>
                             </select>
                             {{--                            <select class="form-control col-md-2" name="byDate">--}}
                             {{--                                <option value="CREATE">Date creation</option>--}}

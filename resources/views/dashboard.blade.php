@@ -235,7 +235,7 @@
 
                                         </div>
                                         <div class="h6 mb-0 font-weight-bold text-gray-800">
-                                            {{ $consommeCaisse }}
+                                            {{ $totalCaisse }}
                                         </div>
                                     </div>
                                     <div class="col-auto">
@@ -267,100 +267,55 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+
+                {{--                <!-- Stock -->--}}
+                <div class="col-md-3 mb-3">
+                    <a href="{{ route('today.all') }}" class="text-primary">
+                        <div class="card border-left-primary shadow h-100 py-2 card-hover">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-0">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Opérations du jour
+                                        </div>
+                                        <div class="h6 mb-0 font-weight-bold text-gray-800">
+{{--                                            'upgradestody','reabonnementstoday','abonnementstoday'--}}
+                                            {{ count($upgradestody)  + count($reabonnementstoday) + count($abonnementstoday)}}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-caret-up fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="{{ route('credit.all') }}" class="text-info">
+                        <div class="card border-left-info shadow h-100 py-2 card-hover">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-0">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                            Opération à crédit
+
+                                        </div>
+                                        <div class="h6 mb-0 font-weight-bold text-gray-800">
+                                            {{ $totalCredit }}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-balance-scale fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
     </x-slot>
 </x-app-layout>
-{{--<div class="bs-example">--}}
-{{--    <div class="accordion" id="accordionExample">--}}
-{{--        <div class="card">--}}
-{{--            <div class="card-header" id="headingOne">--}}
-{{--                <h2 class="mb-0">--}}
-{{--                    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne">1. What--}}
-{{--                        is HTML?--}}
-{{--                    </button>--}}
-{{--                </h2>--}}
-{{--            </div>--}}
-{{--            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">--}}
-{{--                <div class="card-body">--}}
-{{--                    <p>HTML stands for HyperText Markup Language. HTML is the standard markup language for describing--}}
-{{--                        the structure of web pages. <a href="https://www.tutorialrepublic.com/html-tutorial/"--}}
-{{--                                                       target="_blank">Learn more.</a></p>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--        <div class="card">--}}
-{{--            <div class="card-header" id="headingTwo">--}}
-{{--                <h2 class="mb-0">--}}
-{{--                    <button type="button" class="btn btn-link collapsed" data-toggle="collapse"--}}
-{{--                            data-target="#collapseTwo">2. What is Bootstrap?--}}
-{{--                    </button>--}}
-{{--                </h2>--}}
-{{--            </div>--}}
-{{--            <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionExample">--}}
-{{--                <div class="card-body">--}}
-{{--                    <p>Bootstrap is a sleek, intuitive, and powerful front-end framework for faster and easier web--}}
-{{--                        development. It is a collection of CSS and HTML conventions. <a--}}
-{{--                            href="https://www.tutorialrepublic.com/twitter-bootstrap-tutorial/" target="_blank">Learn--}}
-{{--                            more.</a></p>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--        <div class="card">--}}
-{{--            <div class="card-header" id="headingThree">--}}
-{{--                <h2 class="mb-0">--}}
-{{--                    <button type="button" class="btn btn-link collapsed" data-toggle="collapse"--}}
-{{--                            data-target="#collapseThree">3. What is CSS?--}}
-{{--                    </button>--}}
-{{--                </h2>--}}
-{{--            </div>--}}
-{{--            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">--}}
-{{--                <div class="card-body">--}}
-{{--                    <p>CSS stands for Cascading Style Sheet. CSS allows you to specify various style properties for a--}}
-{{--                        given HTML element such as colors, backgrounds, fonts etc. <a--}}
-{{--                            href="https://www.tutorialrepublic.com/css-tutorial/" target="_blank">Learn more.</a></p>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--</div>--}}
 
-
-{{--<!-- Tabs -->--}}
-{{--<div class="card">--}}
-{{--    <!-- Nav tabs -->--}}
-{{--    <ul class="nav nav-tabs" role="tablist">--}}
-{{--        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home" role="tab"><span--}}
-{{--                    class="hidden-sm-up"></span> <span class="hidden-xs-down">Tab1</span></a></li>--}}
-{{--        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile" role="tab"><span--}}
-{{--                    class="hidden-sm-up"></span> <span class="hidden-xs-down">Tab2</span></a></li>--}}
-{{--        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#messages" role="tab"><span--}}
-{{--                    class="hidden-sm-up"></span> <span class="hidden-xs-down">Tab3</span></a></li>--}}
-{{--    </ul>--}}
-{{--    <!-- Tab panes -->--}}
-{{--    <div class="tab-content tabcontent-border">--}}
-{{--        <div class="tab-pane active" id="home" role="tabpanel">--}}
-{{--            <div class="p-20">--}}
-{{--                <p>And is full of waffle to It has multiple paragraphs and is full of waffle to pad out the comment.--}}
-{{--                    Usually, you just wish these sorts of comments would come to an end.multiple paragraphs and is full--}}
-{{--                    of waffle to pad out the comment..</p>--}}
-{{--                <img src="assets/images/background/img4.jpg" class="img-fluid">--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--        <div class="tab-pane  p-20" id="profile" role="tabpanel">--}}
-{{--            <div class="p-20">--}}
-{{--                <img src="assets/images/background/img4.jpg" class="img-fluid">--}}
-{{--                <p class="m-t-10">And is full of waffle to It has multiple paragraphs and is full of waffle to pad out--}}
-{{--                    the comment. Usually, you just wish these sorts of comments would come to an end.multiple paragraphs--}}
-{{--                    and is full of waffle to pad out the comment..</p>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--        <div class="tab-pane p-20" id="messages" role="tabpanel">--}}
-{{--            <div class="p-20">--}}
-{{--                <p>And is full of waffle to It has multiple paragraphs and is full of waffle to pad out the comment.--}}
-{{--                    Usually, you just wish these sorts of comments would come to an end.multiple paragraphs and is full--}}
-{{--                    of waffle to pad out the comment..</p>--}}
-{{--                <img src="assets/images/background/img4.jpg" class="img-fluid">--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--</div>--}}

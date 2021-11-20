@@ -3,15 +3,12 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <div class="row">
-                    <div class="col-md-6">
-                        <h4 class="text-primary">Clients bientàt à terme</h4>
-                        <label class=""><a class="btn btn-success" href="{{route('user.client.nouveau')}}"> Client nouveau</a></label>
+                    <div class="col-md-8">
+                        <h4 class="text-primary">Clients Bientôt à terme</h4>
+                        <label class=""><a class="btn btn-success" href="{{route('user.client.nouveau')}}"> Parc courant</a></label>
                         <label class="ml-4"><a class="btn btn-warning"  href="{{route('user.client.terme')}}"> Bientôt à terme</a></label>
-                        <label class="ml-4">
-                            <a class="btn btn-danger"  href="{{route('user.client.perdu')}}">
-                                Clients échus
-                            </a>
-                        </label>
+                        <label class="ml-4"><a class="btn btn-danger"  href="{{route('user.client.perdu')}}"> Clients échus</a></label>
+                        <label class="ml-4"><a class="btn btn-primary"  href="{{route('clients')}}"> Tous les clients</a></label>
                     </div>
                     <div class="col-md-4">
 {{--                        <label class="ml-4"><a class="btn btn-primary"  href="#"><i class="fas fa-fw fa-envelope" id="sentoall" title="Envoyer un sms  à toute la liste"></i></a></label>--}}

@@ -25,44 +25,7 @@ class GeneralController extends Controller
 {
     public function dashboard()
     {
-//        $client = new Client();
-//        $client = new Client();
-//        $sendurl = 'https://smsvas.com/bulk/public/index.php/api/v1/sendsms';
-//       $sendurl = 'https://smsvas.com/bulk/public/index.php/api/v1/sendsms?user=teneyemdesto@gmail.com&password=getel2021&senderid=Getel&sms=Bonjour&mobiles=679353205&scheduletime=yyyy-MM-dd%25hh:mm:ss';
-//        $balanceurl = 'https://smsvas.com/bulk/public/index.php/api/v1/smscredit';
-//        $headers = [
-//            'Accept' => 'application/json',
-//            'Content-Type' => 'application/json',
-//        ];
-//        $data = [
-//            "user "=> "teneyemdesto@gmail.com",
-//            "password"=> "getel2021",
-//        ];
-//        $response = $client->request('POST', $balanceurl,
-//            [
-//                'headers' => $headers,
-//                'json' => $data
-//            ]
-//        );
-//        $balanceurl = 'https://smsvas.com/bulk/public/index.php/api/v1/smscredit?user=teneyemdesto@gmail.com&password=getel2021';
-//        $response = Http::get($balanceurl);
-//        $response = Http::get($sendurl);
 
-//        $response = Http::post($balanceurl, [
-//            'Accept' => 'application/json',
-//            'Content-Type' => 'application/json',
-//            "user"=> "teneyemdesto@gmail.com",
-//             "password"=> "getel2021"
-//        ]);
-//        $response = Http::post('https://smsvas.com/bulk/public/index.php/api/v1/sendsms', [
-//            'Accept' => 'application/json',
-//            'Content-Type' => 'application/json',
-//            "user"=> "teneyemdesto@gmail.com",
-//            "password"=> "getel2021",
-//             "senderid"=> "Getel",
-//             "sms"=> "Bonjour desto",
-//             "mobiles"=> "237679353205"
-//        ]);
 //        $send = (new MessageController)->sendMessage('Test Message','679353205');
         $balance = (new MessageController)->getSMSBalance() ;
         $allFormules = Formule::all();
@@ -84,9 +47,44 @@ class GeneralController extends Controller
         $clientnouveaux = $this->nouveauClient();
         $clientperdu = $this->clientPerdu();
         $bientotaterme = $this->bientATerme();
+
+        $data = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
+            ->join('formules', 'client_decodeurs.id_formule', 'formules.id_formule')
+            ->join('clients', 'clients.id_client', 'client_decodeurs.id_client')
+            ->where('client_decodeurs.date_abonnement', date('Y-m-d'))
+            ->get()
+        ;
+        $date=date('Y-m-d');
+        $abonnementstoday = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+            ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
+            ->join('clients', 'abonnements.id_client', 'clients.id_client')
+            ->join('client_decodeurs', 'abonnements.id_decodeur', 'client_decodeurs.id_decodeur')
+            ->join('users', 'abonnements.id_user', 'users.id')
+            ->where('abonnements.created_at','LIKE', "{$date}%")
+            ->OrderBy('id_abonnement','DESC')
+            ->get()
+        ;
+        $reabonnementstoday = Reabonnement::join('clients', 'reabonnements.id_client', 'clients.id_client')
+            ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
+            ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+            ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+            ->where('reabonnements.created_at', 'LIKE', "%{$date}%")
+            ->join('users', 'reabonnements.id_user', 'users.id')
+            ->OrderBy('reabonnements.id_reabonnement', 'DESC')
+            ->get()
+        ;
+        $upgradestody = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+            ->join('formules', 'formules.id_formule', 'upgrades.id_oldformule')
+            ->where('upgrades.created_at', 'LIKE', "%{$date}%")
+            ->OrderBy('id_upgrade', 'DESC')
+            ->get()
+        ;
+        $totalCredit = $this->CalculTotalCredit();
         return view('dashboard',compact('allFormules','reabonnements','decodeurs','clients',
             'decodeuroccupe','materiels','materiels','users','caisse','totalCaisse','statutcaisse','consommeCaisse'
-            ,'clientnouveaux','clientperdu','bientotaterme','balance','totalVersement','statutVersement','consommeVersement'
+            ,'clientnouveaux','clientperdu','bientotaterme','balance','totalVersement','statutVersement','consommeVersement',
+            'upgradestody','reabonnementstoday','abonnementstoday','totalCredit'
+
         ));
     }
 
@@ -555,7 +553,7 @@ class GeneralController extends Controller
 
 //              PDF::loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false)->save('myfile.pdf')
                 $pdf =  PDF::loadView('raport.printmany', compact('request','users','TID','achatkit','TDATES','decodeur','reabonnement','abonnement',
-                    'upgrade','recouvrement','versement','caisse','allReabonnement','allAbonnement','allUpgrade'))
+                    'upgrade','recouvrement','versement','caisse','allReabonnement','allAbonnement','allUpgrade','request'))
                     ->setPaper('a4', 'landscape')->setWarnings(false)
 //                   ->save('rapport_'.$user->name.'_'.'de_'.$request->date1.'au'.$request->date2.'fait_le'.date('Y-m-d').'.pdf')
                 ;
@@ -676,7 +674,7 @@ class GeneralController extends Controller
                     }
                 }
 //                PDF::loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false)->save('myfile.pdf')
-                $pdf =  PDF::loadView('raport.printone', compact('user','achatkit','decodeur','reabonnement','abonnement','upgrade','recouvrement','versement','caisse','TDATES'))
+                $pdf =  PDF::loadView('raport.printone', compact('user','achatkit','decodeur','reabonnement','abonnement','upgrade','recouvrement','versement','caisse','TDATES','request'))
                     ->setPaper('a4', 'landscape')->setWarnings(false)
 //                   ->save('rapport_'.$user->name.'_'.'de_'.$request->date1.'au'.$request->date2.'fait_le'.date('Y-m-d').'.pdf')
                 ;
@@ -704,6 +702,7 @@ class GeneralController extends Controller
             ->join('clients', 'abonnements.id_client', 'clients.id_client')
             ->join('client_decodeurs', 'abonnements.id_decodeur', 'client_decodeurs.id_decodeur')
             ->join('users', 'abonnements.id_user', 'users.id')
+            ->select('abonnements.duree as dureeabo','abonnements.*','clients.*','decodeurs.*','users.*','client_decodeurs.*','formules.*')
             ->where('abonnements.created_at','LIKE', "{$date}%")
             ->OrderBy('id_abonnement','DESC')
             ->get()
@@ -717,16 +716,111 @@ class GeneralController extends Controller
             ->OrderBy('reabonnements.id_reabonnement', 'DESC')
             ->get()
         ;
+        $formules = Formule::all();
+        $reabonnement = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+            ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+            ->get();
+        $abonnement = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+            ->join('clients', 'clients.id_client', 'clients.id_client')
+            ->get();
         $upgrades = Upgrade::join('users', 'upgrades.id_user', 'users.id')
-            ->join('formules', 'formules.id_formule', 'upgrades.id_oldformule')
+//            ->join('formules', 'formules.id_formule', 'upgrades.id_oldformule')
             ->where('upgrades.created_at', 'LIKE', "%{$date}%")
             ->OrderBy('id_upgrade', 'DESC')
             ->get()
         ;
         $formules = Formule::all();
 
-        return view("operation_jour", compact('data','abonnements','reabonnements','upgrades','formules'));
+        return view("operation_jour", compact('data','formules','abonnements','reabonnements','upgrades','formules','abonnement','reabonnement'));
     }
+
+    public function OperationsCredit()
+    {
+        $data = Decodeur::join('client_decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
+            ->join('formules', 'client_decodeurs.id_formule', 'formules.id_formule')
+            ->join('clients', 'clients.id_client', 'client_decodeurs.id_client')
+            ->where('client_decodeurs.date_abonnement', date('Y-m-d'))
+            ->get()
+        ;
+        $date=date('Y-m-d');
+        $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+            ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
+            ->join('clients', 'abonnements.id_client', 'clients.id_client')
+            ->join('client_decodeurs', 'abonnements.id_decodeur', 'client_decodeurs.id_decodeur')
+            ->join('users', 'abonnements.id_user', 'users.id')
+            ->select('abonnements.duree as dureeabo','abonnements.*','clients.*','decodeurs.*','users.*','client_decodeurs.*','formules.*')
+            ->where('abonnements.type_abonnement', 0)
+            ->OrderBy('id_abonnement','DESC')
+            ->get()
+        ;
+        $reabonnements = Reabonnement::join('clients', 'reabonnements.id_client', 'clients.id_client')
+            ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
+            ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+            ->join('client_decodeurs', 'client_decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+            ->where('reabonnements.type_reabonement', 0)
+            ->join('users', 'reabonnements.id_user', 'users.id')
+            ->OrderBy('reabonnements.id_reabonnement', 'DESC')
+            ->get()
+        ;
+        $formules = Formule::all();
+        $reabonnement = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+            ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
+            ->get();
+        $abonnement = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+            ->join('clients', 'clients.id_client', 'clients.id_client')
+            ->get();
+        $upgrades = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+            ->where('upgrades.type_upgrade', 0)
+            ->OrderBy('id_upgrade', 'DESC')
+            ->get()
+        ;
+        $formules = Formule::all();
+
+        return view("operation-credit", compact('data','abonnements','reabonnements','upgrades','formules','abonnement','reabonnement'));
+    }
+
+    public function CalculTotalCredit()
+    {
+
+        $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+            ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
+            ->where('abonnements.type_abonnement', 0)
+            ->get()
+        ;
+        $reabonnements = Reabonnement::join('clients', 'reabonnements.id_client', 'clients.id_client')
+            ->join('formules', 'reabonnements.id_formule', 'formules.id_formule')
+            ->where('reabonnements.type_reabonement', 0)
+            ->get()
+        ;
+
+        $upgrades = Upgrade::join('users', 'upgrades.id_user', 'users.id')
+            ->where('upgrades.type_upgrade', 0)
+            ->get()
+        ;
+        $totalabo= 0;
+        $totalreabo = 0;
+        $totalup = 0;
+        $total = 0;
+        foreach ($reabonnements as $key=>$value)
+        {
+            $totalreabo += $value->prix_formule * $value->duree ;
+        }
+        foreach ($abonnements as $key=>$value)
+        {
+            $totalabo += $value->prix_formule * $value->duree + $value->prix_decodeur;
+        }
+//        dd($totalabo,$totalreabo);
+        foreach ($upgrades as $key=>$value)
+        {
+            $totalup += $value->montant_upgrade;
+        }
+
+        $total = $totalabo + $totalreabo + $totalup;
+        return $total;
+
+    }
+
+
 
 }
 //set_time_limit(300);

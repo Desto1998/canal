@@ -283,7 +283,7 @@ class ClientController extends Controller
             ]);
 
             if ($abonnement){
-                $storeCaisse = (new CaisseController)->creditCaisse($abonnement->id_abonnement,'ABONNEMENT',$data_pdf->total);
+                $storeCaisse = (new CaisseController)->creditCaisse($abonnement->id,'ABONNEMENT',$data_pdf->total);
             }
             $envoi = (new MessageController)->prepareMessage($data_message, 'ABONNEMENT');
 
@@ -541,8 +541,8 @@ class ClientController extends Controller
                 $data_pdf->prix_formuleA = 0;
                 $data_pdf->prix_formuleR = $formul[0]->prix_formule;
                 $data_pdf->prix_formuleU = 0;
-                if ($reabonnement){
-                    $storeCaisse = (new CaisseController)->creditCaisse($reabonnement->id_reabonnement,'REABONNEMENT',$data_pdf->total);
+                if ($reabonnement && $request->type == 1){
+                    $storeCaisse = (new CaisseController)->creditCaisse($reabonnement->id,'REABONNEMENT',$data_pdf->total);
                 }
             }
 
@@ -564,8 +564,8 @@ class ClientController extends Controller
                 $data_pdf->prix_formuleA = $formul[0]->prix_formule;
                 $data_pdf->prix_formuleR = 0;
                 $data_pdf->prix_formuleU = 0;
-                if ($abonnement){
-                    $storeCaisse = (new CaisseController)->creditCaisse($abonnement->id_abonnement,'ABONNEMENT',$data_pdf->total);
+                if ($abonnement && $request->type == 1){
+                    $storeCaisse = (new CaisseController)->creditCaisse($abonnement->id,'ABONNEMENT',$data_pdf->total);
                 }
             }
 
