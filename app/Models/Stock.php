@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Versement_achats extends Model
+class Stock extends Model
 {
     use HasFactory;
-    protected $fillable = ['montant_achat','description_achat','id_user','quantite','date_appro'];
+    protected $fillable = ['code_stock','prix_unit','id_user','date_ajout','date_appro','statut'];
 }

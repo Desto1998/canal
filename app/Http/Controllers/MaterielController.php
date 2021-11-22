@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Decodeur;
 use App\Models\Materiel;
+use App\Models\Stock;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\DecodeurRequest;
@@ -12,16 +13,16 @@ use Illuminate\Http\Request;
 
 class MaterielController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         $allMateriels = Materiel::all();
         $allDecodeurs = Decodeur::all();
-        return view('stock',compact('allMateriels','allDecodeurs'));
+        $allDecodeurs = Stock::join('users','users.id','stocks.id_user')
+            ->where('stocks.statut',0)
+            ->get()
+        ;
+        return view('stocks.stock',compact('allMateriels','allDecodeurs'));
     }
 
     /**
@@ -108,7 +109,7 @@ class MaterielController extends Controller
     public function edit($id_type)
     {
         $donnees = Materiel::find($id_type);
-        return view('modif_materiel',compact('donnees'));
+        return view('stocks.modif_materiel',compact('donnees'));
     }
 
     /**

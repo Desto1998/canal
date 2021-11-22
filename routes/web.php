@@ -7,6 +7,7 @@ use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\ReabonnementController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SortController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\UpgradeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VersementController;
@@ -107,6 +108,8 @@ Route::prefix('dashboard')->group(function () {
         Route::get('stock', [MaterielController::class, 'index'])->name('stock');
         Route::post('storeMat', [MaterielController::class, 'storeMat'])->name('store.materiel');
         Route::post('storeDec', [MaterielController::class, 'storeDec'])->name('store.decodeur');
+        Route::get('stock/makefield', [StockController::class, 'makeForm'])->name('stock.makefield');
+        Route::get('stock/storedecodeur', [StockController::class, 'storeDecodeur'])->name('stock.store.decodeur');
 
         Route::get('/messagerie', function () {
             return view('message.messagerie');

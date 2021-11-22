@@ -158,3 +158,18 @@ ALTER table caisses
 ALTER table caisses
     add column id_versement int null;
 ALTER TABLE `caisses` ADD `type` INT NOT NULL DEFAULT '0' AFTER `raison`;
+
+DROP table if exists stocks;
+create table stocks
+(
+    `id_stock`   bigint(20) primary key AUTO_INCREMENT,
+    `code_stock`  varchar(20) not nulls ,
+    `prix_unit`  float not null ,
+    `date_ajout`  date not null ,
+    `statut`  int default 0,
+    `id_user`           int(11) NOT NULL,
+    created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at          DATETIME  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `versement_achats` ADD `quantite` INT NOT NULL  AFTER `montant_achat`;
+ALTER TABLE `versement_achats` ADD `date_appro` date NOT NULL  AFTER `quantite`;

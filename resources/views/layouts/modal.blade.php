@@ -139,35 +139,30 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ajouter un décodeur</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Enregistrer des decodeurs</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form role="form" id="decodeurForm" method="post" action="{{route('store.decodeur')}}">
+                <form role="form" id="decodeurForm" method="get" action="{{route('stock.makefield')}}">
                     @csrf
                     <div class="form-group">
-                        Numero décodeur<br><input type="text" class="form-control"  maxlength="14" minlength="14" placeholder="numero decodeur" onblur="controlNumero(this)" class="form-control  @error('num_decodeur') is-invalid @enderror" name="num_decodeur" id="num_decodeur1"  required>
-                        <span class="text-danger hidden ereur-numerodd " style=""> Mauvaise saisie Longeur requise 14</span>
-                        @error('num_decodeur')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        Quantité<br><input type="number" class="form-control" min="1"  placeholder="Qte" name="quantite" id="qte" required>
+
                     </div>
                     <div class="form-group">
-                        Prix<br><input class="form-control" placeholder="Prix" class="form-control  @error('prix_decodeur') is-invalid @enderror" name="prix_decodeur" id="prix_decodeur"  required>
-                        @error('prix_decodeur')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        Prix unitaire<br><input type="number" class="form-control" placeholder="Prix" name="prix_u" id="prix_unitaire" required>
                     </div>
                     <div class="form-group">
-                        Date livraison<br><input class="form-control" type="date" class="form-control  @error('date_livraison') is-invalid @enderror" name="date_livraison" id="date_livraison"  required>
-                        @error('date_livraison')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        Date livraison<br><input class="form-control" type="date" name="date_appro" id="date_appro"  required>
+                    </div>
+                    <div class="form-group">
+                        <label for="total">Montant total</label>
+                        <input type="number" name="montant" id="total" value="0" class="form-control" disabled>
                     </div>
                     <hr>
-                    <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer</button>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Valider</button>
                     <button type="reset" class="btn btn-danger"><i class="fa fa-times fa-fw"></i>Retour</button>
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
                 </form>
@@ -187,8 +182,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form role="form" id="decodeurForm" method="post" action="{{route('store.decodeur')}}">
-                    @csrf
+                <form role="form" id="decodeurForm2" method="post" action="{{route('store.decodeur')}}">
+{{--                    @csrf--}}
                     <div class="form-group">
                         Numero décodeur<br><input type="number" class="form-control"  maxlength="14" minlength="14" placeholder="numero decodeur" onblur="controlNumero(this)" class="form-control  @error('num_decodeur') is-invalid @enderror" name="num_decodeur" id="num_decodeur1"  required>
                         <span class="text-danger hidden ereur-numerodd " style=""> Mauvaise saisie Longeur minimale 14</span>
