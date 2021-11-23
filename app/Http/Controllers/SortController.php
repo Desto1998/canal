@@ -127,7 +127,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -144,7 +144,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -160,7 +160,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
             }
@@ -178,7 +178,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -196,7 +196,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -213,7 +213,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -230,7 +230,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -248,7 +248,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -265,7 +265,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->where('reabonnements.created_at', '<=', $request->date2)();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -285,7 +285,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -301,7 +301,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -316,7 +316,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
             }
@@ -334,7 +334,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -351,7 +351,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->where('reabonnements.created_at', '<=', $request->date2)->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -367,7 +367,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -384,7 +384,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -401,7 +401,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -417,7 +417,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '>=', $request->date1)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -439,7 +439,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 // Date reabo
@@ -455,7 +455,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 // date echeance
@@ -471,7 +471,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
             }
@@ -489,7 +489,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -506,7 +506,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -522,7 +522,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
             // par les autres OTHERS
@@ -539,7 +539,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -556,7 +556,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -572,7 +572,7 @@ class SortController extends Controller
                     $reabonnement = Reabonnement::where('reabonnements.created_at', '<=', $request->date2)
                         ->get();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -589,7 +589,7 @@ class SortController extends Controller
                         ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -603,7 +603,7 @@ class SortController extends Controller
                         ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -616,7 +616,7 @@ class SortController extends Controller
                         ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
             }
@@ -632,7 +632,7 @@ class SortController extends Controller
                         ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -646,7 +646,7 @@ class SortController extends Controller
                         ->OrderBy('reabonnements.date_reabonnement', 'ASC')
                         ->get();
                     $reabonnement = Reabonnement::all();
-                    return view("users.allreabonnement", compact('data', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -660,7 +660,7 @@ class SortController extends Controller
                         ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -675,7 +675,7 @@ class SortController extends Controller
                         ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
 
@@ -690,7 +690,7 @@ class SortController extends Controller
                         ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
                 }
                 if ($request->byDate === 'STOP') {
@@ -704,7 +704,7 @@ class SortController extends Controller
                         ->get();
                     $reabonnement = Reabonnement::all();
                     $users = User::all();
-                    return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+                    return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
                 }
             }
 
@@ -718,7 +718,7 @@ class SortController extends Controller
             ->get();
         $reabonnement = Reabonnement::all();
         $users = User::all();
-        return view("users.allreabonnement", compact('data', 'users', 'reabonnement'));
+        return view("reabonnement.allreabonnement", compact('data', 'users', 'reabonnement'));
 
     }
 

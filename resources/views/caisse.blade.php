@@ -86,7 +86,7 @@
                                                     <td>{{$value->date_ajout}}</td>
                                                     <td>
                                                         {{--                                        <a  href="{{$value->id == Auth::user()->id? route('caisse.get',$value->id_caisse ):'#'}}"   class="btn btn-warning" type="Modifier"><i class="fa fa-edit"></i></a>--}}
-                                                        <a href="{{$value->id_user == Auth::user()->id? route('caisse.delete',$value->id_caisse ):'#'}}"  class="btn btn-danger" title="Supprimer"><i class="fa fa-trash"></i></a>
+                                                        <a href="{{Auth::user()->is_admin==1? route('caisse.delete',$value->id_caisse ):'#'}}"  class="btn btn-danger" title="Supprimer"><i class="fa fa-trash"></i></a>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -146,7 +146,7 @@
                                                            data-target="#messageModal{{ $value->id_achat }}"
                                                            class="btn btn-warning" type="Modifier"><i
                                                                 class="fa fa-edit"></i></a>
-                                                        <a href="{{$value->id_user == Auth::user()->id? route('achat.delete',$value->id_achat ):'#'}}"
+                                                        <a href="{{Auth::user()->is_admin == 1 ? route('achat.delete',$value->id_achat ):'#'}}"
                                                            class="btn btn-danger ml-1" title="Supprimer"><i
                                                                 class="fa fa-trash"></i></a>
                                                     </td>
@@ -389,7 +389,7 @@
                                                 <td>{{$value->date_ajout}}</td>
                                                 <td>
                                                     {{--                                        <a  href="{{$value->id == Auth::user()->id? route('caisse.get',$value->id_caisse ):'#'}}"   class="btn btn-warning" type="Modifier"><i class="fa fa-edit"></i></a>--}}
-                                                    <a href="{{$value->id_user == Auth::user()->id? route('caisse.delete',$value->id_caisse ):'#'}}"  class="btn btn-danger" title="Supprimer"><i class="fa fa-trash"></i></a>
+                                                    <a href="{{Auth::user()->is_admin == 1 ? route('caisse.delete',$value->id_caisse ):'#'}}"  class="btn btn-danger" title="Supprimer"><i class="fa fa-trash"></i></a>
                                                 </td>
                                             </tr>
                                         @endforeach
