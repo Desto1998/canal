@@ -63,12 +63,21 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
 
 {{--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>--}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <link rel="stylesheet" href="http://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
     {{--Datatables js--}}
     <script src="http://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+{{--    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>--}}
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#myTable').DataTable();
@@ -199,13 +208,13 @@
                     {{--          <i class="fas fa-fw fa-mail-bulk"></i>--}}
                     {{--          <span>Messagerie</span></a>--}}
                     {{--      </li>--}}
-                    @if(Auth::user()->is_admin==1)
+{{--                    @if(Auth::user()->is_admin==1)--}}
                         <li class="nav-item">
                             <a class="nav-link {{ ($route=='caisse')?'active':'' }}" href="{{ route('caisse') }}">
                                 <i class="far fa-money-bill-alt"></i>
                                 <span>Caisse</span></a>
                         </li>
-                    @endif
+{{--                    @endif--}}
                     @if(Auth::user()->is_admin==1)
                         <li class="nav-item">
                             <a class="nav-link {{ ($route=='compte')?'active':'' }}" href="{{ route('compte') }}">
@@ -213,13 +222,13 @@
                                 <span>Comptes</span></a>
                         </li>
                     @endif
-                    @if( Auth::user()->is_admin==1)
+{{--                    @if( Auth::user()->is_admin==1)--}}
                         <li class="nav-item">
                             <a class="nav-link {{ ($route=='settings')?'active':'' }}" href="{{ route('settings') }}">
                                 <i class="fas fa-fw fa-cogs"></i>
                                 <span>Paramètres</span></a>
                         </li>
-                    @endif
+{{--                    @endif--}}
                     <li class="nav-item">
                         <a class="nav-link {{ ($route=='stock')?'active':'' }}" href="{{ route('rapport.form') }}">
                             <i class="fas fa-fw fa-file-pdf"></i>

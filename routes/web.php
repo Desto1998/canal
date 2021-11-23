@@ -78,6 +78,7 @@ Route::prefix('dashboard')->group(function () {
 
         //Modifier
         Route::get('upgrader', [UpgradeController::class, 'viewModif'])->name('upgrader');
+        Route::post('upgrader/add', [UpgradeController::class, 'addNew'])->name('upgrader.add');
         Route::get('upgrader/all', [UpgradeController::class, 'allUpgrades'])->name('upgrader.all');
         Route::get('upgrade_client/{id_client}/{id_reabonnement?}', [ReabonnementController::class, 'up_client'])->name('up.client');
         Route::post('upgradeClient/{id_client}', [ReabonnementController::class, 'upgradeReabonnement'])->name('upgrade.client');

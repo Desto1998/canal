@@ -14,6 +14,7 @@
                                 class="fas fa-fw fa-plus"></i></a></h4>
                 </div>
             </div>
+
             @include('layouts.flash-message')
 
             <div class="card-body">
@@ -66,16 +67,16 @@
                                 </td>
                                 <td class="text-center d-flex">
                                     <a id="upgrade" title="Upgrade ce reabonnement"
-                                            href="{{ route('up.client',[$value->id_client,$value->id_reabonnement]) }}"
-                                            class="btn btn-warning btn-supp">
+                                       href="{{ route('up.client',[$value->id_client,$value->id_reabonnement]) }}"
+                                       class="btn btn-warning btn-supp">
                                         <i class="fas fa-fw fa-edit"></i>
                                     </a>
-{{--                                    <a {{ $value->type_reabonement == 0? '' : "disabled" }} id="Recouvrement" title="Recouvrir le crédit"--}}
-{{--                                            href="javascript:void(0);"--}}
-{{--                                            class="btn btn-success btn-supp ml-1"--}}
-{{--                                            onclick="recouvrirFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">--}}
-{{--                                        <i class="fas fa-fw fa-check"></i>--}}
-{{--                                    </a>--}}
+                                    {{--                                    <a {{ $value->type_reabonement == 0? '' : "disabled" }} id="Recouvrement" title="Recouvrir le crédit"--}}
+                                    {{--                                            href="javascript:void(0);"--}}
+                                    {{--                                            class="btn btn-success btn-supp ml-1"--}}
+                                    {{--                                            onclick="recouvrirFunc({{ $value->id_reabonnement }},{{ $value->id_client }})">--}}
+                                    {{--                                        <i class="fas fa-fw fa-check"></i>--}}
+                                    {{--                                    </a>--}}
                                 </td>
                             </tr>
                             @php
@@ -99,107 +100,186 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form role="form" id="abonneForm" method="post" action="{{ route('store.client') }}">
+                            <form role="form" id="abonneForm" method="post" action="{{ route('upgrader.add') }}">
                                 @csrf
-                                <div class="row">
-                                    <label>Le client existe dejà dans le systéme</label>
+                                <div class="row pl-6">
+                                    <label class="ml-6"><input type="checkbox"  value="1" class="checkbox" id="check" name="check">
+                                        Le client existe dejà dans le systéme
+                                    </label>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            Nom client<br><input class="form-control" type="text" placeholder="Nom"
-                                                                 name="nom_client" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            Prenom client<br><input class="form-control" type="text"
-                                                                    placeholder="Prenom" name="prenom_client">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            Numero d'abonné<br><input type="text" class="form-control" maxlength="8"
-                                                                      minlength="8" type="text"
-                                                                      onblur="controlNumero1(this)"
-                                                                      placeholder="numero abonne" name="num_abonne"
-                                                                      id="num_abonne" required>
-                                            <span class="text-danger hidden ereur-numeroa " style=""> Mauvaise saisie Longeur requise 8</span>
-                                            @error('num_decodeur')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            N° téléphone client<br><input class="form-control" type="tel"
-                                                                          placeholder="Numéro de téléphone"
-                                                                          name="telephone_client" required>
-                                        </div>
+                                <div class="row select-client hidden" hidden id="select-client">
+                                    <div class="form-group">
+                                        <label class="pl-4 mr-4">Sélectioner un client</label>
+                                        <select class="selectpicker  show-tick" name="id_client" id="selectclient"
+                                                data-live-search="true">
+                                            <option disabled="disabled" selected>Sélectioner un client</option>
+                                            @foreach($clients as $c=>$client)
+                                                <option data-tokens="{{ $client->id_client }}" value="{{ $client->id_client }}"
+                                                        data-subtext="{{ $client->telephone_client }}">{{ $client->nom_client.' '.$client->prenom_client }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            Adresse client<br><input class="form-control" type="text"
-                                                                     placeholder="Adresse" name="adresse_client"
-                                                                     required>
+                                <div class="mainblock" id="infosblock0">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                Nom client<br><input class="form-control" type="text" placeholder="Nom"
+                                                                     name="nom_client">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                Prenom client<br><input class="form-control" type="text"
+                                                                        placeholder="Prenom" name="prenom_client">
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            Numero décodeur<br>
-                                            @if(isset($decodeur))
+                                    <div class="row">
 
-                                                <select class="form-control" required="Sélectionnez un decodeur SVP."
-                                                        name="num_decodeur" id="num_decodeur">
-                                                    <option disabled selected hidden>Sélectionner un decodeur</option>
-                                                    @foreach($decodeur as $key =>$deco)
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                N° téléphone client<br><input class="form-control" type="tel"
+                                                                              placeholder="Numéro de téléphone"
+                                                                              name="telephone_client">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                Adresse client<br><input class="form-control" type="text"
+                                                                         placeholder="Adresse" name="adresse_client">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                Numero d'abonné<br><input type="text" class="form-control" maxlength="8"
+                                                                          minlength="8" type="text"
+                                                                          placeholder="numero abonne" name="num_abonne"
+                                                                          id="num_abonne">
 
-                                                        <option
-                                                            value="{{$deco->num_decodeur}}">{{$deco->num_decodeur}}</option>
-                                                    @endforeach
-                                                </select>
-
-                                            @else
-                                                <span class="text-danger">Aucun décodeur n'est disponible veiller enregistrer un décodeur.</span>
-                                            @endif
-
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Numéro du décodeur</label>
+                                                <input class="form-control" type="text" maxlength="14" minlength="10"
+                                                       placeholder="Décodeur" name="num_decodeur">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                @foreach($clients as $c=>$client)
+                                    <div class="hidden infos-block" id="infos-block{{ $client->id_client }}">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    Nom client<br>
+                                                    <input class="form-control" type="text"
+                                                           value="{{ $client->nom_client }}" name="nom_clientv" readonly disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    Prenom client<br>
+                                                    <input class="form-control" type="text"
+                                                           value="{{ $client->prenom_client }}"
+                                                           name="prenom_clientv" readonly disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    N° téléphone client<br>
+                                                    <input class="form-control" type="tel" readonly disabled
+                                                           value="{{ $client->telephone_client }}"
+                                                           name="telephone_clientv">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    Adresse client<br>
+                                                    <input class="form-control" type="text"
+                                                           value="{{ $client->adresse_client }}"
+                                                           name="adresse_clientv" readonly disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Sélectioner le décodeur</label>
+                                                    <select class="form-control" name="id_decodeur">
+                                                        <option disabled="disabled" selected>Sélection un numéro
+                                                        </option>
+                                                        @foreach($decodeurCleint as $dc => $item)
+                                                            @if($client->id_client === $item->id_client)
+                                                                <option
+                                                                    value="{{ $item->id_decodeur }}">{{ $item->num_decodeur }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
 
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
 
-                                            Formule: <select class="form-control" name="formule" required>
-                                                <option value="ACCESS" selected> ACCESS</option>
-                                                <option value="ACCESS +"> ACCESS +</option>
-                                                <option value="EVASION"> EVASION</option>
-                                                <option value="EVASION +"> EVASION +</option>
-                                                <option value="PRESTIGE"> PRESTIGE</option>
-                                                <option value="ESSENTIEL +"> ESSENTIEL +</option>
-                                                <option value="TOUT CANAL"> TOUT CANAL</option>
+                                            Formule Actuelle: <select class="form-control" name="oldformule" required>
+                                                @foreach($formules as $f=>$item)
+                                                    <option
+                                                        value="{{ $item->id_formule }}"> {{ $item->nom_formule }}</option>
+                                                @endforeach
+                                                {{--                                                <option value="ACCESS" selected> ACCESS</option>--}}
+                                                {{--                                                <option value="ACCESS +"> ACCESS +</option>--}}
+                                                {{--                                                <option value="EVASION"> EVASION</option>--}}
+                                                {{--                                                <option value="EVASION +"> EVASION +</option>--}}
+                                                {{--                                                <option value="PRESTIGE"> PRESTIGE</option>--}}
+                                                {{--                                                <option value="ESSENTIEL +"> ESSENTIEL +</option>--}}
+                                                {{--                                                <option value="TOUT CANAL"> TOUT CANAL</option>--}}
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            Formule: <select class="form-control" name="formule" required>
-                                                <option value="ACCESS" selected> ACCESS</option>
-                                                <option value="ACCESS +"> ACCESS +</option>
-                                                <option value="EVASION"> EVASION</option>
-                                                <option value="EVASION +"> EVASION +</option>
-                                                <option value="PRESTIGE"> PRESTIGE</option>
-                                                <option value="ESSENTIEL +"> ESSENTIEL +</option>
-                                                <option value="TOUT CANAL"> TOUT CANAL</option>
+                                            Nouvelle Formule: <select class="form-control" name="newformule" required>
+
+                                                @foreach($formules as $f=>$item)
+                                                    <option
+                                                        value="{{ $item->id_formule }}"> {{ $item->nom_formule }}</option>
+                                                @endforeach
+
                                             </select>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label><input type="radio" required name="type" value="1">&nbsp;Payé content</label>
+                                    <label class="ml-4"><input required type="radio" value="0" name="type">&nbsp; A crédit</label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        Durée:  <select class="form-control"  name="duree" required>
+                                            <option value=1 selected> 1 mois </option>
+                                            <option value=2> 2 mois </option>
+                                            <option value=3> 3 mois </option>
+                                            <option value=6> 6 mois </option>
+                                            <option value=9> 9 mois </option>
+                                            <option value=12> 12 mois </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Date de reabonnement</label>
+                                        <input type="date" name="date_reabonnement" class="form-control" required>
+                                    </div>
+                                </div>
+
                                 <hr>
                                 <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer
                                 </button>
@@ -242,6 +322,7 @@
             });
         }
     }
+
     function recouvrirFunc(id, id_client) {
         // $('#success').addClass('hidden');
         // $('#error').addClass('hidden');
@@ -269,4 +350,46 @@
             });
         }
     }
+    // function Check(){
+    //     var is_check = $('#check').val();
+    //     alert(is_check)
+    //     if ($('input[name=check]:checked')){
+    //         $('#select-client').removeClass('hidden')
+    //         $('.mainblock').addClass('hidden')
+    //     }else{
+    //         $('.mainblock').removeClass('hidden')
+    //         $('.infos-block').addClass('hidden')
+    //         $('#select-client').addClass('hidden')
+    //     }
+    // }
+    $('#check').click(function (e){
+        if ($("input[name=check]").is(":checked")){
+            $('.mainblock').addClass('hidden')
+            $('#select-client').removeAttr('hidden')
+            $('#select-client').show(100)
+            var id_client = $('#selectclient').val();
+            if (id_client){
+                $('.mainblock').addClass('hidden');
+                $('#infos-block'+id_client).removeClass('hidden');
+            }
+            $('#selectclient').change(function (e){
+                var id_client = $('#selectclient').val();
+                var is_check = $('#check').val();
+                if(id_client){
+                    $('.mainblock').addClass('hidden');
+                    $('#infos-block'+id_client).removeClass('hidden');
+                }else{
+                    $('.mainblock').removeClass('hidden');
+                    $('.infos-block').addClass('hidden');
+                }
+            })
+        }else{
+            $('.mainblock').removeClass('hidden')
+            $('#select-client').hide(100)
+            $('.infos-block').addClass('hidden')
+
+        }
+
+    })
+
 </script>
