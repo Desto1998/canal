@@ -111,6 +111,7 @@ Route::prefix('dashboard')->group(function () {
         Route::post('storeDec', [MaterielController::class, 'storeDec'])->name('store.decodeur');
         Route::get('stock/makefield', [StockController::class, 'makeForm'])->name('stock.makefield');
         Route::get('stock/storedecodeur', [StockController::class, 'storeDecodeur'])->name('stock.store.decodeur');
+        Route::post('stock/delete', [StockController::class, 'deleteDecodeur'])->name('stock.delete.decodeur');
 
         Route::get('/messagerie', function () {
             return view('message.messagerie');
@@ -164,6 +165,7 @@ Route::prefix('dashboard')->group(function () {
         Route::get('versement/delete/{id}', [VersementController::class, 'delete'])->name('versement.delete');
         Route::post('versement/update', [VersementController::class, 'update'])->name('versement.update');
         Route::get('printFacture/{id_reabonnement}', [FactureController::class, 'printFactureReabo'])->name('printpdf');
+        Route::get('printFacture/abo/{id_abonnement}', [FactureController::class, 'printFactureAbo'])->name('abo.printpdf');
 
         Route::get('test/message', [MessageController::class, 'messageData'])->name('test.message');
         Route::post('send/message', [MessageController::class, 'PrepareStandartMessage'])->name('send.message');

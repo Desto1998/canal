@@ -186,7 +186,7 @@
                                                 <div class="form-group">
                                                     <label> Numéro d'abonné</label>
                                                     <input type="text" name="num_abonne" minlength="8" maxlength="8"
-                                                           class="form-control">
+                                                           class="form-control" required>
                                                 </div>
                                                 <div
                                                     class="form-group align-content-center justify-content-center text-center">
@@ -196,25 +196,31 @@
                                                                                name="operation" class="operation">&nbsp;
                                                         Réabonnement</label>
                                                 </div>
-                                                <div class="selectdecodeur">
-                                                    <div class="form-group">
-                                                        Numero décodeur<br>
-                                                        @if(isset($decodeur))
+                                                <div class="selectdecodeur hidden row col-md-12">
+                                                    <div class="form-group col-md-6">
+                                                        <label>Numero décodeur</label>
+                                                        @if(isset($stock))
 
-                                                            <select class="form-control" name="num_decodeurs">
+                                                            <select class="form-control show-tick" id="id_decodeur{{$client->id_client}}" name="id_decodeur">
                                                                 <option disabled selected hidden>Sélectionner un
                                                                     decodeur
                                                                 </option>
-                                                                @foreach($decodeur as $key =>$deco)
+                                                                @foreach($stock as $key =>$deco)
 
-                                                                    <option
-                                                                        value="{{$deco->num_decodeur}}">{{$deco->num_decodeur}}</option>
+                                                                    <option data-tokens="{{ $deco->id_stock }}"
+                                                                        value="{{$deco->id_stock}}">{{$deco->code_stock}}</option>
                                                                 @endforeach
                                                             </select>
                                                         @else
                                                             <span class="text-danger">Aucun décodeur n'est disponible veiller enregistrer un décodeur.</span>
                                                         @endif
 
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Prix du décodeur</label>
+                                                            <input type="number" name="prix_decodeur" class="form-control">
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group hidden enternum">
@@ -228,6 +234,7 @@
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
+
                                                 <div class="form-group">
                                                     Formule: <select name="formule" required>
                                                         <option value="ACCESS" selected> ACCESS</option>
@@ -366,10 +373,11 @@
         var operation = $('input[name="operation"]:checked').val();
         if (operation == 1) {
             $('.selectdecodeur').removeClass('hidden');
+            $('.selectdecodeur').show(100);
             $('.enternum').addClass('hidden');
             $('.enternumprise').addClass('hidden');
         } else {
-            $('.selectdecodeur').addClass('hidden');
+            $('.selectdecodeur').hide(100);
             $('.enternum').removeClass('hidden');
             // $('#enternumprise').removeClass('hidden');
         }

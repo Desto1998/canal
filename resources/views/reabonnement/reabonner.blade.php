@@ -79,7 +79,7 @@
                                     <div class="col-md-6 enterdecodeur" id="enterdecodeur">
                                         <div class="form-group">
                                             Numero décodeur<br>
-                                            <input type="text" class="form-control" maxlength="20" minlength="10"
+                                            <input type="text" class="form-control" maxlength="14" minlength="10"
                                                    type="text" placeholder="numero du decodeur" name="num_decodeur"
                                                    id="num_decodeur" required>
                                         </div>
@@ -114,7 +114,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group align-content-center">
+                                <div class="form-group  align-content-center text-center">
                                     <label><input type="radio" required name="type" value="1">&nbsp;Payé content</label>
                                     <label class="ml-4"><input required type="radio" value="0" name="type">&nbsp; A
                                         crédit</label>

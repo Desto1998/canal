@@ -20,10 +20,10 @@ class PDFController extends Controller
     public function createPDF($data, $action)
     {
         $ImagePath = $_SERVER["DOCUMENT_ROOT"] . '/public/images/logo/logo_getel.png';
-        $ImagePath = $_SERVER["DOCUMENT_ROOT"] . '/images/logo/logo_getel.png';
+//        $ImagePath = $_SERVER["DOCUMENT_ROOT"] . '/images/logo/logo_getel.png';
 
         $ImagePath1 = $_SERVER["DOCUMENT_ROOT"] . '/public/images/logo/logo_canal.png';
-        $ImagePath1 = $_SERVER["DOCUMENT_ROOT"] . '/images/logo/logo_canal.png';
+//        $ImagePath1 = $_SERVER["DOCUMENT_ROOT"] . '/images/logo/logo_canal.png';
 
         $this->fpdf = new Fpdf;
         //Header
@@ -52,7 +52,7 @@ class PDFController extends Controller
         $this->fpdf->Cell(110, 5, 'Adresse: Andem-Logpom', 0, 0);
         $this->fpdf->Cell(15, 5, 'Date:', 0, 0);
         $this->fpdf->Cell(50, 5, now(), 0, 1);//Fin de ligne
-        $this->fpdf->Ln(2);
+        $this->fpdf->Ln(1.5);
 
         $this->fpdf->SetFont("Arial", 'B', 10);
         $this->fpdf->Cell(30, 5, 'Nom et prenom:', 0, 0);
@@ -64,7 +64,7 @@ class PDFController extends Controller
         $this->fpdf->SetFont("Times", '', 10);
         $this->fpdf->Cell(45, 5, $data->telephone_client, 0, 1);//Fin de ligne
 
-        $this->fpdf->Ln(2);
+        $this->fpdf->Ln(1.5);
         $this->fpdf->SetFont("Arial", 'B', 10);
         $this->fpdf->Cell(20, 5, 'N Abonne:', 0, 0);
         $this->fpdf->SetFont("Times", '', 10);
@@ -79,7 +79,7 @@ class PDFController extends Controller
         $this->fpdf->Cell(20, 5, 'Formule:', 0, 0);
         $this->fpdf->SetFont("Times", '', 10);
         $this->fpdf->Cell(40, 5, $data->nom_formule, 0, 1);//Fin de ligne
-        $this->fpdf->Ln(2);
+        $this->fpdf->Ln(1.5);
 //        $this->fpdf->Cell(159, 5, '', 0, 1);
 //        $this->fpdf->Cell(139, 5, '', 0, 1);
         $this->fpdf->Line(200, 150, 10, 150);
@@ -98,17 +98,19 @@ class PDFController extends Controller
         $this->fpdf->Cell(20, 5, "Date fin:", 0, 0);
         $this->fpdf->SetFont("Times", '', 10);
         $this->fpdf->Cell(35, 5, "{$data->date_reabonnement}", 0, 1);
-        $this->fpdf->Ln(2);
-        $this->fpdf->Ln(2);
-        $this->fpdf->Ln(2);
+        $this->fpdf->Ln(3);
         $this->fpdf->SetFont('Arial', 'B', 10);
 
         $this->fpdf->Cell(90, 5, 'Designation', 1, 0,'C');
-        $this->fpdf->Cell(45, 5, 'Duree', 1, 0,'C');
+        $this->fpdf->Cell(45, 5, 'Duree/Nombre', 1, 0,'C');
         $this->fpdf->Cell(54, 5, 'Montant', 1, 1,'C');//Fin de ligne
 
         $this->fpdf->SetFont('Arial', '', 10);
 
+        $this->fpdf->SetFont("Arial", '', 10);
+        $this->fpdf->Cell(90, 5, 'Materiel', 1, 0);
+        $this->fpdf->Cell(45, 5, $data->nb_materiel, 1, 0,'C');
+        $this->fpdf->Cell(54, 5, "{$data->prix_materiel}", 1, 1,'C');//Fin de ligne
 
         $this->fpdf->SetFont("Arial", '', 10);
         $this->fpdf->Cell(90, 5, 'Abonnement', 1, 0);

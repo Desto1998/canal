@@ -259,7 +259,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group text-center">
                                     <label><input type="radio" required name="type" value="1">&nbsp;Payé content</label>
                                     <label class="ml-4"><input required type="radio" value="0" name="type">&nbsp; A crédit</label>
                                 </div>

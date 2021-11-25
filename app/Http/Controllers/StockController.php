@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Stock;
 use http\Client\Curl\User;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -60,6 +61,15 @@ class StockController extends Controller
             return  redirect(route('stock'))->with('warning', $done.' enregistrements ont été effectué avec succès. Certains existent dejà dans le système.');
 
         }
+    }
+    public function deleteDecodeur(Request $request)
+    {
+        $get = Stock::where('id_stock',$request->id)->get();
+        $del = Stock::where('id_stock',$request->id)->delete();
+        $montant = $get[0]->prix_unit;
+        $raison = 'Suppression du materiel en stock';
+        $debitcaisse = (new CaisseController)->debitCaisse($montant,$raison);
+        return Response()->json($del);
     }
 
 }

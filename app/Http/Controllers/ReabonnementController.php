@@ -121,6 +121,8 @@ class ReabonnementController extends Controller
 //        DD($client->id_client);exit();
 
         $data_pdf = new Array_();
+        $data_pdf->prix_materiel = 0;
+        $data_pdf->nb_materiel = 0;
         $data_pdf->nom_client = $data->nom_client;
         $data_pdf->prenom_client = $data->prenom_client;
         $data_pdf->num_abonne = $data->num_abonne;
@@ -255,6 +257,8 @@ class ReabonnementController extends Controller
         $data->num_abonne=$clientdecodeur[0]->num_abonne;
         $num_decodeur = Decodeur::where('id_decodeur', $request->id_decodeur)->get('num_decodeur');
         $data_pdf = new Array_();
+        $data_pdf->prix_materiel = 0;
+        $data_pdf->nb_materiel = 0;
         $data_pdf->nom_client = $data->nom_client;
         $data_pdf->prenom_client = $data->prenom_client;
         $data_pdf->num_abonne = $data->num_abonne;
@@ -344,6 +348,8 @@ class ReabonnementController extends Controller
         ]);
         $data->num_abonne = $clientdecodeur[0]->num_abonne;
         $data_pdf = new Array_();
+        $data_pdf->prix_materiel = 0;
+        $data_pdf->nb_materiel = 0;
         $data_pdf->nom_client = $data->nom_client;
         $data_pdf->prenom_client = $data->prenom_client;
         $data_pdf->num_abonne = $data->num_abonne;

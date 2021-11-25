@@ -249,6 +249,8 @@ class UpgradeController extends Controller
         ]);
 
         $data_pdf = new Array_();
+        $data_pdf->prix_materiel = 0;
+        $data_pdf->nb_materiel = 0;
         $data_pdf->nom_client = $data->nom_client;
         $data_pdf->prenom_client = $data->prenom_client;
         $data_pdf->num_abonne = $data->num_abonne;

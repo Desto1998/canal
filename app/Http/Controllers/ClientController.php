@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Abonnement;
+use App\Models\Stock;
 use App\Models\Upgrade;
 use DateInterval;
 use DateTime;
@@ -61,7 +62,8 @@ class ClientController extends Controller
         ;
         $users = User::all();
         $reabonnement = Abonnement::all();
-        return view("abonnement.abonner", compact('decodeur','data', 'users', 'reabonnement', 'clientdecodeur'));
+        $stock=Stock::where('statut',0)->get();
+        return view("abonnement.abonner", compact('decodeur','stock','data', 'users', 'reabonnement', 'clientdecodeur'));
     }
 
 
@@ -86,8 +88,8 @@ class ClientController extends Controller
             ->get()
         ;
 //        dd($decodeur);
-
-        return view('client.clients', compact('allClients', 'decodeur', 'clientdecodeur', 'allFormules', 'decodeurs', 'messages'));
+        $stock = Stock::where('statut',0)->get();
+        return view('client.clients', compact('allClients','stock', 'decodeur', 'clientdecodeur', 'allFormules', 'decodeurs', 'messages'));
     }
 
 
@@ -105,6 +107,7 @@ class ClientController extends Controller
             'id_client'=>'required',
             'num_decodeur'=>'required',
             'num_abonne'=>'required',
+            'prix_decodeur'=>'required',
         ]);
         $client = Client::where('id_client', $request->id_client)
             ->update([
@@ -144,7 +147,7 @@ class ClientController extends Controller
     {
         $request->validate([
             'nom_client'=>'required',
-            'num_decodeur'=>'required',
+            'id_decodeur'=>'required',
             'date_abonnement'=>'required',
             'telephone_client'=>'required',
             'duree'=>'required',
@@ -152,8 +155,9 @@ class ClientController extends Controller
         ]);
         $clients = Client::all();
         $formul = Formule::where('nom_formule', $request->formule)->get();
-        $deco = Decodeur::where('num_decodeur', $request->num_decodeur)->get();
-        $clientdeco = ClientDecodeur::where('id_decodeur', $deco[0]->id_decodeur)->get();
+        $getstock = Stock::where('id_stock',$request->id_decodeur)->get();
+        $deco = Decodeur::where('num_decodeur', $getstock[0]->code_stock)->get();
+//        $clientdeco = ClientDecodeur::where('id_decodeur', $deco[0]->id_decodeur)->get();
         $data = new client;
         $action = "ABONNEMENT";
 
@@ -162,11 +166,11 @@ class ClientController extends Controller
         $userid = Auth::user()->id;
 
 
-        if (empty($deco[0])) {
-            session()->flash('message', ' Le décodeur n\' existepas! Veillez l\'enregistrer ou entrez un autre.');
-
-            return redirect()->back()->with('warning', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre!');
-        }
+//        if (empty($deco[0])) {
+//            session()->flash('message', ' Le décodeur n\' existe pas! Veillez l\'enregistrer ou entrez un autre.');
+//
+//            return redirect()->back()->with('warning', ' Le décodeur n\'existe pas! Veillez l\'enregistrer ou entrez un autre!');
+//        }
         $data->telephone_client = $request->telephone_client;
 
         foreach ($clients as $cli) {
@@ -180,7 +184,7 @@ class ClientController extends Controller
             }
         }
 
-        if (!empty($clientdeco[0])) {
+        if (!empty($deco[0])) {
             session()->flash('message', ' Ce décodeur est déja utilisé par client!');
 
             return redirect()->back()->with('warning', 'Ce décodeur est déja utilisé par client!');
@@ -196,13 +200,30 @@ class ClientController extends Controller
             return redirect()->back()->with('warning', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' . $statutcaisse . ' FCFA en caisse.');
         }
 //        }
+
+        $decora = Decodeur::create([
+            'num_decodeur' => $getstock[0]->code_stock,
+            'prix_decodeur' => $request->prix_decodeur,
+            'date_livaison' => date("Y-m-d"),
+            'quantite' => 1,
+            'id_user' => $userid
+        ]);
+        $change_Statut = Stock::where('id_stock',$request->id_decodeur)
+            ->update([
+                'statut'=>1
+            ])
+        ;
+        $deco = Decodeur::where('num_decodeur', $getstock[0]->code_stock)->get();
+
+        $data->prix_materiel = $request->prix_decodeur;
+        $data->nb_materiel = 1;
         $data->nom_client = $request->nom_client;
         $data->num_abonne = $request->num_abonne;
         $data->prenom_client = $request->prenom_client;
         $data->adresse_client = $request->adresse_client;
-        $data->num_decodeur = $request->num_decodeur;
+        $data->num_decodeur = $getstock[0]->code_stock;
         $data->duree = $request->duree;
-        $data->id_materiel = $deco[0]->id_decodeur;
+        $data->id_materiel = $getstock[0]->id_stock;
         $data->date_abonnement = $request->date_abonnement;
         $data->date_reabonnement = date_format(date_add(date_create("$request->date_abonnement"), date_interval_create_from_date_string("$request->duree months")), 'Y-m-d');
         $date = new DateTime($data->date_reabonnement);
@@ -230,6 +251,8 @@ class ClientController extends Controller
 //        DD($client->id_client);exit();
 
         $data_pdf = new Array_();
+        $data_pdf->prix_materiel = $request->prix_decodeur;
+        $data_pdf->nb_materiel = 1;
         $data_pdf->nom_client = $data->nom_client;
         $data_pdf->prenom_client = $data->prenom_client;
         $data_pdf->num_abonne = $data->num_abonne;
@@ -242,7 +265,7 @@ class ClientController extends Controller
         $data_pdf->prix_formuleA = $formul[0]->prix_formule;
         $data_pdf->prix_formuleR = 0;
         $data_pdf->prix_formuleU = 0;
-        $data_pdf->total = $data->duree * $formul[0]->prix_formule+$deco[0]->prix_decodeur;
+        $data_pdf->total = $data->duree * $formul[0]->prix_formule+$request->prix_decodeur;
         $data_pdf->date_reabonnement = $data->date_reabonnement;
         $data_pdf->date_abonnement = $data->date_abonnement;
         $sendError = '';
@@ -253,7 +276,7 @@ class ClientController extends Controller
         $data_message->phone = $data->telephone_client;
         $data_message->datereabo = $data->date_abonnement;
         $data_message->dateecheance = $data->date_reabonnement;
-        $data_message->montant = $data->duree * $formul[0]->prix_formule + $deco[0]->prix_decodeur;
+        $data_message->montant = $data->duree * $formul[0]->prix_formule + $request->prix_decodeur;
         $data_message->id_client = $client->id_client;
 //        $send = (new MessageController)->sendMessage('Test Message','679353205');
         $balance = (new MessageController)->getSMSBalance();
@@ -417,10 +440,21 @@ class ClientController extends Controller
             'id_client' => 'required',
             'type' => 'required',
         ]);
+
+        $nb_materiel = 0;
         if ($request->operation == 1) {
-            $num_decodeur = $request->num_decodeurs;
+            $request->validate([
+                'id_decodeur' => 'required',
+            ]);
+            $getstock = Stock::where('id_stock',$request->id_decodeur)->get();
+            $deco = Decodeur::where('num_decodeur', $getstock[0]->code_stock)->get();
+            $num_decodeur = $getstock[0]->code_stock;
+            $nb_materiel = 1;
         }
         if ($request->operation == 0) {
+            $request->validate([
+                'num_decodeur' => 'required',
+            ]);
             $num_decodeur = $request->num_decodeur;
         }
         $userid = Auth::user()->id;
@@ -436,7 +470,23 @@ class ClientController extends Controller
                     'quantite' => 1,
                     'id_user' => $userid
                 ]);
-            }
+
+            }else{
+
+                $decora = Decodeur::create([
+                    'num_decodeur' => $getstock[0]->code_stock,
+                    'prix_decodeur' => $request->prix_decodeur,
+                    'date_livaison' => date("Y-m-d"),
+                    'quantite' => 1,
+                    'id_user' => $userid
+                ]);
+                $change_Statut = Stock::where('id_stock',$request->id_decodeur)
+                    ->update([
+                        'statut'=>1
+                    ])
+                ;
+        }
+
         }
         $deco = Decodeur::where('num_decodeur', $num_decodeur)->get();
         if (!empty($deco[0])) {
@@ -454,7 +504,6 @@ class ClientController extends Controller
         $data->telephone_client = $clients[0]->telephone_client;
         $id_decodeur = $deco[0]->id_decodeur;
         $prix_decodeur = $deco[0]->prix_decodeur;
-
         if (!empty($clientdeco[0])) {
             session()->flash('message', ' Ce décodeur ou numéro d\'abonné est déja utilisé par client!');
 
@@ -469,6 +518,8 @@ class ClientController extends Controller
             return redirect()->back()->with('warning', 'Le montant en caisse n\'est pas suffisant pour cette opération! il ne reste que: ' . $statutcaisse . ' FCFA en caisse.');
         }
 //        }
+        $data->prix_materiel = $prix_decodeur;
+        $data->nb_materiel = $nb_materiel;
         $data->nom_client = $clients[0]->nom_client;
         $data->num_abonne = $request->num_abonne;
         $data->prenom_client = $clients[0]->prenom_client;
@@ -489,6 +540,8 @@ class ClientController extends Controller
         $message_con = "";
 
         $data_pdf = new Array_();
+        $data_pdf->prix_materiel = $prix_decodeur;
+        $data_pdf->nb_materiel = $nb_materiel;
         $data_pdf->nom_client = $data->nom_client;
         $data_pdf->prenom_client = $data->prenom_client;
         $data_pdf->num_abonne = $data->num_abonne;

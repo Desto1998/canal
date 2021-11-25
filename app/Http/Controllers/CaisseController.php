@@ -164,7 +164,6 @@ class CaisseController extends Controller
                     break;
                 case 'REABONNEMENT':
                     $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Reabonnement', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_reabonnement'=>$id,'type'=>0]);
-                    dd($caisse);
                     break;
                 case 'ABONNEMENT':
                     $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Abonnement', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_abonnement'=>$id,'type'=>0]);

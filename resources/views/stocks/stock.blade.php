@@ -50,14 +50,14 @@
                                                         <td>{{ $dec->date_ajout }}</td>
                                                         <td>{{ $dec->name }}</td>
                                                         <td align="center">
-                                                            <a type="button" class="btn btn-warning" title="Modifier"
-                                                               href="">
-                                                                <i class="fas fa-fw fa-edit"></i>
-                                                            </a>
-                                                            <a type="button" class="btn btn-danger" title="Supprimer"
-                                                               href="">
+{{--                                                            <a type="button" class="btn btn-warning" title="Modifier"--}}
+{{--                                                               href="">--}}
+{{--                                                                <i class="fas fa-fw fa-edit"></i>--}}
+{{--                                                            </a>--}}
+                                                            <button type="button" {{ Auth::user()->is_admin==1?'':'disabled' }} onclick="deleteFunc({{ $dec->id_stock }})" class="btn btn-danger" title="Supprimer"
+                                                               href="javascript:void(0)">
                                                                 <i class="fas fa-fw fa-trash"></i>
-                                                            </a>
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -93,10 +93,10 @@
                                                             <td>{{ $mat->nom_materiel }}</td>
                                                             <td>{{ $mat->prix_materiel }}</td>
                                                             <td align="right">
-                                                                <a type="button" class="btn btn-warning" title="Modifier"
-                                                                   href="">
-                                                                    <i class="fas fa-fw fa-edit"></i>
-                                                                </a>
+{{--                                                                <a type="button" class="btn btn-warning" title="Modifier"--}}
+{{--                                                                   href="">--}}
+{{--                                                                    <i class="fas fa-fw fa-edit"></i>--}}
+{{--                                                                </a>--}}
                                                                 <a type="button" class="btn btn-danger" title="Supprimer"
                                                                    href="">
                                                                     <i class="fas fa-fw fa-edit"></i>
@@ -137,6 +137,35 @@
     </x-slot>
 </x-app-layout>
 <script>
+
+    function deleteFunc(id) {
+        // $('#success').addClass('hidden');
+        // $('#error').addClass('hidden');
+        if (confirm("Supprimer ce matériel du stock?") == true) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "{{ route('stock.delete.decodeur') }}",
+                data: {id: id},
+                dataType: 'json',
+                success: function (res) {
+                    if (res) {
+                        alert("Supprimé avec succès!");
+                        window.location.reload(200);
+
+                    } else {
+                        alert("Une erreur s'est produite!");
+                    }
+
+                }
+            });
+        }
+    }
+
     $('#prix_unitaire').change(function (e){
         var qte = $('#qte').val();
         var pu = $('#prix_unitaire').val();
