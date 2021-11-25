@@ -646,5 +646,41 @@ class ClientController extends Controller
 
     }
 
+        public function addNewClient(Request $request)
+        {
+            $request->validate([
+                'nom_client'=>'required',
+                'telephone_client'=>'required',
+                'adresse_client'=>'required',
+            ]);
+            $userid = Auth::user()->id;
+            $clients = Client::all();
+            foreach ($clients as $cli) {
+                if ($cli->telephone_client == $request->telephone_client) {
+                    session()->flash('message', ' Le client existe déja!');
+
+                    return redirect()->back()->with('warning', 'Le client existe déja!');
+                }
+            }
+            $client = Client::create([
+                'nom_client' => $request->nom_client,
+                'prenom_client' => $request->prenom_client,
+                'adresse_client' => $request->adresse_client,
+                'duree' => 0,
+                'id_materiel' => 0,
+                'date_abonnement' => date('Y-m-d'),
+                'date_reabonnement' =>date('Y-m-d'),
+                'id_user' =>$userid,
+                'telephone_client' => $request->telephone_client
+            ]);
+            if (!empty($client)) {
+                session()->flash('message', 'Enregistré avec succès.');
+                return redirect()->back()->with('success', 'Enregistré avec succès.');
+            } else {
+                session()->flash('message', 'Erreur lors de l\'enregistrement!');
+
+                return redirect()->back()->with('danger', 'Erreur lors de l\'enregistrement!');
+            }
+        }
 
 }

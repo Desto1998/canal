@@ -256,7 +256,7 @@
                                   action="{{ route('app.rechercher') }}">
                                 @csrf
                                 <input type="text" name="research"
-                                       required="Veiller entrer une valeur:nom, num abonne ou tel"
+                                       required minlength="3"
                                        placeholder="Rechercher un client..." class="search-int form-control">
                                 <button class="btn btn-success ml-1" title="Rechercher" style="border: 1px solid #eee;"
                                         type="submit"><i class="fa fa-search"></i></button>

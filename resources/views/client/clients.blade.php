@@ -7,6 +7,7 @@
                 <label class="ml-4"><a class="btn btn-warning"  href="{{route('user.client.terme')}}"> Bientôt à terme</a></label>
                 <label class="ml-4"><a class="btn btn-danger"  href="{{route('user.client.perdu')}}"> Clients échus</a></label>
                 <label class="ml-4"><a class="btn btn-primary"  href="{{route('clients')}}"> Tous les clients</a></label>
+                <a class="ml-4 btn btn-info" href="{{ route('client.add.form') }}"><i class="fas fa-plus"></i>Ajouter</a>
             </div>
             @include('layouts.flash-message')
 

@@ -16,7 +16,7 @@
                             <th>Prénom</th>
                             <th>Nom</th>
                             <th>Numéro de téléphone</th>
-                            <th>Numéro abonné</th>
+                            <th>Adresse</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -28,7 +28,7 @@
                                 <td><strong>{{ $client->prenom_client }}</strong></td>
                                 <td><strong>{{ $client->nom_client }}</strong></td>
                                 <td><strong>{{ $client->telephone_client }}</strong></td>
-                                <td><strong>{{ $client->num_abonne }}</strong></td>
+                                <td><strong>{{ $client->adresse_client }}</strong></td>
 
                                 <td class="text-center"><div class="btn_group">
                                         <div class="btn-group">

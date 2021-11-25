@@ -125,7 +125,8 @@ class GeneralController extends Controller
 //            ->join('clients','clients.id_client','client_decodeurs.id_client')
             ->where('client_decodeurs.date_reabonnement','<=',$date_reabonnement)
             ->where('client_decodeurs.date_reabonnement','>=',date('Y-m-d'))
-            ->get();
+            ->get()
+        ;
         return $data;
     }
 
@@ -136,11 +137,31 @@ class GeneralController extends Controller
         }
         $rechercher = strtotime($request->research);
         $research = Client::where('nom_client','LIKE', "%{$request->research}%")
-            ->orWhere('telephone_client', 'LIKE', "%{$request->research}")
-//            ->orWhere('num_abonne','=', $request->research)
-            ->get();
+            ->orWhere('telephone_client', 'LIKE', "%{$request->research}%")
+            ->orWhere('adresse_client','LIKE', "%{$request->research}%")
+            ->orWhere('prenom_client','=', "%{$request->research}%")
+            ->get()
+        ;
         if (count($research)===0){
-            return redirect()->back()->with('warning','Auccun résultat trouvé pour: <<'.$request->research.'>>');
+            $infos = ClientDecodeur::join('decodeurs','decodeurs.id_decodeur','client_decodeurs.id_decodeur')
+                ->where('num_abonne','LIKE',"%{$request->research}%")
+                ->orWhere('num_decodeur','LIKE', "%{$request->research}%")
+                ->get();
+            $id_client = [];
+            if (count($infos)>0)
+            {
+                foreach ($infos as $key=> $value){
+                    $id_client[$key]=$value->id_client;
+                }
+
+                $research = Client::whereIn('id_client',$id_client)
+                    ->get()
+                ;
+            }else{
+                return redirect()->route('client.add.form')->with('warning','Auccun résultat trouvé pour: <<'.$request->research.'>>. Veillez l\'ajouter!');
+
+            }
+
         }
         if (count($research)===1){
             return (new ClientController)->show($research[0]->id_client);

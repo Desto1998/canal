@@ -102,6 +102,10 @@ Route::prefix('dashboard')->group(function () {
 
         //Liste des clients
         Route::get('clients', [ClientController::class, 'allview'])->name('clients');
+        Route::post('client/add', [ClientController::class, 'addNewClient'])->name('client.add');
+        Route::get('client/add/form', function () {
+                return view('client.add');
+            })->name('client.add.form');
         Route::post('clients/new_decodeur', [ClientController::class, 'newDecodeur'])->name('clients.new_decodeur');
         Route::post('clients/delete', [ClientController::class, 'deleteClient'])->name('client.delete');
 
