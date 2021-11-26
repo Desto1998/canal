@@ -380,6 +380,7 @@
             $('#selectclient').change(function (e){
                 var id_client = $('#selectclient').val();
                 var is_check = $('#check').val();
+                $('.infos-block').addClass('hidden');
                 if(id_client){
                     $('.mainblock').addClass('hidden');
                     $('#infos-block'+id_client).removeClass('hidden');

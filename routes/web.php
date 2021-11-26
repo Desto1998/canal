@@ -116,6 +116,9 @@ Route::prefix('dashboard')->group(function () {
         Route::get('stock/makefield', [StockController::class, 'makeForm'])->name('stock.makefield');
         Route::get('stock/storedecodeur', [StockController::class, 'storeDecodeur'])->name('stock.store.decodeur');
         Route::post('stock/delete', [StockController::class, 'deleteDecodeur'])->name('stock.delete.decodeur');
+        Route::post('stock/addsale', [StockController::class, 'addVente'])->name('stock.sale.add');
+        Route::post('stock/sale/delete', [StockController::class, 'deleteVente'])->name('stock.sale.delete');
+//        Route::post('stock/sale/delete', [StockController::class, 'deleteVente'])->name('stock.sale.delete');
 
         Route::get('/messagerie', function () {
             return view('message.messagerie');

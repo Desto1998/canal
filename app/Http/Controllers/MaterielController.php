@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\Decodeur;
 use App\Models\Materiel;
 use App\Models\Stock;
+use App\Models\Vente_materiel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\DecodeurRequest;
@@ -22,7 +24,13 @@ class MaterielController extends Controller
             ->where('stocks.statut',0)
             ->get()
         ;
-        return view('stocks.stock',compact('allMateriels','allDecodeurs'));
+        $clients = Client::all();
+        $allVentes = Vente_materiel::join('stocks','stocks.id_stock','vente_materiels.id_stock')
+            ->join('users','users.id','vente_materiels.id_user')
+            ->join('clients','clients.id_client','vente_materiels.id_client')
+            ->get()
+        ;
+        return view('stocks.stock',compact('allMateriels','allVentes','clients','allDecodeurs'));
     }
 
     /**

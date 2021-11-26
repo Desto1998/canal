@@ -163,13 +163,27 @@ DROP table if exists stocks;
 create table stocks
 (
     `id_stock`   bigint(20) primary key AUTO_INCREMENT,
-    `code_stock`  varchar(20) not nulls ,
+    `code_stock`  varchar(20) not null ,
     `prix_unit`  float not null ,
     `date_ajout`  date not null ,
     `statut`  int default 0,
-    `id_user`           int(11) NOT NULL,
+    `id_user`           int NOT NULL,
     created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at          DATETIME  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ALTER TABLE `versement_achats` ADD `quantite` INT NOT NULL  AFTER `montant_achat`;
 ALTER TABLE `versement_achats` ADD `date_appro` date NOT NULL  AFTER `quantite`;
+
+DROP table if exists vente_materiels;
+create table vente_materiels
+(
+    `id_vente`   bigint(20) primary key AUTO_INCREMENT,
+    `montant_vente`  float not null,
+    `type_vente`  int default 0,
+    `date_vente`  date not null,
+    `id_stock`           int NOT NULL,
+    `id_client`           int NOT NULL,
+    `id_user`           int NOT NULL,
+    created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at          DATETIME  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;

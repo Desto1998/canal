@@ -172,7 +172,7 @@ class CaisseController extends Controller
                     $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Upgrade', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_upgrade'=>$id,'type'=>0]);
                     break;
                 case 'DECODEUR':
-                    $caisse =Caisse::where('id_decodeur',$id)->update(['montant'=>($montant)]);
+                    $caisse =Caisse::create(['montant'=>$montant, 'raison'=>'Vente de materiel', 'id_user'=>$userid, 'date_ajout'=>date("Y-m-d"),'id_upgrade'=>$id,'type'=>0]);
                     break;
                 default:
                     return  redirect()->back()->with('danger', "Erreur l'action aucune action spécifiée.");
