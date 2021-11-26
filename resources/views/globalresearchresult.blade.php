@@ -38,8 +38,11 @@
                                                 <li>
                                                     <a class="btn btn-info m-1" href="{{ route('clients.show', $client->id_client) }}" title="Details"><i class="fas fa-fw fa-list-alt"></i> </a>
 
-                                                    <a type="button" class="btn btn-primary m-1 text-white" title="Ajouter un décodeur" href="#"  data-toggle="modal"  data-target="#materielClientModal1{{ $client->id_client }}">
-                                                        <i class="fas fa-fw fa-plus"></i>
+{{--                                                    <a type="button" class="btn btn-primary m-1 text-white" title="Ajouter un décodeur" href="#"  data-toggle="modal"  data-target="#materielClientModal1{{ $client->id_client }}">--}}
+{{--                                                        <i class="fas fa-fw fa-plus"></i>--}}
+{{--                                                    </a>--}}
+                                                    <a type="button" class="btn btn-success m-1" title="Réabonner"  href="{{ route('reabonne.client',$client->id_client)}}">
+                                                        <i class="fas fa-fw fa-check"></i>
                                                     </a>
                                                 </li>
                                                 <li>
@@ -51,13 +54,9 @@
                                                        onclick="deleteFunc({{ $client->id_client }})">
                                                         <i class="fas fa-fw fa-trash"></i>
                                                     </a>
-                                                    <a type="button" class="btn btn-success m-1" title="Réabonner"  href="{{ route('reabonne.client',$client->id_client)}}">
-                                                        <i class="fas fa-fw fa-check"></i>
-                                                    </a>
-                                                </li>
-                                                <li>
 
                                                 </li>
+
                                             </ul>
                                         </div>
                                     </div>
