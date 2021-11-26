@@ -230,8 +230,8 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-
-                                            Formule Actuelle: <select class="form-control" name="oldformule" required>
+                                            <label>Formule Actuelle: </label>
+                                            <select class="form-control" name="oldformule" required>
                                                 @foreach($formules as $f=>$item)
                                                     <option
                                                         value="{{ $item->id_formule }}"> {{ $item->nom_formule }}</option>
@@ -248,7 +248,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            Nouvelle Formule: <select class="form-control" name="newformule" required>
+                                            <label>Nouvelle Formule: </label>
+                                            <select class="form-control" name="newformule" required>
 
                                                 @foreach($formules as $f=>$item)
                                                     <option
@@ -262,6 +263,10 @@
                                 <div class="form-group text-center">
                                     <label><input type="radio" required name="type" value="1">&nbsp;Payé content</label>
                                     <label class="ml-4"><input required type="radio" value="0" name="type">&nbsp; A crédit</label>
+                                </div>
+                                <div class="form-group text-center">
+                                    <label><input type="checkbox"  name="printpdf" value="1">&nbsp;Imprimer la facture?</label>
+                                    <label class="ml-4"><input  type="checkbox" value="1" name="sendsms">&nbsp; Envoyer un SMS au client?</label>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">

@@ -52,18 +52,17 @@ class ClientController extends Controller
         $clientdeco = ClientDecodeur::all();
 
         $id_decodeur = [];
-        foreach ($clientdeco as $key=> $value){
-            $id_decodeur[$key]=$value->id_decodeur;
+        foreach ($clientdeco as $key => $value) {
+            $id_decodeur[$key] = $value->id_decodeur;
         }
 //        dd($id_decodeur);
 
-        $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur',$id_decodeur)
-            ->get()
-        ;
+        $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur', $id_decodeur)
+            ->get();
         $users = User::all();
         $reabonnement = Abonnement::all();
-        $stock=Stock::where('statut',0)->get();
-        return view("abonnement.abonner", compact('decodeur','stock','data', 'users', 'reabonnement', 'clientdecodeur'));
+        $stock = Stock::where('statut', 0)->get();
+        return view("abonnement.abonner", compact('decodeur', 'stock', 'data', 'users', 'reabonnement', 'clientdecodeur'));
     }
 
 
@@ -79,17 +78,16 @@ class ClientController extends Controller
         $clientdecodeur = ClientDecodeur::all();
 
         $id_decodeur = [];
-        foreach ($clientdecodeur as $key=> $value){
-            $id_decodeur[$key]=$value->id_decodeur;
+        foreach ($clientdecodeur as $key => $value) {
+            $id_decodeur[$key] = $value->id_decodeur;
         }
 //        dd($id_decodeur);
 
-        $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur',$id_decodeur)
-            ->get()
-        ;
+        $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur', $id_decodeur)
+            ->get();
 //        dd($decodeur);
-        $stock = Stock::where('statut',0)->get();
-        return view('client.clients', compact('allClients','stock', 'decodeur', 'clientdecodeur', 'allFormules', 'decodeurs', 'messages'));
+        $stock = Stock::where('statut', 0)->get();
+        return view('client.clients', compact('allClients', 'stock', 'decodeur', 'clientdecodeur', 'allFormules', 'decodeurs', 'messages'));
     }
 
 
@@ -102,12 +100,12 @@ class ClientController extends Controller
     public function updateM(Request $request)
     {
         $request->validate([
-            'nom_client'=>'required',
-            'telephone_client'=>'required',
-            'id_client'=>'required',
-            'num_decodeur'=>'required',
-            'num_abonne'=>'required',
-            'prix_decodeur'=>'required',
+            'nom_client' => 'required',
+            'telephone_client' => 'required',
+            'id_client' => 'required',
+            'num_decodeur' => 'required',
+            'num_abonne' => 'required',
+            'prix_decodeur' => 'required',
         ]);
         $client = Client::where('id_client', $request->id_client)
             ->update([
@@ -121,12 +119,10 @@ class ClientController extends Controller
                 $decodeur[$i] = Decodeur::where('id_decodeur', $request->id_decodeur[$i])
                     ->update([
                         'num_decodeur' => $request->num_decodeur[$i],
-                    ])
-                ;
-                $clientdeco = ClientDecodeur::where('id_client',$request->id_client)
-                    ->where('id',$request->id[$i])
-                    ->update(['num_abonne'=>$request->num_abonne[$i]]);
-                ;
+                    ]);
+                $clientdeco = ClientDecodeur::where('id_client', $request->id_client)
+                    ->where('id', $request->id[$i])
+                    ->update(['num_abonne' => $request->num_abonne[$i]]);;
             }
         } else {
             return redirect()->back()->with('danger', "Echec lors de l'enregistrement! données du formulaire mal saisie.");
@@ -146,16 +142,16 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nom_client'=>'required',
-            'id_decodeur'=>'required',
-            'date_abonnement'=>'required',
-            'telephone_client'=>'required',
-            'duree'=>'required',
-            'formule'=>'required',
+            'nom_client' => 'required',
+            'id_decodeur' => 'required',
+            'date_abonnement' => 'required',
+            'telephone_client' => 'required',
+            'duree' => 'required',
+            'formule' => 'required',
         ]);
         $clients = Client::all();
         $formul = Formule::where('nom_formule', $request->formule)->get();
-        $getstock = Stock::where('id_stock',$request->id_decodeur)->get();
+        $getstock = Stock::where('id_stock', $request->id_decodeur)->get();
         $deco = Decodeur::where('num_decodeur', $getstock[0]->code_stock)->get();
 //        $clientdeco = ClientDecodeur::where('id_decodeur', $deco[0]->id_decodeur)->get();
         $data = new client;
@@ -208,11 +204,10 @@ class ClientController extends Controller
             'quantite' => 1,
             'id_user' => $userid
         ]);
-        $change_Statut = Stock::where('id_stock',$request->id_decodeur)
+        $change_Statut = Stock::where('id_stock', $request->id_decodeur)
             ->update([
-                'statut'=>1
-            ])
-        ;
+                'statut' => 1
+            ]);
         $deco = Decodeur::where('num_decodeur', $getstock[0]->code_stock)->get();
 
         $data->prix_materiel = $request->prix_decodeur;
@@ -265,7 +260,7 @@ class ClientController extends Controller
         $data_pdf->prix_formuleA = $formul[0]->prix_formule;
         $data_pdf->prix_formuleR = 0;
         $data_pdf->prix_formuleU = 0;
-        $data_pdf->total = $data->duree * $formul[0]->prix_formule+$request->prix_decodeur;
+        $data_pdf->total = $data->duree * $formul[0]->prix_formule + $request->prix_decodeur;
         $data_pdf->date_reabonnement = $data->date_reabonnement;
         $data_pdf->date_abonnement = $data->date_abonnement;
         $sendError = '';
@@ -305,23 +300,27 @@ class ClientController extends Controller
                 'date_echeance' => $date_reabonnement
             ]);
 
-            if ($abonnement){
-                $storeCaisse = (new CaisseController)->creditCaisse($abonnement->id,'ABONNEMENT',$data_pdf->total);
+            if ($abonnement) {
+                $storeCaisse = (new CaisseController)->creditCaisse($abonnement->id, 'ABONNEMENT', $data_pdf->total);
+                if (isset($request->sendsms) && $request->sendsms == 1) {
+                    $envoi = (new MessageController)->prepareMessage($data_message, 'ABONNEMENT');
+                }
+                if (isset($request->printpdf) && $request->printpdf == 1) {
+                    (new PDFController)->createPDF($data_pdf, $action);
+                }
             }
-            $envoi = (new MessageController)->prepareMessage($data_message, 'ABONNEMENT');
 
         }
 
         if (!empty($client) && $message_con != "") {
             session()->flash('message', 'Le client a bien été enregistré dans la base de données. Solde message:' . $balance . $message_con);
-            $pdf = (new PDFController)->createPDF($data_pdf, $action);
 
             return redirect()->back()->with('info', 'Le client a bien été enregistré dans la base de données. Solde message:' . $balance);
         }
 
         if (!empty($client) and empty($message_con)) {
             session()->flash('message', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé. solde message :' . $balance);
-            $pdf = (new PDFController)->createPDF($data_pdf, $action);
+//            $pdf = (new PDFController)->createPDF($data_pdf, $action);
             return redirect()->back()->with('warning', 'Le client a bien été enregistré dans la base de données. Mais le message n\'a pas été envoyé.' . "\n Statut: solde message" . $balance);
         } else {
             session()->flash('message', 'Erreur! Le client n\' pas été enrgistré!');
@@ -446,7 +445,7 @@ class ClientController extends Controller
             $request->validate([
                 'id_decodeur' => 'required',
             ]);
-            $getstock = Stock::where('id_stock',$request->id_decodeur)->get();
+            $getstock = Stock::where('id_stock', $request->id_decodeur)->get();
             $deco = Decodeur::where('num_decodeur', $getstock[0]->code_stock)->get();
             $num_decodeur = $getstock[0]->code_stock;
             $nb_materiel = 1;
@@ -471,7 +470,7 @@ class ClientController extends Controller
                     'id_user' => $userid
                 ]);
 
-            }else{
+            } else {
 
                 $decora = Decodeur::create([
                     'num_decodeur' => $getstock[0]->code_stock,
@@ -480,12 +479,11 @@ class ClientController extends Controller
                     'quantite' => 1,
                     'id_user' => $userid
                 ]);
-                $change_Statut = Stock::where('id_stock',$request->id_decodeur)
+                $change_Statut = Stock::where('id_stock', $request->id_decodeur)
                     ->update([
-                        'statut'=>1
-                    ])
-                ;
-        }
+                        'statut' => 1
+                    ]);
+            }
 
         }
         $deco = Decodeur::where('num_decodeur', $num_decodeur)->get();
@@ -594,8 +592,13 @@ class ClientController extends Controller
                 $data_pdf->prix_formuleA = 0;
                 $data_pdf->prix_formuleR = $formul[0]->prix_formule;
                 $data_pdf->prix_formuleU = 0;
-                if ($reabonnement && $request->type == 1){
-                    $storeCaisse = (new CaisseController)->creditCaisse($reabonnement->id,'REABONNEMENT',$data_pdf->total);
+                if ($reabonnement && $request->type == 1) {
+                    $storeCaisse = (new CaisseController)->creditCaisse($reabonnement->id, 'REABONNEMENT', $data_pdf->total);
+
+                    if (isset($request->sendsms) && $request->sendsms == 1) {
+                        $envoi = (new MessageController)->prepareMessage($data_message, 'REABONNEMENT');
+
+                    }
                 }
             }
 
@@ -617,19 +620,26 @@ class ClientController extends Controller
                 $data_pdf->prix_formuleA = $formul[0]->prix_formule;
                 $data_pdf->prix_formuleR = 0;
                 $data_pdf->prix_formuleU = 0;
-                if ($abonnement && $request->type == 1){
-                    $storeCaisse = (new CaisseController)->creditCaisse($abonnement->id,'ABONNEMENT',$data_pdf->total);
+                if ($abonnement && $request->type == 1) {
+                    $storeCaisse = (new CaisseController)->creditCaisse($abonnement->id, 'ABONNEMENT', $data_pdf->total);
+                }
+                if (isset($request->sendsms) && $request->sendsms == 1) {
+                    $envoi = (new MessageController)->prepareMessage($data_message, 'ABONNEMENT');
+
                 }
             }
 
-            $envoi = (new MessageController)->prepareMessage($data_message, 'ABONNEMENT');
 
         }
 //        $send = (new MessageController)->sendMessage('Test Message','679353205');
         $balance = (new MessageController)->getSMSBalance();
         if (!empty($reabonnement) || !empty($abonnement) && !empty($CD)) {
             session()->flash('message', 'Enregistré avec succès. Solde SMS: ' . $balance);
-            $pdf = (new PDFController)->createPDF($data_pdf, $action);
+
+
+            if (isset($request->printpdf) && $request->printpdf == 1) {
+                (new PDFController)->createPDF($data_pdf, $action);
+            }
 
             return redirect()->back()->with('info', 'Enregistré avec succès. Solde SMS: ' . $balance);
         }
@@ -646,41 +656,41 @@ class ClientController extends Controller
 
     }
 
-        public function addNewClient(Request $request)
-        {
-            $request->validate([
-                'nom_client'=>'required',
-                'telephone_client'=>'required',
-                'adresse_client'=>'required',
-            ]);
-            $userid = Auth::user()->id;
-            $clients = Client::all();
-            foreach ($clients as $cli) {
-                if ($cli->telephone_client == $request->telephone_client) {
-                    session()->flash('message', ' Le client existe déja!');
+    public function addNewClient(Request $request)
+    {
+        $request->validate([
+            'nom_client' => 'required',
+            'telephone_client' => 'required',
+            'adresse_client' => 'required',
+        ]);
+        $userid = Auth::user()->id;
+        $clients = Client::all();
+        foreach ($clients as $cli) {
+            if ($cli->telephone_client == $request->telephone_client) {
+                session()->flash('message', ' Le client existe déja!');
 
-                    return redirect()->back()->with('warning', 'Le client existe déja!');
-                }
-            }
-            $client = Client::create([
-                'nom_client' => $request->nom_client,
-                'prenom_client' => $request->prenom_client,
-                'adresse_client' => $request->adresse_client,
-                'duree' => 0,
-                'id_materiel' => 0,
-                'date_abonnement' => date('Y-m-d'),
-                'date_reabonnement' =>date('Y-m-d'),
-                'id_user' =>$userid,
-                'telephone_client' => $request->telephone_client
-            ]);
-            if (!empty($client)) {
-                session()->flash('message', 'Enregistré avec succès.');
-                return redirect()->back()->with('success', 'Enregistré avec succès.');
-            } else {
-                session()->flash('message', 'Erreur lors de l\'enregistrement!');
-
-                return redirect()->back()->with('danger', 'Erreur lors de l\'enregistrement!');
+                return redirect()->back()->with('warning', 'Le client existe déja!');
             }
         }
+        $client = Client::create([
+            'nom_client' => $request->nom_client,
+            'prenom_client' => $request->prenom_client,
+            'adresse_client' => $request->adresse_client,
+            'duree' => 0,
+            'id_materiel' => 0,
+            'date_abonnement' => date('Y-m-d'),
+            'date_reabonnement' => date('Y-m-d'),
+            'id_user' => $userid,
+            'telephone_client' => $request->telephone_client
+        ]);
+        if (!empty($client)) {
+            session()->flash('message', 'Enregistré avec succès.');
+            return redirect()->back()->with('success', 'Enregistré avec succès.');
+        } else {
+            session()->flash('message', 'Erreur lors de l\'enregistrement!');
+
+            return redirect()->back()->with('danger', 'Erreur lors de l\'enregistrement!');
+        }
+    }
 
 }

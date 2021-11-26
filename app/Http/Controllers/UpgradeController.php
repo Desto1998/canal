@@ -280,15 +280,22 @@ class UpgradeController extends Controller
         if ($upgrade) {
             $message_con = '';
             $message = $data->nom_client . " Mis à jour de la formule réussi ! Formule: " . $request->formule . ", expire le: " . $data->date_reabonnement . ".";
-            $envoi = (new MessageController)->prepareMessage($data_message, 'REABONNEMENT');
 
+        }else{
+            exit();
         }
         if ($upgrade && $request->type == 1) {
             $storeCaisse = (new CaisseController)->creditCaisse($upgrade->id, 'UPGRADE', $data_pdf->total);
 
         }
+        if (isset($request->sendsms) && $request->sendsms == 1) {
+            $envoi = (new MessageController)->prepareMessage($data_message, 'REABONNEMENT');
+        }
+        if (isset($request->printpdf) && $request->printpdf == 1) {
+
+            (new PDFController)->createPDF($data_pdf, 'UPGRADE');
+        }
         $balance = (new MessageController)->getSMSBalance();
-        $pdf = (new PDFController)->createPDF($data_pdf, 'UPGRADE');
         session()->flash('message', "L'upgrate du client a reussi. Solde SMS: " . $balance);
         return redirect()->route('upgrader')->with('info', "L'upgrate du client a reussi. Solde SMS: " . $balance);
     }

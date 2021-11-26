@@ -235,32 +235,42 @@
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
-
-                                                <div class="form-group">
-                                                    Formule: <select name="formule" required>
-                                                        <option value="ACCESS" selected> ACCESS</option>
-                                                        <option value="ACCESS +"> ACCESS +</option>
-                                                        <option value="EVASION"> EVASION</option>
-                                                        <option value="EVASION +"> EVASION +</option>
-                                                        <option value="PRESTIGE"> PRESTIGE</option>
-                                                        <option value="ESSENTIEL +"> ESSENTIEL +</option>
-                                                        <option value="TOUT CANAL"> TOUT CANAL</option>
-                                                    </select>
-                                                    Durée: <select name="duree" required>
-                                                        <option value=1 selected> 1 mois</option>
-                                                        <option value=2> 2 mois</option>
-                                                        <option value=3> 3 mois</option>
-                                                        <option value=6> 6 mois</option>
-                                                        <option value=9> 9 mois</option>
-                                                        <option value=12> 12 mois</option>
-                                                    </select>
+                                                <div class="col-md-12 row">
+                                                    <div class="form-group col-6">
+                                                        <label>Formule:</label>
+                                                        <select name="formule" class="form-control" required>
+                                                            <option value="ACCESS" selected> ACCESS</option>
+                                                            <option value="ACCESS +"> ACCESS +</option>
+                                                            <option value="EVASION"> EVASION</option>
+                                                            <option value="EVASION +"> EVASION +</option>
+                                                            <option value="PRESTIGE"> PRESTIGE</option>
+                                                            <option value="ESSENTIEL +"> ESSENTIEL +</option>
+                                                            <option value="TOUT CANAL"> TOUT CANAL</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label>Durée:</label>
+                                                        <select name="duree"  class="form-control" required>
+                                                            <option value=1 selected> 1 mois</option>
+                                                            <option value=2> 2 mois</option>
+                                                            <option value=3> 3 mois</option>
+                                                            <option value=6> 6 mois</option>
+                                                            <option value=9> 9 mois</option>
+                                                            <option value=12> 12 mois</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
+
                                                 <div
                                                     class="form-group align-content-center justify-content-center text-center">
                                                     <label><input type="radio" required name="type" value="1">&nbsp;
                                                         Payé content</label>
                                                     <label class="ml-4"><input required type="radio" value="0"
                                                                                name="type">&nbsp;A crédit</label>
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <label><input type="checkbox"  name="printpdf" value="1">&nbsp;Imprimer la facture?</label>
+                                                    <label class="ml-4"><input  type="checkbox" value="1" name="sendsms">&nbsp; Envoyer un SMS au client?</label>
                                                 </div>
                                                 <div class="form-group">
                                                     Date abonnement<br><input class="form-control"

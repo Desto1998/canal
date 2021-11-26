@@ -58,6 +58,10 @@
                             <label><input type="radio" required name="type" value="1">&nbsp;Payé content</label>
                             <label class="ml-4"><input required type="radio" value="0" name="type">&nbsp; A crédit</label>
                         </div>
+                        <div class="form-group text-center">
+                            <label><input type="checkbox"  name="printpdf" value="1">&nbsp;Imprimer la facture?</label>
+                            <label class="ml-4"><input  type="checkbox" value="1" name="sendsms">&nbsp; Envoyer un SMS au client?</label>
+                        </div>
                         <div class="form-group">
                             Date reabonnement<br><input class="form-control" value="{{ $abonnement[0]->date_echeance }}" name="date_reabonnement" type="date" readonly required>
                         </div>

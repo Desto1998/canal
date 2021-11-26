@@ -50,8 +50,8 @@ class AbonnementController extends Controller
             }
         }
         $userid = Auth::user()->id;
-        $clientdeco = ClientDecodeur::where('id_decodeur',$request->id_decodeur)->get();
-        if ($clientdeco){
+        $clientdeco = ClientDecodeur::where('id_decodeur', $request->id_decodeur)->get();
+        if ($clientdeco) {
             $data->num_abonne = $clientdeco[0]->num_abonne;
         }
         $statut = 0;
@@ -101,17 +101,21 @@ class AbonnementController extends Controller
 
         if ($upgrade && $request->type == 1) {
             $storeCaisse = (new CaisseController)->creditCaisse($upgrade->id, 'UPGRADE', $data_pdf->total);
-
         }
         if ($upgrade) {
             $message_con = '';
             $message = $data->nom_client . " Mis à jour de la formule réussi ! Formule: " . $request->formule . ", expire le: " . $data->date_reabonnement . ".";
-            $envoi = (new MessageController)->prepareMessage($data_message, 'REABONNEMENT');
+            if (isset($request->sendsms) && $request->sendsms == 1) {
 
+                $envoi = (new MessageController)->prepareMessage($data_message, 'REABONNEMENT');
+            }
+            if (isset($request->printpdf) && $request->printpdf == 1) {
+                (new PDFController)->createPDF($data_pdf, 'UPGRADE');
+            }
         }
 
         $balance = (new MessageController)->getSMSBalance();
-        $pdf = (new PDFController)->createPDF($data_pdf, 'UPGRADE');
+//        $pdf = (new PDFController)->createPDF($data_pdf, 'UPGRADE');
         session()->flash('message', "L'upgrate du client a reussi. Solde SMS: " . $balance);
         return redirect()->route('upgrader')->with('info', "L'upgrate du client a reussi. Solde SMS: " . $balance);
     }
@@ -126,7 +130,7 @@ class AbonnementController extends Controller
 //            ->join('decodeurs', 'decodeurs.id_decodeur', 'decodeurs.id_decodeur')
 //            ->where('abonnements.created_at','LIKE', "{$date}%")
             ->where('abonnements.id_user', $userid)
-            ->OrderBy('id_abonnement','DESC')
+            ->OrderBy('id_abonnement', 'DESC')
             ->get();
         return view("abonnement.mes_abonnements", compact('data'));
     }
@@ -140,15 +144,15 @@ class AbonnementController extends Controller
             ->where('client_decodeurs.date_abonnement', date('Y-m-d'))
             ->where('client_decodeurs.id_user', $userid)
             ->get();
-        $date=date('Y-m-d');
+        $date = date('Y-m-d');
         $data = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
             ->join('formules', 'abonnements.id_formule', 'formules.id_formule')
             ->join('clients', 'abonnements.id_client', 'clients.id_client')
             ->join('client_decodeurs', 'abonnements.id_decodeur', 'client_decodeurs.id_decodeur')
 //            ->join('decodeurs', 'decodeurs.id_decodeur', 'decodeurs.id_decodeur')
-            ->where('abonnements.created_at','LIKE', "{$date}%")
+            ->where('abonnements.created_at', 'LIKE', "{$date}%")
             ->where('abonnements.id_user', $userid)
-            ->OrderBy('id_abonnement','DESC')
+            ->OrderBy('id_abonnement', 'DESC')
             ->get();
         //     dd($data);exit();
         return view("abonnement.abonnementsjours", compact('data'));
@@ -159,7 +163,7 @@ class AbonnementController extends Controller
         $decodeur = Abonnement::where('id_abonnement', $request->id_abonnement)->get();
         $abonnement = Abonnement::where('id_abonnement', $request->id_abonnement)->delete();
         if ($abonnement) {
-            $romeveFromcaisse = (new CaisseController)->removerFromCaisse($request->id_abonnement,'ABONNEMENT');
+            $romeveFromcaisse = (new CaisseController)->removerFromCaisse($request->id_abonnement, 'ABONNEMENT');
 
             $delete = ClientDecodeur::where('id_decodeur', $decodeur[0]->id_decodeur)->delete();
         }
@@ -183,9 +187,11 @@ class AbonnementController extends Controller
             'decos' => $decos
         ]);
     }
-    public function deleteAbonnement(Request $request){
-        $delete = Abonnement::where('id_abonnement',$request->id)->delete();
-        $romeveFromcaisse = (new CaisseController)->removerFromCaisse($request->id,'ABONNEMENT');
+
+    public function deleteAbonnement(Request $request)
+    {
+        $delete = Abonnement::where('id_abonnement', $request->id)->delete();
+        $romeveFromcaisse = (new CaisseController)->removerFromCaisse($request->id, 'ABONNEMENT');
         Response()->json($delete);
     }
 
@@ -193,25 +199,25 @@ class AbonnementController extends Controller
     {
         $id = $request->id;
         $userid = Auth::user()->id;
-        $abo = Abonnement::where('id_abonnement',$id)->get();
+        $abo = Abonnement::where('id_abonnement', $id)->get();
         $montant = 0;
-        if ($abo){
-            $formul = Formule::where('id_formule',$abo[0]->id_formule)->get();
-            if ($formul){
-                $montant = $formul[0]->prix_formule*$abo[0]->duree;
+        if ($abo) {
+            $formul = Formule::where('id_formule', $abo[0]->id_formule)->get();
+            if ($formul) {
+                $montant = $formul[0]->prix_formule * $abo[0]->duree;
             }
         }
         $save = Type_operation::create([
-            'id_reabonnement'=>0,
-            'id_abonnement'=>$id,
-            'id_upgrade'=>0,
-            'date_ajout'=>date('Y-m-d'),
-            'id_user'=>$userid,
-            'montant'=>$montant,
-            'type'=>1,
-            'operation'=>'ABONNEMENT',
+            'id_reabonnement' => 0,
+            'id_abonnement' => $id,
+            'id_upgrade' => 0,
+            'date_ajout' => date('Y-m-d'),
+            'id_user' => $userid,
+            'montant' => $montant,
+            'type' => 1,
+            'operation' => 'ABONNEMENT',
         ]);
-        if ($save){
+        if ($save) {
             $recover = Abonnement::where('id_abonnement', $id)->update(['type_abonnement' => 1]);
             $storeCaisse = (new CaisseController)->creditCaisse($save->id, 'ABONNEMENT', $montant);
         }

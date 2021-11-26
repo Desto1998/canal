@@ -45,7 +45,7 @@
                             <th>Num abonné</th>
                             <th>Num Décodeur</th>
                             <th>Formule</th>
-                            <th>Date reabo</th>
+                            <th>Date Création</th>
                             <th>Durée</th>
                             <th>Date échéance</th>
                             <th>Montant</th>
@@ -70,7 +70,7 @@
                                 <td>{{ $value->num_abonne }}</td>
                                 <td>{{ $value->num_decodeur }}</td>
                                 <td>{{ $value->nom_formule }}</td>
-                                <td>{{ $value->date_reabonnement }}</td>
+                                <td>{{ $value->created_at }}</td>
                                 <td>{{ $value->duree }} mois</td>
                                 <td>{{ $value->date_echeance }}</td>
                                 <td>{{ ($value->prix_formule * $value->duree) }}</td>
