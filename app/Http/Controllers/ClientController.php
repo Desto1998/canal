@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Abonnement;
 use App\Models\Stock;
 use App\Models\Upgrade;
+use App\Models\Vente_materiel;
 use DateInterval;
 use DateTime;
 use http\Env\Response;
@@ -335,15 +336,47 @@ class ClientController extends Controller
             ->get();
         $user = User::where('id', $client[0]->id_user)->get();
         $decodeurs = ClientDecodeur::join('decodeurs', 'decodeurs.id_decodeur', 'client_decodeurs.id_decodeur')
-            ->where('client_decodeurs.id_client', $id)->get();
+            ->where('client_decodeurs.id_client', $id)->get()
+        ;
         $reabonnements = Reabonnement::join('users', 'users.id', 'reabonnements.id_user')
             ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
             ->join('formules', 'formules.id_formule', 'reabonnements.id_formule')
             ->where('reabonnements.id_client', $id)
             ->OrderBy('id_reabonnement', 'DESC')
-            ->get();
+            ->get()
+        ;
+        $abonnements = Abonnement::join('users', 'users.id', 'abonnements.id_user')
+            ->join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
+            ->join('formules', 'formules.id_formule', 'abonnements.id_formule')
+            ->where('abonnements.id_client', $id)
+            ->OrderBy('id_abonnement', 'DESC')
+            ->get()
+        ;
+        $id_reabonnement =Reabonnement::where('id_Client',$id)->get('id_reabonnement');
+        $id_abonnement =Abonnement::where('id_client',$id)->get('id_abonnement');
+        $id_reabonnement = DB::table("reabonnements")->get('id_reabonnement');
+        $TIDR = [];
+        $TIDA = [];
+        foreach ($id_reabonnement as $key => $item)
+        {
+            $TIDR[$key] = $item->id_reabonnement;
+        }
+        foreach ($id_abonnement as $key => $item)
+        {
+            $TIDA[$key] = $item->id_abonnement;
+        }
+        $upgrades = Upgrade::join('users','users.id','upgrades.id_user')
+            ->whereIn('id_reabonnement',$TIDR)
+            ->orWhereIn('id_abonnement',$TIDA)->get();
+        ;
+        $formules = Formule::all();
         $reabonnement = Reabonnement::where('id_client', $id)->get();
-        return view('client.detailsclient', compact('client', 'decodeurs', 'reabonnements', 'user', 'reabonnement'));
+        $achats = Vente_materiel::join('users','users.id','vente_materiels.id_user')
+            ->join('stocks','stocks.id_stock','vente_materiels.id_stock')
+            ->where('id_client',$id)
+            ->get();
+        ;
+        return view('client.detailsclient', compact('upgrades','abonnements','formules','id','client', 'decodeurs', 'reabonnements', 'user', 'reabonnement','achats'));
     }
 
 

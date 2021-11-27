@@ -127,7 +127,7 @@
                                         <h6 class="text-primary">Liste des ventes</h6>
                                         <div class="">
                                             <h4 class="m-2 font-weight-bold text-primary pull-right -align-right float-right">
-                                                Ajouter un upgrade&nbsp;<a
+                                                Effectuer une vente&nbsp;<a
                                                     href="#" data-toggle="modal"
                                                     data-target="#upgradeModal" type="button"
                                                     class="btn btn-primary"><i
@@ -154,7 +154,7 @@
                                                     <tr>
                                                         <td>{{$key+1}}</td>
                                                         <td>{{ $item->nom_client }}</td>
-                                                        <td>{{ $item->num_decodeur }}</td>
+                                                        <td>{{ $item->code_stock }}</td>
                                                         <td>{{ $item->montant_vente }}</td>
                                                         <td>{{ $item->date_vente }}</td>
                                                         <td>{{ $item->name }}</td>

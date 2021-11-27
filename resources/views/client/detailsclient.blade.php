@@ -50,7 +50,7 @@
                         <div class="col-md-6 mt-2">
                             <span class="">Numéro d'abonné( {{ count($decodeurs) }} ):</span>
                             @foreach($decodeurs as $k => $item)
-                                    <span class="mr-2 text-black-50 m-2 font-semibold"> {{ $item->num_abonne }} </span>
+                                <span class="mr-2 text-black-50 m-2 font-semibold"> {{ $item->num_abonne }} </span>
                             @endforeach
                         </div>
                         <div class="col-md-6 mt-2">
@@ -81,6 +81,9 @@
             @include('layouts.flash-message')
 
             <div class="card-body">
+                <div class="row mt-4 ml-4">
+                    <h6 class="text-primary">Liste des Reabonnements</h6>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable_1" width="100%" cellspacing="0">
                         <thead>
@@ -88,7 +91,7 @@
                             <th>#</th>
                             <th>Date Raébo</th>
                             <th>Décodeur</th>
-                            <th>Formul</th>
+                            <th>Formule</th>
                             <th>Prix</th>
                             <th>Durée</th>
                             <th>Total</th>
@@ -171,12 +174,145 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-        <div class="mt-6">
-            <h4>Total Crédit : <span class="text-danger">{{$credit}} FCFA</span></h4>
-        </div>
+                <div class="mt-6">
+                    <h4>Total Crédit : <span class="text-danger">{{$credit}} FCFA</span></h4>
+                </div>
+                <div class="row mt-4 ml-4">
+                    <h6 class="text-primary">Liste des upgrades</h6>
+                </div>
+                <div class="table-responsive mt-6">
+                    <table class="table table-bordered" id="dataTable_1" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Ancienne Form</th>
+                            <th>Nouvelle Form</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                            <th>Vendeur</th>
+                            <th>Effectué le</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($upgrades as $key => $value)
+                            <tr>
+                                <td>{{ $key+1 }}</td>
+                                <td>
+                                    @foreach($formules as $form)
+                                        @if($form->id_formule===$value->id_oldformule)
+                                            {{ $form->nom_formule }}
+                                        @endif
+                                    @endforeach
+                                </td>
+                                <td>
+                                    @foreach($formules as $form)
+                                        @if($form->id_formule===$value->id_newformule)
+                                            {{ $form->nom_formule }}
+                                        @endif
+                                    @endforeach
+                                </td>
 
+                                <td>{{ $value->montant_upgrade }}</td>
+                                <td>
+                                    @if($value->type_upgrade===1)
+                                        <span class="bg-gradient-success p-2 text-white">Payé</span>
+                                    @else
+                                        <span class="bg-gradient-danger p-2 text-white">A crédit</span>
+                                    @endif
+                                </td>
+                                <td>{{ $value->name }}</td>
+                                <td>{{ $value->date_upgrade }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row mt-4 ml-4">
+                    <h6 class="text-primary">Liste des abonnements</h6>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable_1" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date Raébo</th>
+                            <th>Décodeur</th>
+                            <th>Formule</th>
+                            <th>Prix</th>
+                            <th>Durée</th>
+                            <th>Total</th>
+                            <th>Statut</th>
+                            <th>Vendeur</th>
+{{--                            <th>Effectué le</th>--}}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @php
+                            $compt = 1;
+                            $chiffre = 0;
+                            $credit = 0;
+                            $paye = 0;
+                        @endphp
+                        @foreach($abonnements as $key => $value)
+
+                            <tr>
+                                <td>{{$compt}}</td>
+                                <td>{{ $value->date_reabonnement }}</td>
+                                <td>{{ $value->num_decodeur }}</td>
+                                <td>{{ $value->nom_formule }}</td>
+                                <td>{{ $value->prix_formule }}</td>
+                                <td>{{ $value->duree }} mois</td>
+
+                                <td>{{ ($value->prix_formule * $value->duree) }}</td>
+
+                                <td>
+                                    @if($value->type_abonement ===0)
+                                        <span class="bg-gradient-danger text-white p-1">Crédit</span>
+                                        @php
+                                            $credit += ($value->prix_formule * $value->duree) ;
+                                        @endphp
+                                    @else
+                                        <span class="bg-gradient-success text-white p-1">Payé</span>
+                                        @php
+                                            $paye += ($value->prix_formule * $value->duree) ;
+                                        @endphp
+                                    @endif
+                                </td>
+                                <td>{{ $value->name }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row mt-4 ml-4">
+                    <h6 class="text-primary">Liste des achats effectués</h6>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable_1" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Num decodeur</th>
+                            <th>Montant</th>
+                            <th>Date</th>
+                            <th>Par</th>
+                        </tr>
+                        <thead>
+                        <tbody>
+                            @foreach($achats as $a => $item)
+                            <tr>
+                                <td>{{ $a+1 }}</td>
+                                <td>{{ $item->code_stock }}</td>
+                                <td>{{ $item->montant_vente }}</td>
+                                <td>{{ $item->date_vente }}</td>
+                                <td>{{ $item->name }}</td>
+                            </tr>
+                            @endforeach
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </x-slot>
 </x-app-layout>
