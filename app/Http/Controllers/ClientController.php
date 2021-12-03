@@ -354,7 +354,7 @@ class ClientController extends Controller
         ;
         $id_reabonnement =Reabonnement::where('id_Client',$id)->get('id_reabonnement');
         $id_abonnement =Abonnement::where('id_client',$id)->get('id_abonnement');
-        $id_reabonnement = DB::table("reabonnements")->get('id_reabonnement');
+//        $id_reabonnement = DB::table("reabonnements")->get('id_reabonnement');
         $TIDR = [];
         $TIDA = [];
         foreach ($id_reabonnement as $key => $item)
@@ -376,7 +376,10 @@ class ClientController extends Controller
             ->where('id_client',$id)
             ->get();
         ;
-        return view('client.detailsclient', compact('upgrades','abonnements','formules','id','client', 'decodeurs', 'reabonnements', 'user', 'reabonnement','achats'));
+        $allFormules = Formule::all();
+        $messages = (new MessageController)->getStandart();
+        $stock = Stock::where('statut', 0)->get();
+        return view('client.detailsclient', compact('upgrades','stock','messages','formules','abonnements','formules','id','client', 'decodeurs', 'reabonnements', 'user', 'reabonnement','achats'));
     }
 
 
@@ -696,15 +699,27 @@ class ClientController extends Controller
             'telephone_client' => 'required',
             'adresse_client' => 'required',
         ]);
+
         $userid = Auth::user()->id;
-        $clients = Client::all();
-        foreach ($clients as $cli) {
-            if ($cli->telephone_client == $request->telephone_client) {
+        $clients = Client::where('telephone_client',$request->telephone_client)->get();
+            if (count($clients)>0) {
                 session()->flash('message', ' Le client existe déja!');
 
                 return redirect()->back()->with('warning', 'Le client existe déja!');
             }
-        }
+            if (isset($request->num_decodeur) && isset($request->num_abonne))
+            {
+                $checkdecodeur = Decodeur::join('client_decodeurs','client_decodeurs.id_decodeur','decodeurs.id_decodeur')
+                    ->whereIn('num_decodeur',$request->num_decodeur)
+                    ->OrWhereIn('num_abonne',$request->num_abonne)
+                    ->get()
+                ;
+            }
+
+            if (count($checkdecodeur)>0)
+            {
+                return redirect()->back()->with('danger', 'Le numéro de décodeur ou le numéro d\'abonné est déja utilisé.');
+            }
         $client = Client::create([
             'nom_client' => $request->nom_client,
             'prenom_client' => $request->prenom_client,
@@ -716,9 +731,36 @@ class ClientController extends Controller
             'id_user' => $userid,
             'telephone_client' => $request->telephone_client
         ]);
+
         if (!empty($client)) {
-            session()->flash('message', 'Enregistré avec succès.');
-            return redirect()->back()->with('success', 'Enregistré avec succès.');
+            $client = Client::where('telephone_client');
+            if (isset($request->num_decodeur) && isset($request->num_abonne))
+            {
+                for($i = 0; $i<count($request->num_decodeur); $i++)
+                {
+                    $decora[$i] = Decodeur::create([
+                        'num_decodeur' => $request->num_decodeur[$i],
+                        'prix_decodeur' => 0,
+                        'date_livaison' => date("Y-m-d"),
+                        'quantite' => 1,
+                        'id_user' => $userid
+                    ]);
+                    $deco= Decodeur::where('num_decodeur',$request->num_decodeur[$i])->get();
+                    $client = Client::where('telephone_client',$request->telephone_client)->get();
+                    $CD[$i] = ClientDecodeur::create(['id_decodeur' => $deco[0]->id_decodeur,
+                        'id_client' => $client[0]->id_client,
+                        'id_user' => $userid,
+                        'date_abonnement' => date('Y-m-d'),
+                        'date_reabonnement' => date('Y-m-d'),
+                        'id_formule' => 0,
+                        'num_abonne' => $request->num_abonne[$i],
+                    ]);
+                }
+
+            }
+           return $this->show($client[0]->id_client);
+//            return redirect()->back()->with('success', 'Le client a été avec succès.');
+
         } else {
             session()->flash('message', 'Erreur lors de l\'enregistrement!');
 

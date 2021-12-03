@@ -19,6 +19,17 @@
                             </a>
 
                         </label>
+                        <a type="button" class="btn btn-primary ml-4"
+                           title="Ajouter un décodeur" href="#" data-toggle="modal"
+                           data-target="#materielClientModal1{{ $client[0]->id_client }}">
+                            <i class="fas fa-fw fa-plus"></i>
+                        </a>
+
+                            <a type="button" class="btn btn-info ml-4" title="Envoyer un message"
+                               href="#" data-toggle="modal"
+                               data-target="#messageModal{{ $client[0]->id_client }}">
+                                <i class="fas fa-fw fa-envelope"></i>
+                            </a>
                     </div>
                 </div>
 
@@ -314,9 +325,239 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="materielClientModal1{{ $client[0]->id_client }}" tabindex="-1"
+             role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel{{ $client[0]->id_client }}">
+                            Ajouter un décodeur</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form"
+                              id="decodeurForm{{ $client[0]->id_client }}{{ $client[0]->id_client }}"
+                              method="post"
+                              action="{{ route('clients.new_decodeur') }}">
+                            @csrf
+                            <input type="hidden" name="id_client" value="{{ $client[0]->id_client }}">
+                            <div class="form-group">
+                                <label> Numéro d'abonné</label>
+                                <input type="text" name="num_abonne" minlength="8" maxlength="8"
+                                       class="form-control" required>
+                            </div>
+                            <div
+                                class="form-group align-content-center justify-content-center text-center">
+                                <label><input type="radio" required name="operation" value="1"
+                                              class="operation">&nbsp; Abonnement</label>
+                                <label class="ml-4"><input required type="radio" value="0"
+                                                           name="operation" class="operation">&nbsp;
+                                    Réabonnement</label>
+                            </div>
+                            <div class="selectdecodeur hidden row col-md-12">
+                                <div class="form-group col-md-6">
+                                    <label>Numero décodeur</label>
+                                    @if(isset($stock))
+
+                                        <select class="form-control show-tick" id="id_decodeur{{$client[0]->id_client}}" name="id_decodeur">
+                                            <option disabled selected hidden>Sélectionner un
+                                                decodeur
+                                            </option>
+                                            @foreach($stock as $key =>$deco)
+
+                                                <option data-tokens="{{ $deco->id_stock }}"
+                                                        value="{{$deco->id_stock}}">{{$deco->code_stock}}</option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        <span class="text-danger">Aucun décodeur n'est disponible veiller enregistrer un décodeur.</span>
+                                    @endif
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Prix du décodeur</label>
+                                        <input type="number" name="prix_decodeur" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group hidden enternum">
+                                Numero décodeur<br><input type="text" class="form-control"
+                                                          maxlength="14" minlength="10"
+                                                          placeholder="Entrez le numero decodeur"
+                                                          onblur="controlNumero(this)"
+                                                          name="num_decodeur" id="num_decodeur1">
+                                <span class="text-danger hidden ereur-numerodd " style=""> Mauvaise saisie Longeur minimale 14</span>
+                                @error('num_decodeur')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-12 row">
+                                <div class="form-group col-6">
+                                    <label>Formule:</label>
+                                    <select name="formule" class="form-control" required>
+                                        <option value="ACCESS" selected> ACCESS</option>
+                                        <option value="ACCESS +"> ACCESS +</option>
+                                        <option value="EVASION"> EVASION</option>
+                                        <option value="EVASION +"> EVASION +</option>
+                                        <option value="PRESTIGE"> PRESTIGE</option>
+                                        <option value="ESSENTIEL +"> ESSENTIEL +</option>
+                                        <option value="TOUT CANAL"> TOUT CANAL</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Durée:</label>
+                                    <select name="duree"  class="form-control" required>
+                                        <option value=1 selected> 1 mois</option>
+                                        <option value=2> 2 mois</option>
+                                        <option value=3> 3 mois</option>
+                                        <option value=6> 6 mois</option>
+                                        <option value=9> 9 mois</option>
+                                        <option value=12> 12 mois</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div
+                                class="form-group align-content-center justify-content-center text-center">
+                                <label><input type="radio" required name="type" value="1">&nbsp;
+                                    Payé content</label>
+                                <label class="ml-4"><input required type="radio" value="0"
+                                                           name="type">&nbsp;A crédit</label>
+                            </div>
+                            <div class="form-group text-center">
+                                <label><input type="checkbox"  name="printpdf" value="1">&nbsp;Imprimer la facture?</label>
+                                <label class="ml-4"><input  type="checkbox" value="1" name="sendsms">&nbsp; Envoyer un SMS au client?</label>
+                            </div>
+                            <div class="form-group">
+                                Date abonnement<br><input class="form-control"
+                                                          name="date_abonnement" type="date"
+                                                          required>
+                            </div>
+                            <hr>
+                            <button type="submit" class="btn btn-success"><i
+                                    class="fa fa-check fa-fw"></i>Enregistrer
+                            </button>
+                            <button type="reset" class="btn btn-danger"><i
+                                    class="fa fa-times fa-fw"></i>Retour
+                            </button>
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">
+                                Annuler
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade justify-center justify-content-center"
+             id="messageModal{{ $client[0]->id_client }}" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel{{ $client[0]->id_client }}"
+             aria-hidden="true">
+            <div class="modal-dialog text-center" role="document">
+                <div class="modal-content text-center">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel{{ $client[0]->id_client }}">
+                            Envoyer un message</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center justify-content-center align-content-center">
+                        <form role="form" id="abonneForm{{ $client[0]->id_client }}" method="post"
+                              action="{{ route('send.message') }}">
+                            @csrf
+                            <input type="hidden" name="id_client" value="{{ $client[0]->id_client }}">
+                            <input type="hidden" name="phone"
+                                   value="{{ $client[0]->telephone_client }}">
+                            <input type="hidden" name="nom_client"
+                                   value="{{ $client[0]->nom_client }}">
+                            <div class="form-group">
+                                <label><span><i class="fas fa-address-book"></i> </span> Nom client</label>
+                                <input class="form-control text-uppercase" type="text"
+                                       value="{{ $client[0]->nom_client }}"
+                                       name="nom" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label><span><i class="fas fa-phone"></i> </span> Numéro du
+                                    client</label>
+                                <input class="form-control text-uppercase" type="text"
+                                       value="{{ $client[0]->telephone_client }}"
+                                       name="tel" disabled>
+                            </div>
+                            <div class="for-group">
+                                <select name="id_message" id="showmessage{{ $client[0]->id_client }}"
+                                        onchange="showSMSArea({{$client[0]->id_client}})"
+                                        class="form-control showarea">
+                                    <option value="0">Message Standart</option>
+                                    @foreach($messages as $sms => $value)
+                                        <option
+                                            value="{{ $value->id_message }}"> {{ $value->titre_sms }} </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group messagearea"
+                                 id="message0{{ $client[0]->id_client }}">
+                                <label><span><i class="fas fa-pen"></i></span>Message</label>
+                                <textarea class="form-control" name="message"
+                                          placeholder="Saisisser un message ici..."></textarea>
+                            </div>
+                            @foreach($messages as $sms => $value)
+                                <div class="form-group hidden messagearea"
+                                     id="message{{ $value->id_message }}{{ $client[0]->id_client }}">
+                                    <label><span><i class="fas fa-pen"></i></span>Message</label>
+                                    <textarea class="form-control"
+                                              name="message">{{ $value->message }}</textarea>
+                                </div>
+                            @endforeach
+
+                            <hr>
+                            <button type="submit" class="btn btn-success"><i
+                                    class="fa fa-check fa-fw"></i>Enregistrer
+                            </button>
+                            <button type="reset" class="btn btn-danger"><i
+                                    class="fa fa-times fa-fw"></i>Retour
+                            </button>
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">
+                                Annuler
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </x-slot>
 </x-app-layout>
 <script>
+    $('input[name="operation"]').change(function () {
+        var operation = $('input[name="operation"]:checked').val();
+        if (operation == 1) {
+            $('.selectdecodeur').removeClass('hidden');
+            $('.selectdecodeur').show(100);
+            $('.enternum').addClass('hidden');
+            $('.enternumprise').addClass('hidden');
+        } else {
+            $('.selectdecodeur').hide(100);
+            $('.enternum').removeClass('hidden');
+            // $('#enternumprise').removeClass('hidden');
+        }
+        // alert(operation);
+    });
+    function showSMSArea(id) {
+        $('.messagearea').addClass('hidden');
+        var value = $('#showmessage' + id).val();
+        $('#message' + value + id).removeClass('hidden');
+
+    }
+    function showselectedSMSArea() {
+        $('.selectmessagearea').addClass('hidden');
+        var value = $('#showselectmessage').val();
+        $('#message' + value).removeClass('hidden');
+
+    }
     function deleteFunc(id, id_client) {
         // $('#success').addClass('hidden');
         // $('#error').addClass('hidden');
