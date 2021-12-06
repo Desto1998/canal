@@ -516,7 +516,7 @@
 
                             <hr>
                             <button type="submit" class="btn btn-success"><i
-                                    class="fa fa-check fa-fw"></i>Enregistrer
+                                    class="fa fa-check fa-fw"></i>Envoyer
                             </button>
                             <button type="reset" class="btn btn-danger"><i
                                     class="fa fa-times fa-fw"></i>Retour

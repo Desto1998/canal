@@ -3,25 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Abonnement;
+use App\Models\Client;
+use App\Models\ClientDecodeur;
 use App\Models\Decodeur;
 use App\Models\Formule;
 use App\Models\Reabonnement;
 use App\Models\Type_operation;
 use App\Models\Upgrade;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use DateInterval;
 use DateTime;
-use http\Env\Response;
-use Illuminate\Database\Eloquent\Model;
-use App\Models\Client;
-use App\Models\Message;
-use App\Models\ClientDecodeur;
-use App\Models\User;
-use App\Models\Materiel;
-use phpDocumentor\Reflection\Types\AbstractList;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use phpDocumentor\Reflection\Types\Array_;
-use PhpParser\Node\Expr\Cast;
 
 class UpgradeController extends Controller
 {
@@ -55,14 +48,20 @@ class UpgradeController extends Controller
 //            ->join('formules', 'formules.id_oldformule', 'upgrades.id_oldformule')
             ->OrderBy('id_upgrade', 'DESC')
             ->get();
-        $formules = Formule::all();
-        $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+
+
+        $reabonnements = Reabonnement::join('clients', 'clients.id_client', 'reabonnements.id_client')
             ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
-            ->get();
+            ->get()
+        ;
+        $formules = Formule::all();
+
         $abonnements = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
             ->join('clients', 'clients.id_client', 'clients.id_client')
-            ->get();
+            ->get()
+        ;
         $messages = (new MessageController)->getStandart();
+
         return view('upgrade.upgrade-all', compact('data', 'formules', 'reabonnements', 'abonnements', 'messages'));
     }
 

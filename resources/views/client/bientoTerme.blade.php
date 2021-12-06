@@ -60,7 +60,7 @@
                                 @endforeach
 
                                 <hr>
-                                <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer
+                                <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Envoyer
                                 </button>
                                 <button type="reset" class="btn btn-danger"><i class="fa fa-times fa-fw"></i>Retour</button>
                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
@@ -123,18 +123,18 @@
                                     </a>
                                 </td>
                             </tr>
-                            <div class="modal fade justify-center justify-content-center" id="messageModal{{ $client->id_client }}" tabindex="-1" role="dialog"
+                            <div class="modal fade" id="messageModal{{ $client->id_client }}" tabindex="-1" role="dialog"
                                  aria-labelledby="exampleModalLabel{{ $client->id_client }}"
                                  aria-hidden="true">
-                                <div class="modal-dialog text-center" role="document">
-                                    <div class="modal-content text-center">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="exampleModalLabel{{ $client->id_client }}">Envoyer un message</h5>
                                             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">×</span>
                                             </button>
                                         </div>
-                                        <div class="modal-body text-center justify-content-center align-content-center">
+                                        <div class="modal-body">
                                             <form role="form" id="abonneForm{{ $client->id_client }}" method="post"
                                                   action="{{ route('send.message') }}">
                                                 @csrf
@@ -171,7 +171,7 @@
                                                 @endforeach
 
                                                 <hr>
-                                                <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Enregistrer
+                                                <button type="submit" class="btn btn-success"><i class="fa fa-check fa-fw"></i>Envoyer
                                                 </button>
                                                 <button type="reset" class="btn btn-danger"><i class="fa fa-times fa-fw"></i>Retour</button>
                                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>

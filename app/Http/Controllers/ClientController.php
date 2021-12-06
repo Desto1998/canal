@@ -716,7 +716,7 @@ class ClientController extends Controller
                 ;
             }
 
-            if (count($checkdecodeur)>0)
+            if (isset($checkdecodeur) && count($checkdecodeur)>0)
             {
                 return redirect()->back()->with('danger', 'Le numéro de décodeur ou le numéro d\'abonné est déja utilisé.');
             }
@@ -731,9 +731,9 @@ class ClientController extends Controller
             'id_user' => $userid,
             'telephone_client' => $request->telephone_client
         ]);
-
+        $client = Client::where('telephone_client',$request->telephone_client)->get();
         if (!empty($client)) {
-            $client = Client::where('telephone_client');
+
             if (isset($request->num_decodeur) && isset($request->num_abonne))
             {
                 for($i = 0; $i<count($request->num_decodeur); $i++)
@@ -746,7 +746,7 @@ class ClientController extends Controller
                         'id_user' => $userid
                     ]);
                     $deco= Decodeur::where('num_decodeur',$request->num_decodeur[$i])->get();
-                    $client = Client::where('telephone_client',$request->telephone_client)->get();
+
                     $CD[$i] = ClientDecodeur::create(['id_decodeur' => $deco[0]->id_decodeur,
                         'id_client' => $client[0]->id_client,
                         'id_user' => $userid,
@@ -758,6 +758,7 @@ class ClientController extends Controller
                 }
 
             }
+
            return $this->show($client[0]->id_client);
 //            return redirect()->back()->with('success', 'Le client a été avec succès.');
 

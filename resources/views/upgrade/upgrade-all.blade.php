@@ -135,9 +135,7 @@
                 </div>
             </div>
         </div>
-        <form>
-            @csrf
-        </form>
+
     </x-slot>
 </x-app-layout>
 <script>

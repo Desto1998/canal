@@ -738,7 +738,7 @@ class GeneralController extends Controller
             ->get()
         ;
         $formules = Formule::all();
-        $reabonnement = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+        $reabonnement = Reabonnement::join('clients', 'clients.id_client', 'reabonnements.id_client')
             ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
             ->get();
         $abonnement = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
@@ -784,7 +784,7 @@ class GeneralController extends Controller
             ->get()
         ;
         $formules = Formule::all();
-        $reabonnement = Reabonnement::join('clients', 'clients.id_client', 'clients.id_client')
+        $reabonnement = Reabonnement::join('clients', 'clients.id_client', 'reabonnements.id_client')
             ->join('decodeurs', 'decodeurs.id_decodeur', 'reabonnements.id_decodeur')
             ->get();
         $abonnement = Abonnement::join('decodeurs', 'decodeurs.id_decodeur', 'abonnements.id_decodeur')
