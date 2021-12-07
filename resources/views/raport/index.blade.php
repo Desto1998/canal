@@ -175,6 +175,18 @@
                                 $totalVkit += $Vkit;
                             @endphp
 
+                            @foreach($ventekit as $key=>$item)
+                                @if($date==date("Y-m-d", strtotime($item->created_at)))
+                                    @php
+                                        $Vkit +=  $item->montant_vente;
+                                    @endphp
+
+                                @endif
+                            @endforeach
+                            @php
+                                $totalVkit += $Vkit;
+                            @endphp
+
                             @foreach($reabonnement as $key=>$item)
                                 @if($date==date("Y-m-d", strtotime($item->date)))
                                     @if($item->statut_reabo==1)

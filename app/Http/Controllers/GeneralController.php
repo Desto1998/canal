@@ -10,9 +10,11 @@ use App\Models\Formule;
 use App\Models\Materiel;
 use App\Models\Reabonnement;
 use App\Models\Client;
+use App\Models\Stock;
 use App\Models\Type_operation;
 use App\Models\Upgrade;
 use App\Models\User;
+use App\Models\Vente_materiel;
 use App\Models\Versement;
 use App\Models\Versement_achats;
 use Illuminate\Http\Request;
@@ -182,6 +184,7 @@ class GeneralController extends Controller
 //        dd($users);
         return view('raport.form',compact('users'));
     }
+
     public function makeReport(Request $request)
     {
         $request->validate([
@@ -200,54 +203,64 @@ class GeneralController extends Controller
                 $allAbonnement = Abonnement::join('formules','formules.id_formule','abonnements.id_formule')->get();
                 $allUpgrade = Upgrade::all();
 
-                $decodeur = Decodeur::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
-                    ->get()
-                ;
-                $decodeurs = Decodeur::join('client_decodeurs', 'client_decodeurs.id_decodeur', 'decodeurs.id_decodeur')
-                    ->get()
-                ;
-                $clientdecodeur = ClientDecodeur::all();
-                $id_decodeur = [];
-                foreach ($clientdecodeur as $key=> $value){
-                    $id_decodeur[$key]=$value->id_decodeur;
-                }
+//                $decodeur = Decodeur::where('created_at','>=',$request->date1)
+//                    ->where('created_at','<=',$request->date2)
+//                    ->get()
+//                ;
+//                $decodeurs = Decodeur::join('client_decodeurs', 'client_decodeurs.id_decodeur', 'decodeurs.id_decodeur')
+//                    ->get()
+//                ;
+//                $clientdecodeur = ClientDecodeur::all();
+//                $id_decodeur = [];
+//                foreach ($clientdecodeur as $key=> $value){
+//                    $id_decodeur[$key]=$value->id_decodeur;
+//                }
 //        dd($id_decodeur);
 
-                $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur',$id_decodeur)
+                $decodeur = Stock::where('statut',0)
+                    ->whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->get()
                 ;
+
                 $reabonnement = Reabonnement::join('formules','formules.id_formule','reabonnements.id_formule')
-                    ->where('reabonnements.created_at','>=',$request->date1)
-                    ->where('reabonnements.created_at','<=',$request->date2)
+                    ->whereDate('reabonnements.created_at','>=',$request->date1)
+                    ->whereDate('reabonnements.created_at','<=',$request->date2)
+                    ->select('reabonnements.*','reabonnements.created_at as date','formules.*')
                     ->get()
                 ;
                 $abonnement = Abonnement::join('formules','formules.id_formule','abonnements.id_formule')
-                    ->where('abonnements.created_at','>=',$request->date1)
-                    ->where('abonnements.created_at','<=',$request->date2)
+                    ->join('decodeurs','decodeurs.id_decodeur','abonnements.id_decodeur')
+                    ->whereDate('abonnements.created_at','>=',$request->date1)
+                    ->whereDate('abonnements.created_at','<=',$request->date2)
+                    ->select('abonnements.*','abonnements.created_at as date','formules.*')
                     ->get()
                 ;
-                $upgrade = Upgrade::where('date_upgrade','>=',$request->date1)
-                    ->where('date_upgrade','<=',$request->date2)
+                $upgrade = Upgrade::whereDate('date_upgrade','>=',$request->date1)
+                    ->whereDate('date_upgrade','<=',$request->date2)
                     ->get()
                 ;
-                $recouvrement = Type_operation::where('date_ajout','>=',$request->date1)
-                    ->where('date_ajout','<=',$request->date2)
+                $recouvrement = Type_operation::whereDate('date_ajout','>=',$request->date1)
+                    ->whereDate('date_ajout','<=',$request->date2)
                     ->get()
                 ;
-                $versement = Versement::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+                $versement = Versement::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->get()
                 ;
-                $versement = Versement::all();
-                $caisse = Caisse::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+//                $versement = Versement::all();
+                $caisse = Caisse::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->get()
                 ;
-                $caisse = Caisse::all();
 
-                $achatkit = Versement_achats::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+
+                $achatkit = Versement_achats::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $ventekit = Vente_materiel::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->get()
                 ;
                 $TDATES = [];
@@ -313,72 +326,92 @@ class GeneralController extends Controller
                         $TID[count($TID)]= $value->id_user;
                     }
                 }
+                foreach ($ventekit as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+                }
 
 //                foreach ($users as $key=>$value){
 //
 //                }
-
+                $caisse = Caisse::all();
+                $versement = Versement::all();
                 return view('raport.index',compact('request','users','TID','achatkit','TDATES','decodeur','reabonnement','abonnement',
-                    'upgrade','recouvrement','versement','caisse','allReabonnement','allAbonnement','allUpgrade'));
+                    'upgrade','recouvrement','versement','ventekit','caisse','allReabonnement','allAbonnement','allUpgrade'));
             }else{
                 $userid = $request->action;
                 $user=User::find($userid);
-                $decodeur = Decodeur::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+//                $decodeur = Decodeur::where('created_at','LIKE',"{$request->date1}")
+//                    ->where('created_at','LIKE',"{$request->date2}")
+//                    ->where('id_user',$userid)
+//                    ->get()
+//                ;
+//                $decodeurs = Decodeur::join('client_decodeurs', 'client_decodeurs.id_decodeur', 'decodeurs.id_decodeur')
+//                    ->get()
+//                ;
+//                $clientdecodeur = ClientDecodeur::all();
+//                $id_decodeur = [];
+//                foreach ($clientdecodeur as $key=> $value){
+//                    $id_decodeur[$key]=$value->id_decodeur;
+//                }
+//        dd($id_decodeur);
+
+                $decodeur = Stock::where('statut',0)
+                    ->whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->where('id_user',$userid)
                     ->get()
                 ;
-                $decodeurs = Decodeur::join('client_decodeurs', 'client_decodeurs.id_decodeur', 'decodeurs.id_decodeur')
-                    ->get()
-                ;
-                $clientdecodeur = ClientDecodeur::all();
-                $id_decodeur = [];
-                foreach ($clientdecodeur as $key=> $value){
-                    $id_decodeur[$key]=$value->id_decodeur;
-                }
-//        dd($id_decodeur);
 
-                $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur',$id_decodeur)
-                    ->get()
-                ;
                 $reabonnement = Reabonnement::join('formules','formules.id_formule','reabonnements.id_formule')
-                    ->where('reabonnements.created_at','>=',$request->date1)
-                    ->where('reabonnements.created_at','<=',$request->date2)
+                    ->whereDate('reabonnements.created_at','>=',$request->date1)
+                    ->whereDate('reabonnements.created_at','<=',$request->date2)
                     ->select('reabonnements.*','reabonnements.created_at as date','formules.*')
                     ->where('reabonnements.id_user',$userid)
                     ->get()
                 ;
                 $abonnement = Abonnement::join('formules','formules.id_formule','abonnements.id_formule')
                     ->join('decodeurs','decodeurs.id_decodeur','abonnements.id_decodeur')
-                    ->where('abonnements.created_at','>=',$request->date1)
-                    ->where('abonnements.created_at','<=',$request->date2)
+                    ->whereDate('abonnements.created_at','>=',$request->date1)
+                    ->whereDate('abonnements.created_at','<=',$request->date2)
                     ->select('abonnements.*','abonnements.created_at as date','formules.*','decodeurs.*')
                     ->where('abonnements.id_user',$userid)
                     ->get()
                 ;
-                $upgrade = Upgrade::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+                $upgrade = Upgrade::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->where('id_user',$userid)
                     ->get()
                 ;
-                $recouvrement = Type_operation::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+                $recouvrement = Type_operation::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->where('id_user',$userid)
                     ->get()
                 ;
-                $versement = Versement::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+
+                $versement = Versement::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->where('id_user',$userid)
                     ->get()
                 ;
-                $caisse = Caisse::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+                $caisse = Caisse::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->where('id_user',$userid)
                     ->get()
                 ;
-                $achatkit = Versement_achats::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+                $achatkit = Versement_achats::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->where('id_user',$userid)
+                    ->get()
+                ;
+                $ventekit = Vente_materiel::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->get()
                 ;
                 $TDATES = [];
@@ -423,6 +456,12 @@ class GeneralController extends Controller
                     if (!in_array($date,$TDATES)){
                         $TDATES[count($TDATES)]= $date;
                     }
+                }foreach ($ventekit as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
                 }
                 foreach ($achatkit as $key=>$value){
 
@@ -431,10 +470,11 @@ class GeneralController extends Controller
                         $TDATES[count($TDATES)]= $date;
                     }
                 }
-                return view('raport.forOne',compact('request','user','achatkit','decodeur','reabonnement','abonnement','upgrade','recouvrement','versement','caisse','TDATES'));
+
+                return view('raport.forOne',compact('request','user','ventekit','achatkit','decodeur','reabonnement','abonnement','upgrade','recouvrement','versement','caisse','TDATES'));
 
             }
-            return 0;
+
         }else{
             return redirect()->back()->with('danger', 'Erreur! Mauvaise valeur entrée');
         }
@@ -458,54 +498,67 @@ class GeneralController extends Controller
                 $allAbonnement = Abonnement::join('formules','formules.id_formule','abonnements.id_formule')->get();
                 $allUpgrade = Upgrade::all();
 
-                $decodeur = Decodeur::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
-                    ->get()
-                ;
-                $decodeurs = Decodeur::join('client_decodeurs', 'client_decodeurs.id_decodeur', 'decodeurs.id_decodeur')
-                    ->get()
-                ;
-                $clientdecodeur = ClientDecodeur::all();
-                $id_decodeur = [];
-                foreach ($clientdecodeur as $key=> $value){
-                    $id_decodeur[$key]=$value->id_decodeur;
-                }
+//                $decodeur = Decodeur::where('created_at','>=',$request->date1)
+//                    ->where('created_at','<=',$request->date2)
+//                    ->get()
+//                ;
+//                $decodeurs = Decodeur::join('client_decodeurs', 'client_decodeurs.id_decodeur', 'decodeurs.id_decodeur')
+//                    ->get()
+//                ;
+//                $clientdecodeur = ClientDecodeur::all();
+//                $id_decodeur = [];
+//                foreach ($clientdecodeur as $key=> $value){
+//                    $id_decodeur[$key]=$value->id_decodeur;
+//                }
 //        dd($id_decodeur);
 
-                $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur',$id_decodeur)
+//                $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur',$id_decodeur)
+//                    ->get()
+//                ;
+                $decodeur = Stock::where('statut',0)
+                    ->whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->get()
                 ;
+
                 $reabonnement = Reabonnement::join('formules','formules.id_formule','reabonnements.id_formule')
-                    ->where('reabonnements.created_at','>=',$request->date1)
-                    ->where('reabonnements.created_at','<=',$request->date2)
+                    ->whereDate('reabonnements.created_at','>=',$request->date1)
+                    ->whereDate('reabonnements.created_at','<=',$request->date2)
+                    ->select('reabonnements.*','reabonnements.created_at as date','formules.*')
                     ->get()
                 ;
                 $abonnement = Abonnement::join('formules','formules.id_formule','abonnements.id_formule')
-                    ->where('abonnements.created_at','>=',$request->date1)
-                    ->where('abonnements.created_at','<=',$request->date2)
+                    ->join('decodeurs','decodeurs.id_decodeur','abonnements.id_decodeur')
+                    ->whereDate('abonnements.created_at','>=',$request->date1)
+                    ->whereDate('abonnements.created_at','<=',$request->date2)
+                    ->select('abonnements.*','abonnements.created_at as date','formules.*')
                     ->get()
                 ;
-                $upgrade = Upgrade::where('date_upgrade','>=',$request->date1)
-                    ->where('date_upgrade','<=',$request->date2)
+                $upgrade = Upgrade::whereDate('date_upgrade','>=',$request->date1)
+                    ->whereDate('date_upgrade','<=',$request->date2)
                     ->get()
                 ;
-                $recouvrement = Type_operation::where('date_ajout','>=',$request->date1)
-                    ->where('date_ajout','<=',$request->date2)
+                $recouvrement = Type_operation::whereDate('date_ajout','>=',$request->date1)
+                    ->whereDate('date_ajout','<=',$request->date2)
                     ->get()
                 ;
-                $versement = Versement::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+                $versement = Versement::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->get()
                 ;
-                $versement = Versement::all();
-                $caisse = Caisse::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
-                    ->get()
-                ;
-                $caisse = Caisse::all();
 
-                $achatkit = Versement_achats::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+                $caisse = Caisse::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
+                    ->get()
+                ;
+
+
+                $achatkit = Versement_achats::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
+                    ->get()
+                ;
+                $ventekit = Vente_materiel::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->get()
                 ;
                 $TDATES = [];
@@ -571,10 +624,21 @@ class GeneralController extends Controller
                         $TID[count($TID)]= $value->id_user;
                     }
                 }
+                foreach ($ventekit as $key=>$value){
 
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                    if (!in_array($value->id_user,$TID)){
+                        $TID[count($TID)]= $value->id_user;
+                    }
+                }
+                $versement = Versement::all();
+                $caisse = Caisse::all();
 //              PDF::loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false)->save('myfile.pdf')
                 $pdf =  PDF::loadView('raport.printmany', compact('request','users','TID','achatkit','TDATES','decodeur','reabonnement','abonnement',
-                    'upgrade','recouvrement','versement','caisse','allReabonnement','allAbonnement','allUpgrade','request'))
+                    'upgrade','recouvrement','versement','caisse','ventekit','allReabonnement','allAbonnement','allUpgrade','request'))
                     ->setPaper('a4', 'landscape')->setWarnings(false)
 //                   ->save('rapport_'.$user->name.'_'.'de_'.$request->date1.'au'.$request->date2.'fait_le'.date('Y-m-d').'.pdf')
                 ;
@@ -586,62 +650,72 @@ class GeneralController extends Controller
             }else{
                 $userid = $request->action;
                 $user=User::find($userid);
-                $decodeur = Decodeur::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+//                $decodeur = Decodeur::where('created_at','>=',$request->date1)
+//                    ->where('created_at','<=',$request->date2)
+//                    ->where('id_user',$userid)
+//                    ->get()
+//                ;
+//                $decodeurs = Decodeur::join('client_decodeurs', 'client_decodeurs.id_decodeur', 'decodeurs.id_decodeur')
+//                    ->get()
+//                ;
+//                $clientdecodeur = ClientDecodeur::all();
+//                $id_decodeur = [];
+//                foreach ($clientdecodeur as $key=> $value){
+//                    $id_decodeur[$key]=$value->id_decodeur;
+//                }
+////        dd($id_decodeur);
+//
+//                $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur',$id_decodeur)
+//                    ->get()
+//                ;
+                $decodeur = Stock::where('statut',0)
+                    ->whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->where('id_user',$userid)
                     ->get()
                 ;
-                $decodeurs = Decodeur::join('client_decodeurs', 'client_decodeurs.id_decodeur', 'decodeurs.id_decodeur')
-                    ->get()
-                ;
-                $clientdecodeur = ClientDecodeur::all();
-                $id_decodeur = [];
-                foreach ($clientdecodeur as $key=> $value){
-                    $id_decodeur[$key]=$value->id_decodeur;
-                }
-//        dd($id_decodeur);
-
-                $decodeur = Decodeur::whereNotIn('decodeurs.id_decodeur',$id_decodeur)
-                    ->get()
-                ;
                 $reabonnement = Reabonnement::join('formules','formules.id_formule','reabonnements.id_formule')
-                    ->where('reabonnements.created_at','>=',$request->date1)
-                    ->where('reabonnements.created_at','<=',$request->date2)
+                    ->whereDate('reabonnements.created_at','>=',$request->date1)
+                    ->whereDate('reabonnements.created_at','<=',$request->date2)
                     ->select('reabonnements.*','reabonnements.created_at as date','formules.*')
                     ->where('reabonnements.id_user',$userid)
                     ->get()
                 ;
                 $abonnement = Abonnement::join('formules','formules.id_formule','abonnements.id_formule')
                     ->join('decodeurs','decodeurs.id_decodeur','abonnements.id_decodeur')
-                    ->where('abonnements.created_at','>=',$request->date1)
-                    ->where('abonnements.created_at','<=',$request->date2)
+                    ->whereDate('abonnements.created_at','>=',$request->date1)
+                    ->whereDate('abonnements.created_at','<=',$request->date2)
                     ->select('abonnements.*','abonnements.created_at as date','formules.*','decodeurs.*')
                     ->where('abonnements.id_user',$userid)
                     ->get()
                 ;
-                $upgrade = Upgrade::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+                $upgrade = Upgrade::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->where('id_user',$userid)
                     ->get()
                 ;
-                $recouvrement = Type_operation::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+                $recouvrement = Type_operation::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->where('id_user',$userid)
                     ->get()
                 ;
-                $versement = Versement::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+                $versement = Versement::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->where('id_user',$userid)
                     ->get()
                 ;
-                $caisse = Caisse::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+                $caisse = Caisse::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->where('id_user',$userid)
                     ->get()
                 ;
-                $achatkit = Versement_achats::where('created_at','>=',$request->date1)
-                    ->where('created_at','<=',$request->date2)
+                $achatkit = Versement_achats::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->where('id_user',$userid)
+                    ->get()
+                ;
+                $ventekit = Vente_materiel::whereDate('created_at','>=',$request->date1)
+                    ->whereDate('created_at','<=',$request->date2)
                     ->get()
                 ;
                 $TDATES = [];
@@ -694,8 +768,15 @@ class GeneralController extends Controller
                         $TDATES[count($TDATES)]= $date;
                     }
                 }
+                foreach ($ventekit as $key=>$value){
+
+                    $date = date("Y-m-d", strtotime($value->created_at));
+                    if (!in_array($date,$TDATES)){
+                        $TDATES[count($TDATES)]= $date;
+                    }
+                }
 //                PDF::loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false)->save('myfile.pdf')
-                $pdf =  PDF::loadView('raport.printone', compact('user','achatkit','decodeur','reabonnement','abonnement','upgrade','recouvrement','versement','caisse','TDATES','request'))
+                $pdf =  PDF::loadView('raport.printone', compact('user','ventekit','achatkit','decodeur','reabonnement','abonnement','upgrade','recouvrement','versement','caisse','TDATES','request'))
                     ->setPaper('a4', 'landscape')->setWarnings(false)
 //                   ->save('rapport_'.$user->name.'_'.'de_'.$request->date1.'au'.$request->date2.'fait_le'.date('Y-m-d').'.pdf')
                 ;
