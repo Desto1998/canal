@@ -202,7 +202,6 @@ class MessageController extends Controller
             'nom_client' => 'required',
             'message' => 'required',
         ]);
-        dd($request);
         $data = new Array_();
         $data->nom = $request->nom;
         $data->prenom = "";

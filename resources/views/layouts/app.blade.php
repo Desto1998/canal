@@ -252,7 +252,7 @@
 
                         <!-- Topbar -->
                         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                            <form role="search" class="sr-input-func d-flex" method="post"
+                            <form role="search" class="sr-input-func d-flex" method="get"
                                   action="{{ route('app.rechercher') }}">
                                 @csrf
                                 <input type="text" name="research"

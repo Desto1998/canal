@@ -106,8 +106,9 @@ class ClientController extends Controller
             'id_client' => 'required',
             'num_decodeur' => 'required',
             'num_abonne' => 'required',
-            'prix_decodeur' => 'required',
+            'id_decodeur' => 'required',
         ]);
+
         $client = Client::where('id_client', $request->id_client)
             ->update([
                 'nom_client' => $request->nom_client,
@@ -115,7 +116,7 @@ class ClientController extends Controller
                 'telephone_client' => $request->telephone_client,
                 'adresse_client' => $request->adresse_client
             ]);
-        if (count($request->num_decodeur) === count($request->id_decodeur)) {
+        if (count($request->num_decodeur) === count($request->id_decodeur) &&count($request->id_decodeur)>0) {
             for ($i = 0; $i < count($request->num_decodeur); $i++) {
                 $decodeur[$i] = Decodeur::where('id_decodeur', $request->id_decodeur[$i])
                     ->update([
@@ -125,8 +126,6 @@ class ClientController extends Controller
                     ->where('id', $request->id[$i])
                     ->update(['num_abonne' => $request->num_abonne[$i]]);;
             }
-        } else {
-            return redirect()->back()->with('danger', "Echec lors de l'enregistrement! données du formulaire mal saisie.");
         }
 //        dd($client);
         if ($client && $decodeur) {

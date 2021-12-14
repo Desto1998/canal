@@ -229,7 +229,7 @@
                                                                               maxlength="14" minlength="10"
                                                                               placeholder="Entrez le numero decodeur"
                                                                               onblur="controlNumero(this)"
-                                                                              name="num_decodeur" id="num_decodeur1">
+                                                                              name="num_decodeur" id="num_decodeur{{ $client->id_client }}">
                                                     <span class="text-danger hidden ereur-numerodd " style=""> Mauvaise saisie Longeur minimale 14</span>
                                                     @error('num_decodeur')
                                                     <div class="invalid-feedback">{{ $message }}</div>

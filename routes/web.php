@@ -53,7 +53,7 @@ Route::prefix('dashboard')->group(function () {
 //            return view('dashboard');
 //        }
         Route::get('dashboard', [GeneralController::class, 'dashboard'])->name('home');
-        Route::post('app/recherche', [GeneralController::class, 'rechercherGlobal'])->name('app.rechercher');
+        Route::get('app/recherche', [GeneralController::class, 'rechercherGlobal'])->name('app.rechercher');
         //Abonnement
         Route::get('abonner_add', [ClientController::class, 'add'])->name('add.client');
         Route::get('abonner_add', [ClientController::class, 'add'])->name('add.client');
