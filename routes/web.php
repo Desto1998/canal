@@ -160,7 +160,9 @@ Route::prefix('dashboard')->group(function () {
         Route::get('user/client/nouveau', [ClientController::class, 'nouveauClient'])->name('user.client.nouveau');
         Route::get('user/client/relancer/{numero}', [ClientController::class, 'relancerClient'])->name('user.client.relancer');
         Route::get('user/client/terme', [ClientController::class, 'bientotATerme'])->name('user.client.terme');
-
+        Route::get('user/profile', [UserController::class, 'showProfile'])->name('user.profile');
+        Route::post('user/updateInfos', [UserController::class, 'updateInfos'])->name('user.edit.infos');
+        Route::post('user/updatepassword', [UserController::class, 'updatePassword'])->name('user.edit.password');
         Route::get('settings', [SettingController::class, 'index'])->name('settings');
 
         Route::post('settings/store/sms/standard', [MessageController::class, 'storestandart'])->name('settings.store.sms.standart');

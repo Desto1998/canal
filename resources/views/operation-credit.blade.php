@@ -13,7 +13,7 @@
         </div>
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="mb-1 text-primary">Liste des abonnements</h6>
+                <h6 class="mb-1 text-primary">Abonnements</h6>
             </div>
             @include('layouts.flash-message')
 
@@ -73,7 +73,7 @@
         <hr>
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="mb-1 text-primary">Liste des reabonnements du jour</h6>
+                <h6 class="mb-1 text-primary">Reabonnements</h6>
             </div>
             @include('layouts.flash-message')
 
@@ -131,7 +131,7 @@
         </div>
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="text-info">Upgrade un reabonnement</h6>
+                <h6 class="text-info">Upgrades</h6>
 
             </div>
             @include('layouts.flash-message')

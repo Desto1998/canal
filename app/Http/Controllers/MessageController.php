@@ -24,7 +24,7 @@ class MessageController extends Controller
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             "user" => "teneyemdesto@gmail.com",
-            "password" => "getel2021",
+            "password" => "getel2021",  //getel2021
             "senderid" => "Getel",
             "sms" => $message,
             "mobiles" => $numero
@@ -227,7 +227,7 @@ class MessageController extends Controller
         if ($send === 1) {
             return redirect()->back()->with('info', 'Message envoyé avec succès. Solde SMS: ' . $balance);
         } else {
-            return redirect()->back()->with('danger', 'Eche de l\'envoi du message! Solde SMS: ' . $balance);
+            return redirect()->back()->with('danger', 'Echec de l\'envoi du message! Solde SMS: ' . $balance);
 
         }
 

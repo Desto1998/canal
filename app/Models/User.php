@@ -63,4 +63,14 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+    public function setUser(){
+//        query()->update(['confirmed' => 1]);
+//        $statut = Entreprise::query()->update(['est_active'=>0]);
+        $statut =User::query()->update(['is_active'=>0]);
+        return $statut;
+    }
+    public function resetUser(){
+        $statut= User::query()->update(['is_active'=>1]);
+        return $statut;
+    }
 }

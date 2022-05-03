@@ -295,13 +295,13 @@
                                 <!-- Dropdown - User Information -->
                                     <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                          aria-labelledby="userDropdown">
-                                        <button class="dropdown-item" onclick="on()">
-                                            <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                            Profil
-                                        </button>
-                                        <a class="dropdown-item" href="{{route('user.editForm',Auth::user()->id)}}">
+{{--                                        <button class="dropdown-item" onclick="on()">--}}
+{{--                                            <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>--}}
+{{--                                            Profil--}}
+{{--                                        </button>--}}
+                                        <a class="dropdown-item" href="{{route('user.profile')}}">
                                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                            Paramètres
+                                            Profil
                                         </a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="#" data-toggle="modal"

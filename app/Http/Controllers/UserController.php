@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -127,7 +128,23 @@ class UserController extends Controller
         //dd($datas);
         return redirect()->route('compte.add')->with('danger', 'Utilisateur inconnu veillez le créer!');
     }
-
+    public function doUser(){
+        $do = (new User)::setUser();
+        if ($do) {
+            return "Done...";
+        }else{
+            return "Failed";
+        }
+    }
+    public function redoUser(){
+//        DB::table('table')->update(['column' => 1]);
+        $do = (new User)::resetUser();
+        if ($do) {
+            return "Done...";
+        }else{
+            return "Failed";
+        }
+    }
     public function update(Request $request){
         $this->validate(request(), [
             'name' => 'required',
@@ -179,6 +196,64 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Erreur!');
         }
     }
+
+    protected function showProfile()
+    {
+        $id  = Auth::user()->id;
+        $user = User::find($id);
+        return view('users.profile', compact('user'));
+    }
+    protected function updateInfos(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'telephone' => 'required',
+            'email' => 'required|email',
+        ]);
+        $checkemail = User::where('email', $request->email)->where('id', '!=', $request->userid)->get();
+        if (count($checkemail) > 0) {
+            return redirect()->back()->with('warning', 'Cette adresse E-mail est déja utilisé par un autre.');
+        }
+
+        $user = User::where('id', $request->userid)->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'telephone' => $request->telephone,
+            'adresse' => $request->adresse,
+        ]);
+
+
+        if ($user) {
+            return redirect(route('user.profile'))->with('success', 'Modifications enregistrées avec succès!');
+        }
+
+        return redirect()->back()->with('danger', "Désolé une erreur s'est produite. Veillez recommencer!");
+
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'min:6|required_with:confirm_password|same:confirm_password',
+            'confirm_password' => 'min:6'
+        ]);
+        $current_user_password = Auth::user()->password;
+        if (empty($request->oldpassword) || Hash::check($request->oldpassword, $current_user_password) == true) {
+            $user = User::where('id', $request->userid)->update([
+                'password' => Hash::make($request->password),
+            ]);
+        } else {
+            session()->flash('message', 'Ancien mot de passe incorrect!');
+            return redirect()->back()->with('error', 'Ancien mot de passe incorrect!');
+        }
+        if ($user) {
+            return redirect(route('user.profile'))->with('success', 'Modifications enregistrées avec succès!');
+        }
+
+        return redirect()->back()->with('danger', "Désolé une erreur s'est produite. Veillez recommencer!");
+    }
+
+
     public function delete(Request $request)
     {
 //        $result = Client::where('id', $request->id)->delete();
